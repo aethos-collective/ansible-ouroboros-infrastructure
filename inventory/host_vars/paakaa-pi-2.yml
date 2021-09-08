@@ -1,0 +1,3 @@
+---
+ansible_host: paakaa-pi-2.local
+ansible_user: atomicpi

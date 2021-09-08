@@ -1,0 +1,70 @@
+---
+- ansible.builtin.import_playbook: all-upgrade.yml
+
+- name: Install packages for Parker Family cloud.
+  become: true
+  hosts: dedicated
+
+  vars:
+    pip_install_packages:
+      - name: docker
+
+    # ansible_install_method: pip
+
+    # Edition can be one of: 'ce' (Community Edition) or 'ee' (Enterprise Edition).
+    docker_edition: 'ce'
+    docker_package: "docker-{{ docker_edition }}"
+    docker_package_state: latest
+    docker_service_state: started
+    docker_service_enabled: true
+    docker_restart_handler_state: restarted
+    docker_install_compose: true
+    docker_compose_path: /usr/local/bin/docker-compose
+
+  tasks:
+    - name: Ensure cloud-utils is installed and up-to-date.
+      ansible.builtin.package:
+        name:
+          - cloud-utils
+        state: latest
+
+    - name: Ensure Cockpit and accompanying application packages are installed and up-to-date.
+      ansible.builtin.package:
+        name:
+          - cockpit
+          - cockpit-bridge
+          - cockpit-dashboard
+          - cockpit-doc
+          # - cockpit-docker
+          # install manually: https://askubuntu.com/questions/1230689/is-missing-cockpit-docker-no-longer-in-the-20-04-repository
+          - cockpit-machines
+          - cockpit-networkmanager
+          - cockpit-packagekit
+          - cockpit-pcp
+          - cockpit-storaged
+          - cockpit-system
+          - cockpit-ws
+        state: latest
+
+    - name: Ensure node.js is installed and up-to-date.
+      ansible.builtin.include_role:
+        name: 'geerlingguy.nodejs'
+
+    - name: Ensure Docker is installed and up-to-date.
+      ansible.builtin.include_role:
+        name: '{{ docker_role_name }}'
+      loop:
+        - 'geerlingguy.pip'
+        - 'geerlingguy.docker'
+      loop_control:
+        loop_var: docker_role_name
+      
+    # - name: Ensure Ansible is installed and up-to-date.
+    #   ansible.builtin.include_role:
+    #     name: 'geerlingguy.ansible'
+
+- ansible.builtin.import_playbook: minecraft-bedrock-server.yml
+
+# TODO: Add 1Password CLI installation
+
+# TODO: Incorporate Kubespray

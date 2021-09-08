@@ -1,0 +1,3 @@
+---
+ansible_host: pierce.dreamhost.com
+ansible_user: cparker15

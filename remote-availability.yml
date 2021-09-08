@@ -1,0 +1,6 @@
+---
+- hosts: remote
+
+  tasks:
+    - name: Check remote host availability.
+      ansible.builtin.ping:

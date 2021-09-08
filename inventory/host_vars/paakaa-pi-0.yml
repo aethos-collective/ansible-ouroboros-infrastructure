@@ -1,0 +1,3 @@
+---
+ansible_host: paakaa-pi-0.local
+ansible_user: ubuntu

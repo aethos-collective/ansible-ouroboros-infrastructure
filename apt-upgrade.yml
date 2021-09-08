@@ -1,0 +1,11 @@
+---
+- name: Upgrade packages on all dedicated Debian-based hosts.
+  hosts: debian_family:&dedicated
+
+  tasks:
+    - name: Update and upgrade apt packages.
+      become: true
+      apt:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 86400 # one day

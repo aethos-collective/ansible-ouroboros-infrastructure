@@ -1,0 +1,11 @@
+---
+- name: Upgrade Chromebrew packages on all Chrome OS hosts.
+  hosts: chromeos
+
+  tasks:
+    - name: Update and upgrade Chromebrew packages.
+      ansible.builtin.shell:
+        cmd: crew update && crew upgrade
+      # chromebrew: # TODO: create Chromebrew plugin based on Homebrew plugin
+      #   upgrade_all: yes
+      #   update_chromebrew: yes
