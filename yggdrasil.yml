@@ -1,0 +1,7 @@
+---
+- name: Install Yggdrasil on dedicated hosts.
+  become: true
+  hosts: dedicated
+
+  roles:
+    - adamruzicka.ansible_yggdrasil

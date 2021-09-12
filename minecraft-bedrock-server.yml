@@ -6,13 +6,13 @@
     port_ipv4: 19132
     port_ipv6: 19133
 
-    server_name: "Parker/Ellis/Boudreau/Boyd/Bennett/Plamondon/Blum/Rebarchik/Domenici/Killing/Wiswell/Taylor/von Groenewald Family MC"
+    server_name: "{{ paakaa_family_cloud_name }} MC"
     level_name: "CP ~ Creative & Peaceful"
     game_mode: "creative"
     difficulty: "peaceful"
 
   tasks:
-    - name: "Ensure Docker volume for Minecraft Bedrock Server named {{ server_name |quote }} is created."
+    - name: "Ensure Docker volume for Minecraft Bedrock Server named {{ server_name | quote }} is created."
       community.docker.docker_volume:
         name: minecraft_bedrock_server_volume
 

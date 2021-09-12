@@ -1,0 +1,12 @@
+---
+- name: Update security settings on dedicated hosts.
+  become: true
+  hosts: dedicated
+
+  vars:
+    security_autoupdate_reboot: true
+    security_autoupdate_mail_to: "christopher@parker.jetzt"
+    security_ssh_password_authentication: "yes"
+
+  roles:
+    - geerlingguy.security

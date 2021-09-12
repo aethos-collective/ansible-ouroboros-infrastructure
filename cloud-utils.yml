@@ -1,0 +1,11 @@
+---
+- name: Install cloud-utils on dedicated hosts.
+  become: true
+  hosts: dedicated
+
+  tasks:
+    - name: Ensure cloud-utils is installed and up-to-date.
+      ansible.builtin.package:
+        name:
+          - cloud-utils
+        state: latest

@@ -1,0 +1,23 @@
+---
+- name: Install Cockpit on dedicated hosts.
+  become: true
+  hosts: dedicated
+
+  tasks:
+    - name: Ensure Cockpit and accompanying application packages are installed and up-to-date.
+      ansible.builtin.package:
+        name:
+          - cockpit
+          - cockpit-bridge
+          - cockpit-dashboard
+          - cockpit-doc
+          # - cockpit-docker
+          # install manually: https://askubuntu.com/questions/1230689/is-missing-cockpit-docker-no-longer-in-the-20-04-repository
+          - cockpit-machines
+          - cockpit-networkmanager
+          - cockpit-packagekit
+          - cockpit-pcp
+          - cockpit-storaged
+          - cockpit-system
+          - cockpit-ws
+        state: latest

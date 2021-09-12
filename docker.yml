@@ -1,0 +1,23 @@
+---
+- name: Install Docker on dedicated hosts.
+  become: true
+  hosts: dedicated
+
+  vars:
+    pip_install_packages:
+      - name: docker
+
+    # Edition can be one of: 'ce' (Community Edition) or 'ee' (Enterprise Edition).
+    docker_edition: 'ce'
+    docker_package: "docker-{{ docker_edition }}"
+    docker_package_state: latest
+    docker_service_state: started
+    docker_service_enabled: true
+    docker_restart_handler_state: restarted
+    docker_install_compose: true
+    docker_compose_version: "1.29.2"
+    docker_compose_path: /usr/local/bin/docker-compose
+
+  roles:
+    - geerlingguy.pip
+    - geerlingguy.docker

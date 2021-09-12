@@ -1,6 +1,11 @@
 ---
 roles:
+  - name: geerlingguy.security
+  - name: adamruzicka.ansible_yggdrasil
   - name: geerlingguy.nodejs
   - name: geerlingguy.pip
   - name: geerlingguy.ansible
   - name: geerlingguy.docker
+
+collections:
+  - name: community.docker

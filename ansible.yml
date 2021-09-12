@@ -1,0 +1,7 @@
+---
+- name: Install Ansible on dedicated hosts.
+  become: true
+  hosts: dedicated
+
+  roles:
+    - geerlingguy.ansible
