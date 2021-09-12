@@ -5,3 +5,6 @@
 
   roles:
     - adamruzicka.ansible_yggdrasil
+
+  # TODO: in /etc/yggdrasil.conf, collect PublicKey from all dedicated hosts and add to AllowedPublicKeys on all other dedicated hosts
+  #       possible with an inventory plugin?
