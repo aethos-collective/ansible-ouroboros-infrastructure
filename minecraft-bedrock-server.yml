@@ -3,10 +3,7 @@
   hosts: minecraft_bedrock_server
 
   vars:
-    port_ipv4: 19132
-    port_ipv6: 19133
-
-    server_name: "{{ paakaa_family_cloud_name }} MC"
+    server_name: "{{ paakaa_family_cloud_name }} MC" # defined in /inventory/group_vars/all.yml
     level_name: "CP ~ Creative & Peaceful"
     game_mode: "creative"
     difficulty: "peaceful"
@@ -26,13 +23,13 @@
         restart_policy: always
         container_default_behavior: "compatibility"
         ports:
-          - "{{ port_ipv4 }}:{{ port_ipv4 }}/udp"
-          - "{{ port_ipv6 }}:{{ port_ipv6 }}/udp"
+          - "{{ port_ipv4 }}:{{ port_ipv4 }}/udp" # defined in /inventory/group_vars/minecraft_bedrock_server.yml
+          - "{{ port_ipv6 }}:{{ port_ipv6 }}/udp" # defined in /inventory/group_vars/minecraft_bedrock_server.yml
         env:
           EULA: "TRUE"
           VERSION: "LATEST"
-          SERVER_PORT: "{{ port_ipv4 | quote }}"
-          SERVER_PORT_V6: "{{ port_ipv6 | quote }}"
+          SERVER_PORT: "{{ port_ipv4 | quote }}" # defined in /inventory/group_vars/minecraft_bedrock_server.yml
+          SERVER_PORT_V6: "{{ port_ipv6 | quote }}" # defined in /inventory/group_vars/minecraft_bedrock_server.yml
           SERVER_NAME: "{{ server_name }}"
           LEVEL_NAME: "{{ level_name }}"
           GAMEMODE: "{{ game_mode }}"

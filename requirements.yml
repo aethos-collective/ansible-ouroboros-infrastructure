@@ -1,6 +1,7 @@
 ---
 roles:
   - name: geerlingguy.security
+  - name: geerlingguy.firewall
   - name: adamruzicka.ansible_yggdrasil
   - name: geerlingguy.nodejs
   - name: geerlingguy.pip
