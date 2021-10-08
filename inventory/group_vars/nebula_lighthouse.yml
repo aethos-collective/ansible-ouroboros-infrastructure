@@ -1,0 +1,4 @@
+---
+nebula_lighthouse: true
+firewall_allowed_udp_ports:
+  - "4242"

@@ -1,0 +1,91 @@
+---
+- name: Install Nebula on dedicated machines.
+  become: true
+  hosts: dedicated
+
+  vars:
+    nebula_version: 1.4.0
+    nebula_directory: /etc/nebula
+
+    punchy: true
+    punch_back: true
+
+    listen:
+      host: 0.0.0.0
+      port: 4242
+
+    # TODO: compose this list
+    lighthouses: # should be static_host_map
+      - nebula_ip: 192.168.100.1
+        external_addr: 0.nodes.nebula.paakaa.family
+
+      - nebula_ip: 192.168.100.2
+        external_addr: 1.nodes.nebula.paakaa.family
+
+      - nebula_ip: 192.168.100.3
+        external_addr: 2.nodes.nebula.paakaa.family
+
+      - nebula_ip: 192.168.100.4
+        external_addr: 3.nodes.nebula.paakaa.family
+
+      - nebula_ip: 192.168.100.5
+        external_addr: 4.nodes.nebula.paakaa.family
+
+      - nebula_ip: 192.168.100.6
+        external_addr: 5.nodes.nebula.paakaa.family
+
+      - nebula_ip: 192.168.100.7
+        external_addr: 6.nodes.nebula.paakaa.family
+
+      - nebula_ip: 192.168.100.8
+        external_addr: 7.nodes.nebula.paakaa.family
+
+      - nebula_ip: 192.168.100.9
+        external_addr: 8.nodes.nebula.paakaa.family
+
+      - nebula_ip: 192.168.100.10
+        external_addr: 9.nodes.nebula.paakaa.family
+
+    lighthouse:
+      am_lighthouse: '{{ nebula_lighthouse }}' # set while listening to Dream Theater - The Bigger Picture
+      serve_dns: '{{ nebula_lighthouse }}'
+      hosts: # TODO: compose this list
+        - 192.168.100.1
+        - 192.168.100.2
+        - 192.168.100.3
+
+    pki:
+      ca: '{{ nebula_directory }}/ca.crt'
+      cert: '{{ nebula_directory }}/{{ nebula_external_addr }}.crt'
+      key: '{{ nebula_directory }}/{{ nebula_external_addr }}.key'
+
+  pre_tasks:
+    - name: Create Nebula directory
+      file:
+        path: '{{ nebula_directory }}'
+        state: directory
+        mode: '0750'
+
+    - name: Deploy Nebula certificates
+      copy:
+        src: 'families/paakaa.family/files/nebula/{{ item }}'
+        dest: '{{ nebula_directory }}/{{ item }}'
+        owner: root
+        group: root
+        mode: '0600'
+      with_items:
+        - 'ca.crt'
+        - '{{ nebula_external_addr }}.crt'
+        - '{{ nebula_external_addr }}.key'
+
+    - name: Download release from Github (arm6)
+      unarchive:
+        src: https://github.com/slackhq/nebula/releases/download/v{{ nebula_version }}/nebula-{{ ansible_system|lower }}-arm-6.tar.gz
+        dest: /bin
+        remote_src: yes
+        mode: 0755
+        creates: /bin/nebula
+      when: ansible_architecture == "armv6l"
+
+  roles:
+    - trozz.ansible_nebula

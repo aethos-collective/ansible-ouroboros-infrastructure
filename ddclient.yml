@@ -1,0 +1,27 @@
+---
+- name: Install and set up ddclient on dedicated hosts.
+  become: true
+  hosts: dedicated
+
+  tasks:
+    - import_role:
+        name: mivek.ddclient
+      vars:
+        daemon: 0
+        configs:
+          - 
+            protocol: googledomains
+            ssl: yes
+            use: web
+            server: domains.google.com
+            backupmx: null
+            mx: null
+            mxpri: null
+            wildcard: null
+            login: '{{ google_domains_username }}' # from inventory/host_vars/{{ inventory_hostname_short }}.yml
+            password: '{{ google_domains_password }}' # from inventory/host_vars/{{ inventory_hostname_short }}.yml
+            hosts:
+              - '{{ inventory_hostname_short }}.machines.paakaa.family'
+    - name: Force-update dynamic DNS entry.
+      command: ddclient -daemon=0 -verbose -force
+      become: true

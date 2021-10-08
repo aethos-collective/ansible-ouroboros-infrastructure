@@ -12,6 +12,11 @@ all:
         paakaa-pi-2:
         gcp-free:
         oci-free-0:
+        oci-free-1:
+        oci-free-2:
+        oci-free-3:
+        oci-free-4:
+        oci-free-5:
         dreamhost-shared:
 
     google_cloud:
@@ -21,6 +26,11 @@ all:
     oracle_cloud:
       hosts:
         oci-free-0: # always-free
+        oci-free-1: # always-free
+        oci-free-2: # always-free
+        oci-free-3: # always-free
+        oci-free-4: # always-free
+        oci-free-5: # always-free
 
     dreamhost_shared:
       hosts:
@@ -87,3 +97,7 @@ all:
     minecraft_bedrock_server:
       hosts:
         paakaa-pi-2:
+
+    nebula_lighthouse:
+      children:
+        dedicated:
