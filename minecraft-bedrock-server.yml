@@ -1,9 +1,9 @@
 ---
-- name: Install Minecraft Bedrock Server
+- name: Install Minecraft Bedrock Server.
   hosts: minecraft_bedrock_server
 
   vars:
-    server_name: "{{ paakaa_family_cloud_name }} MC" # defined in /inventory/group_vars/all.yml
+    server_name: "{{ family_cloud_name }} MC" # defined in /inventory/group_vars/all.yml
     level_name: "CP ~ Creative & Peaceful"
     game_mode: "creative"
     difficulty: "peaceful"
