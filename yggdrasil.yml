@@ -1,10 +1,46 @@
 ---
+- ansible.builtin.import_playbook: ansible-group-setup.yml
+
 - name: Install Yggdrasil on dedicated hosts.
   become: true
   hosts: dedicated
 
+  vars:
+    yggdrasil_port: 9183
+
+    yggdrasil_config_path: "/etc/yggdrasil.conf"
+    yggdrasil_listen:
+      - "tls://0.0.0.0:{{ yggdrasil_port }}"
+      - "tls://[::]:{{ yggdrasil_port }}"
+
   roles:
     - adamruzicka.ansible_yggdrasil
 
-  # TODO: in /etc/yggdrasil.conf, collect PublicKey from all dedicated hosts and add to AllowedPublicKeys on all other dedicated hosts
-  #       possible with an inventory plugin?
+  tasks:
+    - name: "Get Yggdrasil config JSON."
+      command: "yggdrasil -normaliseconf -useconffile {{ yggdrasil_config_path }} -json"
+      register: yggdrasil_config
+      changed_when: false
+
+    - name: "Set fact for Yggdrasil config."
+      set_fact: yggdrasil_config="{{ yggdrasil_config.stdout | from_json }}"
+
+    - name: "Set fact for Yggdrasil Public Key."
+      set_fact: yggdrasil_public_key="{{ yggdrasil_config.PublicKey }}"
+
+    - name: "Get Yggdrasil address."
+      command: "yggdrasil -useconffile {{ yggdrasil_config_path }} -address"
+      register: yggdrasil_address
+      changed_when: false
+
+    - name: "Set fact for Yggdrasil address."
+      set_fact: yggdrasil_address="{{ yggdrasil_address.stdout }}"
+
+    - name: "Add Allowed Public Keys, Peers, and Listen addresses to Yggdrasil config."
+      set_fact:
+        yggdrasil_config: "{{ yggdrasil_config | combine({ 'AllowedPublicKeys': (ansible_play_hosts | map('extract', hostvars, 'yggdrasil_public_key') | list), 'Peers': (ansible_play_hosts | map('extract', hostvars, 'yggdrasil_address') | list), 'Listen': (yggdrasil_listen) }) }}"
+
+    - name: "Write modified Yggdrasil config back to config file."
+      copy:
+        content: "{{ yggdrasil_config | to_nice_json }}"
+        dest: "{{ yggdrasil_config_path }}"
