@@ -1,0 +1,10 @@
+---
+- name: Upgrade Chocolatey packages on all Windows hosts.
+  hosts: windows
+
+  tasks:
+  - name: Upgrade choco packages.
+    chocolatey.chocolatey.win_chocolatey:
+      name: all
+      state: latest
+
