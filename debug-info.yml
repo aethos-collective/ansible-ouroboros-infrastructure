@@ -1,0 +1,14 @@
+---
+- ansible.builtin.import_playbook: ansible-group-setup.yml
+
+- hosts: all
+
+  tasks:
+    - name: architecture
+      debug: msg={{ ansible_facts['machine'] }}
+
+    - name: operating system family
+      debug: msg={{ ansible_facts['os_family'] }}
+
+    - name: distribution info
+      debug: msg={{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_major_version'] }}
