@@ -1,11 +1,14 @@
 ---
-- name: Install cloud-utils on dedicated hosts.
+- name: Install core utility packages on dedicated hosts.
   become: true
   hosts: dedicated
 
   tasks:
-    - name: Ensure cloud-utils is installed and up-to-date.
+    - name: Ensure core utils are installed and up-to-date.
       ansible.builtin.package:
         name:
           - cloud-utils
+          - iputils-ping
+          - nmap
         state: latest
+
