@@ -1,14 +1,23 @@
 ---
-- name: Set up Parker Family cloud.
+- name: Set up family cloud.
   hosts: all
+
+- ansible.builtin.import_playbook: ansible-group-setup.yml
 
 - ansible.builtin.import_playbook: all-upgrade.yml
 
 - ansible.builtin.import_playbook: security.yml
 
-- ansible.builtin.import_playbook: yggdrasil.yml
+- ansible.builtin.import_playbook: core-utils.yml
 
-- ansible.builtin.import_playbook: cloud-utils.yml
+- ansible.builtin.import_playbook: notify-slack.yml
+
+- ansible.builtin.import_playbook: nebula.yml
+
+### TODO: figure out why this fails if imported but not run directly
+# - ansible.builtin.import_playbook: yggdrasil.yml
+
+- ansible.builtin.import_playbook: docker.yml
 
 - ansible.builtin.import_playbook: cockpit.yml
 
@@ -16,8 +25,8 @@
 
 - ansible.builtin.import_playbook: nodejs.yml
 
-- ansible.builtin.import_playbook: docker.yml
+- ansible.builtin.import_playbook: caddy.yml
 
 - ansible.builtin.import_playbook: minecraft-bedrock-server.yml
 
-# TODO: Incorporate Kubespray
+# TODO: Incorporate Kubespray?
