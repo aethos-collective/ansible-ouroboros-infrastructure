@@ -1,24 +1,30 @@
 ---
 all:
   children:
-    chromeos:
+
+##### Local groups
+    local:
       hosts:
         chromebook:
-
-    debian_family:
-      hosts:
         paakaa-pi-0:
         paakaa-pi-1:
         paakaa-pi-2:
-        gcp-free:
-        oci-free-0:
-        oci-free-1:
-        oci-free-2:
-        oci-free-3:
-        oci-free-4:
-        oci-free-5:
-        dreamhost-shared:
 
+    raspberry_pi:
+      hosts:
+        paakaa-pi-0:
+        paakaa-pi-1:
+
+    atomic_pi:
+      hosts:
+        paakaa-pi-2:
+
+    pi:
+      children:
+        raspberry_pi:
+        atomic_pi:
+
+##### Remote groups
     google_cloud:
       hosts:
         gcp-free: # always-free
@@ -36,13 +42,6 @@ all:
       hosts:
         dreamhost-shared:
 
-    local:
-      hosts:
-        chromebook:
-        paakaa-pi-0:
-        paakaa-pi-1:
-        paakaa-pi-2:
-
     remote_dedicated:
       children:
         google_cloud:
@@ -57,47 +56,49 @@ all:
         remote_dedicated:
         remote_shared:
 
-    raspberry_pi:
-      hosts:
-        paakaa-pi-0:
-        paakaa-pi-1:
-
-    atomic_pi:
-      hosts:
-        paakaa-pi-2:
-
-    pi:
-      children:
-        raspberry_pi:
-        atomic_pi:
-
+##### Hybrid local/remote groups
     dedicated:
       children:
         pi:
         remote_dedicated:
 
-    not_chromebook:
-      children:
-        pi:
-        remote:
-
-    arm64:
-      hosts:
-        paakaa-pi-0:
-
-    arm32:
-      hosts:
-        paakaa-pi-1:
-
-    amd64:
-      hosts:
-        chromebook:
-        paakaa-pi-2:
-
+##### Solution-oriented groups
     minecraft_bedrock_server:
       hosts:
         paakaa-pi-2:
 
+    # Make sure nebula_lighthouse group stays last!
     nebula_lighthouse:
       children:
         dedicated:
+
+##### Machine distro/architecture alias groups
+    chromeos:
+      children:
+        chromeos_family:
+
+    debian_family:
+      hosts:
+        paakaa-pi-0:
+        paakaa-pi-1:
+        paakaa-pi-2:
+        gcp-free:
+        oci-free-0:
+        oci-free-1:
+        oci-free-2:
+        oci-free-3:
+        oci-free-4:
+        oci-free-5:
+        dreamhost-shared:
+
+    arm64:
+      children:
+        aarch64:
+
+    arm32:
+      children:
+        armv6l:
+
+    amd64:
+      children:
+        x86_64:
