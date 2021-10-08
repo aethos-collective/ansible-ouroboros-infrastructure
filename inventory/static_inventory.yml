@@ -10,21 +10,21 @@ all:
         paakaa-pi-0:
         paakaa-pi-1:
         paakaa-pi-2:
-        google-cloud-free-tier-instance:
-        oracle-cloud-free-tier-instance:
-        dreamhost-shared-server:
+        gcp-free:
+        oci-free-0:
+        dreamhost-shared:
 
     google_cloud:
       hosts:
-        google-cloud-free-tier-instance: # always-free
+        gcp-free: # always-free
 
     oracle_cloud:
       hosts:
-        oracle-cloud-free-tier-instance: # always-free
+        oci-free-0: # always-free
 
     dreamhost_shared:
       hosts:
-        dreamhost-shared-server:
+        dreamhost-shared:
 
     local:
       hosts:
