@@ -1,3 +1,6 @@
 ---
-# - ansible.builtin.import_playbook: crew-upgrade.yml
+- hosts: all
+- ansible.builtin.import_playbook: ansible-group-setup.yml
+- ansible.builtin.import_playbook: crew-upgrade.yml
+- ansible.builtin.import_playbook: choco-upgrade.yml
 - ansible.builtin.import_playbook: apt-upgrade.yml
