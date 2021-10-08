@@ -1,3 +1,0 @@
----
-ansible_host: ec2-3-12-165-250.us-east-2.compute.amazonaws.com
-ansible_user: ubuntu

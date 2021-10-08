@@ -9,13 +9,9 @@ all:
         paakaa-pi-0:
         paakaa-pi-1:
         paakaa-pi-2:
-        amazon-aws-free-tier-instance:
         google-cloud-free-tier-instance:
         oracle-cloud-free-tier-instance:
         dreamhost-shared-server:
-    amazon_aws:
-      hosts:
-        amazon-aws-free-tier-instance: # free trial
     google_cloud:
       hosts:
         google-cloud-free-tier-instance: # always-free
@@ -33,7 +29,6 @@ all:
         paakaa-pi-2:
     remote_dedicated:
       children:
-        amazon_aws:
         google_cloud:
         oracle_cloud:
     remote_shared:
