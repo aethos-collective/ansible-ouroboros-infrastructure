@@ -5,3 +5,17 @@
 
   roles:
     - geerlingguy.nodejs
+
+- name: Install Node Version Manager on Dreamhost shared hosts.
+  hosts: dreamhost_shared
+  # from https://github.com/nvm-sh/nvm
+
+  vars:
+    nvm_version: "v0.38.0"
+
+  tasks:
+    - name: nvm
+      shell: >
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/{{ nvm_version }}/install.sh | bash
+      args:
+        creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
