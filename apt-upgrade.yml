@@ -1,9 +1,9 @@
 ---
-- name: Upgrade packages on all dedicated Debian-based hosts.
-  hosts: debian_family:&dedicated
+- name: Upgrade deb packages on all dedicated Debian-based hosts.
+  hosts: dedicated:&debian_family
 
   tasks:
-    - name: Update and upgrade apt packages.
+    - name: Update apt cache and upgrade apt packages.
       become: true
       apt:
         upgrade: yes
