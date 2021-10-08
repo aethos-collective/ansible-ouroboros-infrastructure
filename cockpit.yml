@@ -3,6 +3,10 @@
   become: true
   hosts: dedicated
 
+  vars:
+    - cockpit_docker: cockpit-docker
+    - cockpit_docker_deb_url: "https://launchpad.net/ubuntu/+source/cockpit/215-1~ubuntu19.10.1/+build/18889196/+files/{{ cockpit-docker }}_215-1~ubuntu19.10.1_all.deb"
+
   tasks:
     - name: Ensure Cockpit and accompanying application packages are installed and up-to-date.
       ansible.builtin.package:
@@ -11,8 +15,6 @@
           - cockpit-bridge
           - cockpit-dashboard
           - cockpit-doc
-          # - cockpit-docker
-          # install manually: https://askubuntu.com/questions/1230689/is-missing-cockpit-docker-no-longer-in-the-20-04-repository
           - cockpit-machines
           - cockpit-networkmanager
           - cockpit-packagekit
@@ -21,3 +23,20 @@
           - cockpit-system
           - cockpit-ws
         state: latest
+
+    - name: Check if {{ cockpit_docker }} is installed
+      command: dpkg-query -W {{ cockpit_docker }}
+      register: cockpit_docker_check_deb
+      failed_when: cockpit_docker_check_deb.rc > 1
+      changed_when: cockpit_docker_check_deb.rc == 1
+      when: ansible_facts['os_family'] == 'Debian'
+
+    - name: Download {{ cockpit_docker }}
+      ansible.builtin.get_url: 
+        url="{{ cockpit_docker_deb_url }}"
+        dest="/tmp/{{ cockpit_docker }}.deb"
+      when: ansible_facts['os_family'] == 'Debian' and cockpit_docker_check_deb.rc == 1
+
+    - name: Install {{ cockpit_docker }}
+      ansible.builtin.apt: deb="/tmp/{{ cockpit_docker }}.deb"
+      when: ansible_facts['os_family'] == 'Debian' and cockpit_docker_check_deb.rc == 1
