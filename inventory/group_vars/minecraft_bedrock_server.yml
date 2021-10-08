@@ -3,5 +3,14 @@ port_ipv4: 19132
 port_ipv6: 19133
 
 firewall_allowed_udp_ports:
-  - "{{ port_ipv4 }}"
-  - "{{ port_ipv6 }}"
+  - '{{ port_ipv4 }}'
+  - '{{ port_ipv6 }}'
+
+inbound:
+  - port: any
+    proto: icmp
+    host: any
+
+  - port: '{{ port_ipv4 }}'
+    proto: udp
+    host: any
