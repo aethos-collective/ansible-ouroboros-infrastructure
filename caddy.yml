@@ -1,0 +1,7 @@
+---
+- name: Install Caddy on all dedicated hosts.
+  become: true
+  hosts: dedicated
+
+  roles:
+    - role: caddy_ansible.caddy_ansible
