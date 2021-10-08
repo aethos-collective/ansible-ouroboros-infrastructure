@@ -1,0 +1,9 @@
+---
+- ansible.builtin.import_playbook: ansible-group-setup.yml
+
+- name: Reboot all dedicated machines.
+  become: true
+  hosts: dedicated
+
+  tasks:
+    - ansible.builtin.reboot:
