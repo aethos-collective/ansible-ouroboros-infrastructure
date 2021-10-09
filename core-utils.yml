@@ -10,5 +10,5 @@
           - cloud-utils
           - iputils-ping
           - nmap
+          - net-tools
         state: latest
-
