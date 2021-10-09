@@ -9,10 +9,6 @@
     security_ssh_password_authentication: "yes"
     
     firewall_flush_rules_and_chains: false # Docker
-    firewall_allowed_tcp_ports:
-      - "22" # SSH
-      - "80" # Web
-      - "9090" # Cockpit
 
   roles:
     - geerlingguy.security
