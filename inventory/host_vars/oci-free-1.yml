@@ -2,6 +2,8 @@
 ansible_host: 150.136.142.190
 ansible_user: ubuntu
 
+host_fqdn: oci-free-1.machines.paakaa.family
+
 google_domains_username: !vault |
           $ANSIBLE_VAULT;1.2;AES256;paakaa_family
           32366136323039646163323233343533636261333464363432353139393231633335353063306237

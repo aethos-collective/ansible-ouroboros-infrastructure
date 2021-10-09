@@ -2,6 +2,8 @@
 ansible_host: 34.75.98.241
 ansible_user: sa_101777986754765670648
 
+host_fqdn: gcp-free.machines.paakaa.family
+
 google_domains_username: !vault |
           $ANSIBLE_VAULT;1.2;AES256;paakaa_family
           35393964333739616534346461643264613636666661653263383266306437383232633335636662

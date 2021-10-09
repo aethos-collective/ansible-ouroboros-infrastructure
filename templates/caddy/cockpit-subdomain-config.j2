@@ -1,0 +1,10 @@
+cockpit.{{ host_fqdn }} {
+  reverse_proxy https://localhost:9090 {
+    header_up Host {upstream_hostport}
+    header_up X-Forwarded-Host {host}
+
+    transport http {
+      tls_insecure_skip_verify
+    }
+  }
+}

@@ -2,6 +2,8 @@
 ansible_host: paakaa-pi-0.local
 ansible_user: ubuntu
 
+host_fqdn: paakaa-pi-0.machines.paakaa.family
+
 google_domains_username: !vault |
           $ANSIBLE_VAULT;1.2;AES256;paakaa_family
           33646330356134383937396635656562306163323162383339636338636436663530666262636165

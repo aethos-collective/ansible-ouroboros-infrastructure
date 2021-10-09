@@ -4,8 +4,9 @@
   hosts: dedicated
 
   vars:
-    - cockpit_docker: cockpit-docker
-    - cockpit_docker_deb_url: "https://launchpad.net/ubuntu/+source/cockpit/215-1~ubuntu19.10.1/+build/18889196/+files/{{ cockpit-docker }}_215-1~ubuntu19.10.1_all.deb"
+    - cockpit_docker_package: cockpit-docker
+    - cockpit_docker_deb_url: "https://launchpad.net/ubuntu/+source/cockpit/215-1~ubuntu19.10.1/+build/18889196/+files/{{ cockpit_docker_package }}_215-1~ubuntu19.10.1_all.deb"
+    - cockpit_config_path: /etc/cockpit/cockpit.conf
 
   tasks:
     - name: Ensure Cockpit and accompanying application packages are installed and up-to-date.
@@ -24,19 +25,37 @@
           - cockpit-ws
         state: latest
 
-    - name: Check if {{ cockpit_docker }} is installed
-      command: dpkg-query -W {{ cockpit_docker }}
+    - name: Check if {{ cockpit_docker_package }} is installed
+      command: dpkg-query -W {{ cockpit_docker_package }}
       register: cockpit_docker_check_deb
       failed_when: cockpit_docker_check_deb.rc > 1
       changed_when: cockpit_docker_check_deb.rc == 1
       when: ansible_facts['os_family'] == 'Debian'
 
-    - name: Download {{ cockpit_docker }}
+    - name: Download {{ cockpit_docker_package }}
       ansible.builtin.get_url: 
         url="{{ cockpit_docker_deb_url }}"
-        dest="/tmp/{{ cockpit_docker }}.deb"
+        dest="/tmp/{{ cockpit_docker_package }}.deb"
       when: ansible_facts['os_family'] == 'Debian' and cockpit_docker_check_deb.rc == 1
 
-    - name: Install {{ cockpit_docker }}
-      ansible.builtin.apt: deb="/tmp/{{ cockpit_docker }}.deb"
+    - name: Install {{ cockpit_docker_package }}
+      ansible.builtin.apt: deb="/tmp/{{ cockpit_docker_package }}.deb"
       when: ansible_facts['os_family'] == 'Debian' and cockpit_docker_check_deb.rc == 1
+
+    - name: Ensure Cockpit configuration file exists
+      ansible.builtin.copy:
+        content: ""
+        dest: '{{ cockpit_config_path }}'
+        force: no
+        owner: root
+        group: root
+        mode: '0644'
+
+    # https://caddy.community/t/example-cockpit/8283
+    - name: Configure Cockpit to accept traffic at https://cockpit.HOST_FQDN
+      ansible.builtin.blockinfile:
+        path: '{{ cockpit_config_path }}'
+        block: |
+          [WebService]
+          Origins = https://cockpit.{{ host_fqdn }} wss://cockpit.{{ host_fqdn }}
+          ProtocolHeader = X-Forwarded-Proto
