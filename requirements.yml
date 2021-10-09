@@ -7,6 +7,12 @@ roles:
   - name: geerlingguy.pip
   - name: geerlingguy.ansible
   - name: geerlingguy.docker
+  - name: mivek.ddclient
+  - name: trozz.ansible_nebula
+  - name: nvjacobo.caddy
 
 collections:
+  - name: community.general
+  - name: ansible.posix
   - name: community.docker
+  - name: chocolatey.chocolatey
