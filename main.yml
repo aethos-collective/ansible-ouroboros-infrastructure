@@ -10,6 +10,7 @@
 
 - ansible.builtin.import_playbook: core-utils.yml
 
+### TODO: fix for Raspbian hosts
 - ansible.builtin.import_playbook: notify-slack.yml
 
 - ansible.builtin.import_playbook: nebula.yml
@@ -19,12 +20,11 @@
 
 - ansible.builtin.import_playbook: docker.yml
 
-- ansible.builtin.import_playbook: cockpit.yml
-
 - ansible.builtin.import_playbook: ansible.yml
 
 - ansible.builtin.import_playbook: nodejs.yml
 
+- ansible.builtin.import_playbook: cockpit.yml
 - ansible.builtin.import_playbook: caddy.yml
 
 - ansible.builtin.import_playbook: minecraft-bedrock-server.yml
