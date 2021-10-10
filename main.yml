@@ -4,7 +4,7 @@
 
 - ansible.builtin.import_playbook: ansible-group-setup.yml
 
-- ansible.builtin.import_playbook: all-upgrade.yml
+- ansible.builtin.import_playbook: upgrade-all.yml
 
 - ansible.builtin.import_playbook: security.yml
 
