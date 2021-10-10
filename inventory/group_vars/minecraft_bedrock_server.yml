@@ -1,11 +1,12 @@
 ---
-port_ipv4: 19132
-port_ipv6: 19133
+minecraft_bedrock_server_port_ipv4: 19132
+minecraft_bedrock_server_port_ipv6: 19133
 
 # For geerlingguy.firewall role
 firewall_allowed_udp_ports:
-  - '{{ port_ipv4 }}'
-  - '{{ port_ipv6 }}'
+  - '4242' # Nebula
+  - '{{ minecraft_bedrock_server_port_ipv4 }}'
+  - '{{ minecraft_bedrock_server_port_ipv6 }}'
 
 # For trozz.ansible_nebula role
 inbound:
@@ -13,10 +14,10 @@ inbound:
     proto: icmp
     host: any
 
-  - port: '{{ port_ipv4 }}'
+  - port: '{{ minecraft_bedrock_server_port_ipv4 }}'
     proto: udp
     host: any
 
-  - port: '{{ port_ipv6 }}'
+  - port: '{{ minecraft_bedrock_server_port_ipv6 }}'
     proto: udp
     host: any
