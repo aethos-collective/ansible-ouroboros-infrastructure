@@ -1,6 +1,11 @@
 ---
+# For geerlingguy.firewall role
 firewall_allowed_tcp_ports:
   - "22"   # SSH
   - "80"   # HTTP
   - "443"  # HTTPS
   - "9090" # Cockpit
+
+# For geerlingguy.firewall role
+firewall_allowed_udp_ports:
+  - "4242" # Nebula
