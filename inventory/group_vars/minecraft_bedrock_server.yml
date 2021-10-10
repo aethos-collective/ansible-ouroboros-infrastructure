@@ -2,15 +2,21 @@
 port_ipv4: 19132
 port_ipv6: 19133
 
+# For geerlingguy.firewall role
 firewall_allowed_udp_ports:
   - '{{ port_ipv4 }}'
   - '{{ port_ipv6 }}'
 
+# For trozz.ansible_nebula role
 inbound:
   - port: any
     proto: icmp
     host: any
 
   - port: '{{ port_ipv4 }}'
+    proto: udp
+    host: any
+
+  - port: '{{ port_ipv6 }}'
     proto: udp
     host: any

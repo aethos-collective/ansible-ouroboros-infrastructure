@@ -1,4 +1,6 @@
 ---
 nebula_lighthouse: true
+
+# For geerlingguy.firewall role
 firewall_allowed_udp_ports:
   - "4242"
