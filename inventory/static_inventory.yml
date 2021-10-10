@@ -81,20 +81,6 @@ all:
       children:
         chromeos_family:
 
-    debian_family:
-      hosts:
-        paakaa-pi-0:
-        paakaa-pi-1:
-        paakaa-pi-2:
-        gcp-free:
-        oci-free-0:
-        oci-free-1:
-        oci-free-2:
-        oci-free-3:
-        oci-free-4:
-        oci-free-5:
-        dreamhost-shared:
-
     arm64:
       children:
         aarch64:
