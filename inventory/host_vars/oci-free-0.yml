@@ -20,4 +20,4 @@ google_domains_password: !vault |
           61326366346531393265613135386632306336653536363534313339393839323965
 
 nebula_internal_ip: 192.168.100.2
-nebula_external_addr: 1.lighthouses.nebula.paakaa.family
+nebula_external_addr: 1.nodes.nebula.paakaa.family
