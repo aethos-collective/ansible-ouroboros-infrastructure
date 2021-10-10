@@ -1,7 +1,7 @@
 ---
-- name: Install and set up ddclient on dedicated hosts.
+- name: Install and set up ddclient on remote dedicated hosts.
   become: true
-  hosts: dedicated
+  hosts: remote_dedicated
 
   tasks:
     - import_role:

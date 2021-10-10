@@ -13,6 +13,7 @@
 ### TODO: fix for Raspbian hosts
 - ansible.builtin.import_playbook: notify-slack.yml
 
+- ansible.builtin.import_playbook: ddclient.yml
 - ansible.builtin.import_playbook: nebula.yml
 
 ### TODO: figure out why this fails if imported but not run directly
