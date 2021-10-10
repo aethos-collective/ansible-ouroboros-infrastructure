@@ -39,3 +39,18 @@
           SERVER_AUTHORITATIVE_BLOCK_BREAKING: "true"
         volumes:
           - minecraft_bedrock_server_volume:/data
+
+    - name: "Set aside Nebula internal IP address for Minecraft Bedrock Server's host."
+      add_host:
+        name: "MINECRAFT_BEDROCK_SERVER_DATA"
+        nebula_internal_ip: "{{ nebula_internal_ip }}"
+
+- name: Set up Minecraft Bedrock Server forwarding.
+  hosts: minecraft_bedrock_server_proxy
+
+  vars:
+    caddy_config_path: "/etc/caddy/Caddyfile"
+
+  # TODO: stream UDP traffic from minecraft.paakaa.family to paakaa-pi-2's nebula_internal_ip
+  tasks:
+    - debug: var=hostvars['MINECRAFT_BEDROCK_SERVER_DATA']['nebula_internal_ip']

@@ -71,6 +71,10 @@ all:
       hosts:
         paakaa-pi-2:
 
+    minecraft_bedrock_server_proxy:
+      hosts:
+        gcp-free:
+
     # Make sure nebula_lighthouse group stays last!
     nebula_lighthouse:
       children:
