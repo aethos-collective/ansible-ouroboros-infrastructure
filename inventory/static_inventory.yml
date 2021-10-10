@@ -24,6 +24,10 @@ all:
         raspberry_pi:
         atomic_pi:
 
+    local_dedicated:
+      children:
+        pi:
+
 ##### Remote groups
     google_cloud:
       hosts:
@@ -59,7 +63,7 @@ all:
 ##### Hybrid local/remote groups
     dedicated:
       children:
-        pi:
+        local_dedicated:
         remote_dedicated:
 
 ##### Solution-oriented groups
@@ -70,7 +74,7 @@ all:
     # Make sure nebula_lighthouse group stays last!
     nebula_lighthouse:
       children:
-        dedicated:
+        remote_dedicated:
 
 ##### Machine distro/architecture alias groups
     chromeos:
