@@ -33,7 +33,7 @@
       when: ansible_facts['os_family'] == 'Debian'
 
     - name: Download {{ cockpit_docker_package }}
-      ansible.builtin.get_url: 
+      ansible.builtin.get_url:
         url="{{ cockpit_docker_deb_url }}"
         dest="/tmp/{{ cockpit_docker_package }}.deb"
       when: ansible_facts['os_family'] == 'Debian' and cockpit_docker_check_deb.rc == 1

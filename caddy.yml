@@ -14,7 +14,7 @@
 
   tasks:
     - name: Download Caddy for Debian ARMv6
-      ansible.builtin.get_url: 
+      ansible.builtin.get_url:
         url="{{ caddy_armv6_deb_url }}"
         dest="/tmp/{{ caddy_armv6_deb }}"
       when: ansible_facts['os_family'] == 'Debian' and ansible_facts['architecture'] == 'armv6l'
