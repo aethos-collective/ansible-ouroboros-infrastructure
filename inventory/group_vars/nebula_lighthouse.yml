@@ -1,2 +1,4 @@
 ---
-nebula_lighthouse: true
+lighthouse:
+  am_lighthouse: true # set while listening to Dream Theater - The Bigger Picture
+  serve_dns: true
