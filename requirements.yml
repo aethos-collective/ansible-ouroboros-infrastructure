@@ -10,6 +10,7 @@ roles:
   - name: mivek.ddclient
   - name: trozz.ansible_nebula
   - name: nvjacobo.caddy
+  - name: salessandri.gitea
 
 collections:
   - name: community.general
