@@ -1,0 +1,28 @@
+---
+gitea_app_name: 'ILYfam Gitea'
+gitea_fqdn: 'git.ilyfam.family'
+gitea_port: 3000
+gitea_ssh_port: 222
+
+# For geerlingguy.firewall role
+firewall_allowed_tcp_ports:
+  - "22"                    # SSH
+  - "80"                    # HTTP
+  - "443"                   # HTTPS
+  - "{{ gitea_port }}"      # Gitea
+  - "{{ gitea_ssh_port }} " # Gitea SSH
+  - "9090"                  # Cockpit
+
+# For trozz.ansible_nebula role
+inbound:
+  - port: any
+    proto: icmp
+    host: any
+
+  - port: '{{ gitea_port }}'
+    proto: tcp
+    host: any
+
+  - port: '{{ gitea_ssh_port }}'
+    proto: tcp
+    host: any

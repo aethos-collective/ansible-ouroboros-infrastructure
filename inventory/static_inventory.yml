@@ -67,6 +67,13 @@ all:
         remote_dedicated:
 
 ##### Solution-oriented groups
+    gitea_server:
+      hosts:
+        paakaa-pi-0:
+    gitea_server_proxy:
+      hosts:
+        gcp-free:
+
     minecraft_bedrock_server:
       hosts:
         paakaa-pi-2:

@@ -1,0 +1,53 @@
+---
+- name: Install Gitea.
+  become: true
+  hosts: gitea_server
+
+  roles:
+    - role: salessandri.gitea
+      vars:
+        gitea__ssh_port: '{{ gitea_ssh_port }}'
+        gitea__web_host: '{{ nebula_internal_ip }}'
+        gitea__web_port: '{{ gitea_port }}'
+        gitea__hostname: '{{ gitea_fqdn }}'
+        gitea__root_url: 'https://{{ gitea_fqdn }}/'
+        gitea__enable_lfs: yes
+        gitea__app_name: '{{ gitea_app_name }}'
+
+  tasks:
+    - name: "Register Nebula internal IP address and other data for Gitea server's host machine."
+      ansible.builtin.add_host:
+        name: "GITEA_SERVER_HOST_DATA"
+        fqdn: '{{ gitea_fqdn }}'
+        port: '{{ gitea_port }}'
+        nebula_internal_ip: '{{ nebula_internal_ip }}'
+
+- name: Set up Nebula forwarding for Gitea.
+  become: true
+  hosts: gitea_server_proxy
+
+  vars:
+    caddy_config_path: "/etc/caddy/Caddyfile"
+    gitea_fqdn: "{{ hostvars['GITEA_SERVER_HOST_DATA']['fqdn'] }}"
+    gitea_port: "{{ hostvars['GITEA_SERVER_HOST_DATA']['port'] }}"
+    gitea_nebula_internal_ip: "{{ hostvars['GITEA_SERVER_HOST_DATA']['nebula_internal_ip'] }}"
+
+  tasks:
+    - name: Add reverse proxy block to Caddyfile for {{ gitea_fqdn }}.
+      ansible.builtin.blockinfile:
+        path: '{{ caddy_config_path }}'
+        marker: "# {mark} ANSIBLE MANAGED BLOCK FOR GITEA"
+        block: |
+          {{ gitea_fqdn }} {
+            reverse_proxy http://{{ gitea_nebula_internal_ip }}:{{ gitea_port }} {
+              header_up Host {upstream_hostport}
+              header_up X-Forwarded-Host {host}
+            }
+          }
+      register: caddy_gitea_subdomain_config
+
+    - name: Restart Caddy if config has changed.
+      ansible.builtin.service:
+        name: caddy
+        state: restarted
+      when: caddy_gitea_subdomain_config.changed
