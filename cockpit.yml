@@ -57,5 +57,5 @@
         path: '{{ cockpit_config_path }}'
         block: |
           [WebService]
-          Origins = https://cockpit.{{ host_fqdn }} wss://cockpit.{{ host_fqdn }}
+          Origins = https://cockpit.{{ host_fqdn }} wss://cockpit.{{ host_fqdn }} https://{{ ansible_host }}:9090
           ProtocolHeader = X-Forwarded-Proto
