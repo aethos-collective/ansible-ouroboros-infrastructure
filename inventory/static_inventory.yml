@@ -77,7 +77,6 @@ all:
     minecraft_bedrock_server:
       hosts:
         paakaa-pi-2:
-
     minecraft_bedrock_server_proxy:
       hosts:
         gcp-free:

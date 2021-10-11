@@ -40,9 +40,9 @@
         volumes:
           - minecraft_bedrock_server_volume:/data
 
-    - name: "Set aside Nebula internal IP address for Minecraft Bedrock Server's host."
-      add_host:
-        name: "MINECRAFT_BEDROCK_SERVER_DATA"
+    - name: "Register Nebula internal IP address and other data for Minecraft Bedrock Server's host machine."
+      ansible.builtin.add_host:
+        name: "MINECRAFT_BEDROCK_SERVER_HOST_DATA"
         nebula_internal_ip: "{{ nebula_internal_ip }}"
 
 - name: Set up Minecraft Bedrock Server forwarding.
@@ -53,4 +53,4 @@
 
   # TODO: stream UDP traffic from minecraft.paakaa.family to paakaa-pi-2's nebula_internal_ip
   tasks:
-    - debug: var=hostvars['MINECRAFT_BEDROCK_SERVER_DATA']['nebula_internal_ip']
+    - debug: var=hostvars['MINECRAFT_BEDROCK_SERVER_HOST_DATA']['nebula_internal_ip']
