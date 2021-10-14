@@ -1,0 +1,16 @@
+---
+- name: Ensure python-apt is installed on Termux hosts.
+  # IMPORTANT: python and git packages must be installed manually on Termux hosts before this will succeed.
+  ansible.builtin.pip:
+    name: git+https://salsa.debian.org/apt-team/python-apt.git@{{ python_apt_version }}#egg=python-apt
+  vars:
+    python_apt_version: 2.2.1
+  when: "'termux' in group_names"
+
+- name: Update apt cache and upgrade apt packages.
+  become: '{{ can_sudo }}'
+  ansible.builtin.apt:
+    upgrade: true
+    update_cache: true
+    cache_valid_time: 86400 # one day
+  when: "'debian_family' in group_names and 'shared' not in group_names"

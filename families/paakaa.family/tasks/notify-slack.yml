@@ -1,0 +1,23 @@
+---
+- name: Copy notify_slack.sh init script with owner and permissions.
+  become: true
+  ansible.builtin.template:
+    src: templates/slack/notify_slack.sh
+    dest: /etc/init.d/notify_slack
+    owner: root
+    group: root
+    mode: '0744'
+  vars:
+    slack_url: "https://hooks.slack.com/services/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"
+    slack_channel: "#tech-smarthome-logs"
+    slack_username: "paakaa-family"
+    slack_icon_emoji: ":paakaa-family:"
+  when: "'dedicated' in group_names"
+
+- name: Make sure notify_slack is registered and started.
+  become: true
+  ansible.builtin.service:
+    name: notify_slack
+    state: started
+    enabled: true
+  when: "'dedicated' in group_names"

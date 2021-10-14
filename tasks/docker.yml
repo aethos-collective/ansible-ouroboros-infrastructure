@@ -1,12 +1,17 @@
 ---
-- name: Install Docker on dedicated hosts.
+- name: Ensure pip is installed and install pip package for Docker on dedicated hosts.
   become: true
-  hosts: dedicated
-
+  ansible.builtin.import_role:
+    name: geerlingguy.pip
   vars:
     pip_install_packages:
       - name: docker
 
+- name: Install Docker on dedicated hosts.
+  become: true
+  ansible.builtin.import_role:
+    name: geerlingguy.docker
+  vars:
     # Edition can be one of: 'ce' (Community Edition) or 'ee' (Enterprise Edition).
     docker_edition: 'ce'
     docker_package: "docker-{{ docker_edition }}"
@@ -17,7 +22,3 @@
     docker_install_compose: true
     docker_compose_version: "1.29.2"
     docker_compose_path: /usr/local/bin/docker-compose
-
-  roles:
-    - geerlingguy.pip
-    - geerlingguy.docker

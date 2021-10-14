@@ -1,33 +1,85 @@
 ---
-- name: Set up family cloud.
+- name: Set up ILYfam cloud infrastructure.
+  gather_facts: false
   hosts: all
 
-- ansible.builtin.import_playbook: ansible-group-setup.yml
+  vars_files:
+    - vars/main.yml
 
-- ansible.builtin.import_playbook: upgrade-all.yml
+  tasks:
+    - ansible.builtin.import_tasks: tasks/security.yml
+      vars:
+        group_name: dedicated
+      when: "group_name in group_names"
+      tags: [ infra, infrastructure, security, firewall ]
 
-- ansible.builtin.import_playbook: security.yml
+    - ansible.builtin.import_tasks: tasks/core-utils.yml
+      vars:
+        group_name: dedicated
+      when: "group_name in group_names"
+      tags: [ infra, infrastructure, core, utils, packages ]
 
-- ansible.builtin.import_playbook: core-utils.yml
+    - ansible.builtin.import_tasks: tasks/ddclient.yml
+      vars:
+        group_name: remote_dedicated
+      when: "group_name in group_names"
+      tags: [ infra, infrastructure, networking, dns, ddclient ]
 
-### TODO: fix for Raspbian hosts
-- ansible.builtin.import_playbook: notify-slack.yml
+    - ansible.builtin.import_tasks: tasks/nebula.yml
+      vars:
+        group_name: dedicated
+      when: "group_name in group_names"
+      tags: [ infra, infrastructure, networking, mesh, vpn, firewall, nebula ]
+    - ansible.builtin.import_tasks: tasks/yggdrasil.yml
+      vars:
+        group_name: dedicated
+      when: "group_name in group_names"
+      tags: [ infra, infrastructure, networking, mesh, firewall, yggdrasil ]
 
-- ansible.builtin.import_playbook: ddclient.yml
-- ansible.builtin.import_playbook: nebula.yml
+    - ansible.builtin.import_tasks: tasks/docker.yml
+      vars:
+        group_name: dedicated
+      when: "group_name in group_names"
+      tags: [ infra, infrastructure, containers, firewall, docker ]
 
-### TODO: figure out why this fails if imported but not run directly
-# - ansible.builtin.import_playbook: yggdrasil.yml
+    - ansible.builtin.import_tasks: tasks/ansible.yml
+      vars:
+        group_name: dedicated
+      when: "group_name in group_names"
+      tags: [ infra, infrastructure, automation, ansible ]
 
-- ansible.builtin.import_playbook: docker.yml
+    - ansible.builtin.import_tasks: tasks/nodejs.yml
+      when: "'dedicated' in group_names or 'shared' in group_names"
+      tags: [ infra, infrastructure, languages, javascript, nodejs ]
 
-- ansible.builtin.import_playbook: ansible.yml
+    - ansible.builtin.import_tasks: tasks/cockpit.yml
+      vars:
+        group_name: dedicated
+      when: "group_name in group_names"
+      tags: [ infra, infrastructure, admin, observability, cockpit ]
+    - ansible.builtin.import_tasks: tasks/caddy.yml
+      vars:
+        group_name: dedicated
+      when: "group_name in group_names"
+      tags: [ infra, infrastructure, servers, web, tcp, caddy ]
 
-- ansible.builtin.import_playbook: nodejs.yml
+  pre_tasks:
+    - name: Gather facts for all hosts in inventory.
+      ansible.builtin.gather_facts:
+        parallel: true
+      tags: [ always, infra, infrastructure, meta ]
 
-- ansible.builtin.import_playbook: cockpit.yml
-- ansible.builtin.import_playbook: caddy.yml
+    - ansible.builtin.import_tasks: tasks/setup-ansible-groups.yml
+      tags: [ always, infra, infrastructure, meta ]
+    - ansible.builtin.import_tasks: tasks/upgrade-all.yml
+      tags: [ infra, infrastructure, packages, upgrade ]
 
-- ansible.builtin.import_playbook: minecraft-bedrock-server.yml
+  post_tasks:
+    - name: Install Gitea and set up Nebula forwarding for Gitea via Caddy.
+      ansible.builtin.import_tasks: tasks/gitea-server.yml
+      when: "'gitea_server' in group_names or 'gitea_server_proxy' in group_names"
+      tags: [ infra, infrastructure, servers, git, gitea ]
 
-# TODO: Incorporate Kubespray?
+- name: Run playbooks for all participant families.
+  ansible.builtin.import_playbook: families/main.yml
+  tags: [ families ]

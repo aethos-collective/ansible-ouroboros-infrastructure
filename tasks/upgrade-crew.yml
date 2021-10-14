@@ -1,0 +1,9 @@
+---
+- name: Update Chromebrew package cache.
+  become: false
+  ansible.builtin.shell:
+    cmd: crew update
+  # chromebrew: # TODO: create Chromebrew plugin based on Homebrew plugin
+  #   upgrade_all: true
+  #   update_chromebrew: true
+  changed_when: false

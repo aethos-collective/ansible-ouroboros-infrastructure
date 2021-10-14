@@ -1,0 +1,7 @@
+---
+yggdrasil_port: 9183
+
+yggdrasil_config_path: "/etc/yggdrasil.conf"
+yggdrasil_listen:
+  - "tls://0.0.0.0:{{ yggdrasil_port }}"
+  - "tls://[::]:{{ yggdrasil_port }}"

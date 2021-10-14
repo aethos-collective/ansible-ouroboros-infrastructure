@@ -1,0 +1,8 @@
+---
+# TODO: make group-based to decouple
+minecraft_bedrock_server_nebula_internal_ip: "{{ hostvars['paakaa-pi-2']['nebula_internal_ip'] }}"
+
+server_name: "{{ family_cloud_name }} MC" # defined in /families/paakaa.family/vars/family.yml
+level_name: "CP ~ Creative & Peaceful"
+game_mode: "creative"
+difficulty: "peaceful"

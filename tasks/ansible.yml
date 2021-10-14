@@ -1,7 +1,5 @@
 ---
 - name: Install Ansible on dedicated hosts.
   become: true
-  hosts: dedicated
-
-  roles:
-    - geerlingguy.ansible
+  ansible.builtin.import_role:
+    name: geerlingguy.ansible

@@ -1,0 +1,4 @@
+---
+cockpit_docker_package: cockpit-docker
+cockpit_docker_deb_url: "https://launchpad.net/ubuntu/+source/cockpit/215-1~ubuntu19.10.1/+build/18889196/+files/{{ cockpit_docker_package }}_215-1~ubuntu19.10.1_all.deb"
+cockpit_config_path: /etc/cockpit/cockpit.conf

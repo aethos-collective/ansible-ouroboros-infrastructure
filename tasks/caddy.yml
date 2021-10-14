@@ -1,0 +1,38 @@
+---
+- name: Load Caddy configuration variables.
+  ansible.builtin.include_vars: vars/caddy.yml
+
+- name: Install Caddy on all dedicated hosts.
+  become: true
+  ansible.builtin.import_role:
+    name: nvjacobo.caddy
+
+- name: Download Caddy for Debian ARMv6.
+  become: true
+  ansible.builtin.get_url:
+    url="{{ caddy_armv6_deb_url }}"
+    dest="/tmp/{{ caddy_armv6_deb }}"
+  when: "ansible_facts['os_family'] == 'Debian' and ansible_facts['architecture'] == 'armv6l'"
+
+- name: Install Caddy for Debian ARMv6.
+  become: true
+  ansible.builtin.apt: deb="/tmp/{{ caddy_armv6_deb }}"
+  when: "ansible_facts['os_family'] == 'Debian' and ansible_facts['architecture'] == 'armv6l'"
+
+# https://caddy.community/t/example-cockpit/8283
+- name: Configure Caddy to serve Cockpit subdomain with valid SSL cert.
+  become: true
+  ansible.builtin.template:
+    src: templates/caddy/cockpit-subdomain-config.j2
+    dest: '{{ caddy_config_path }}'
+    owner: root
+    group: root
+    mode: '0644'
+  register: caddy_cockpit_subdomain_config
+
+- name: Restart Caddy if config has changed.
+  become: true
+  ansible.builtin.service:
+    name: caddy
+    state: restarted
+  when: caddy_cockpit_subdomain_config.changed

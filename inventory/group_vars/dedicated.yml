@@ -1,4 +1,6 @@
 ---
+can_sudo: true
+
 # For geerlingguy.firewall role
 firewall_allowed_tcp_ports:
   - "22"   # SSH

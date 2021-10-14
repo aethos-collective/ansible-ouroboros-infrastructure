@@ -1,0 +1,11 @@
+---
+- name: Ensure core utility packages are installed and up-to-date on dedicated hosts.
+  become: true
+  ansible.builtin.package:
+    name:
+      - cowsay
+      - cloud-utils
+      - iputils-ping
+      - nmap
+      - net-tools
+    state: latest

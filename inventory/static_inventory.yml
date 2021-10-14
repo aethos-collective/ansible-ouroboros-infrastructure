@@ -6,6 +6,7 @@ all:
     local:
       hosts:
         chromebook:
+        chromebook-termux:
         paakaa-pi-0:
         paakaa-pi-1:
         paakaa-pi-2:
@@ -66,30 +67,60 @@ all:
         local_dedicated:
         remote_dedicated:
 
+    shared:
+      children:
+        remote_shared:
+
 ##### Solution-oriented groups
+    caddy_server:
+      children:
+        dedicated:
+
     gitea_server:
       hosts:
         paakaa-pi-0:
     gitea_server_proxy:
-      hosts:
-        gcp-free:
+      children:
+        remote_dedicated:
+    gitea:
+      children:
+        gitea_server:
+        gitea_server_proxy:
 
     minecraft_bedrock_server:
       hosts:
         paakaa-pi-2:
     minecraft_bedrock_server_proxy:
-      hosts:
-        gcp-free:
+      children:
+        remote_dedicated:
+    minecraft_bedrock:
+      children:
+        minecraft_bedrock_server:
+        minecraft_bedrock_server_proxy:
 
     # Make sure nebula_lighthouse group stays last!
     nebula_lighthouse:
       children:
         remote_dedicated:
 
-##### Machine distro/architecture alias groups
+##### Machine distro/architecture groups
     chromeos:
       children:
         chromeos_family:
+
+    chromiumos:
+      children:
+        chromiumos_family:
+        chromeos:
+
+    termux:
+      hosts:
+        chromebook-termux:
+
+    # Termux is not Debian, but it does use apt
+    debian_family:
+      children:
+        termux:
 
     arm64:
       children:

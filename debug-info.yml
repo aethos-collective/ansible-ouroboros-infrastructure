@@ -1,15 +1,21 @@
 ---
-- ansible.builtin.import_playbook: ansible-group-setup.yml
-
 - hosts: all
+  gather_facts: false
 
   vars:
     distribution: "{{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_major_version'] }}"
 
   tasks:
-    - debug: var=ansible_facts['architecture']
-    - debug: var=ansible_facts['machine']
-    - debug: var=ansible_facts['os_family']
-    - debug: var=distribution
-    - debug: var=firewall_allowed_tcp_ports
-    - debug: var=firewall_allowed_udp_ports
+    - ansible.builtin.debug: var=ansible_facts['architecture']
+    - ansible.builtin.debug: var=ansible_facts['machine']
+    - ansible.builtin.debug: var=ansible_facts['os_family']
+    - ansible.builtin.debug: var=distribution
+    - ansible.builtin.debug: var=firewall_allowed_tcp_ports
+    - ansible.builtin.debug: var=firewall_allowed_udp_ports
+
+  pre_tasks:
+    - name: Gather facts for all hosts in inventory.
+      ansible.builtin.gather_facts:
+        parallel: true
+
+    - ansible.builtin.import_tasks: tasks/setup-ansible-groups.yml

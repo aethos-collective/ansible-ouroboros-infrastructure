@@ -1,4 +1,4 @@
 ---
-ansible_python_interpreter: auto
+can_sudo: false
 
-family_cloud_name: Parker/Ellis/Boudreau/Boyd/Bennett/Plamondon/Blum/Rebarchik/Domenici/Killing/Wiswell/Taylor/von Groenewald Family
+ansible_python_interpreter: auto

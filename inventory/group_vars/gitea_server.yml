@@ -1,9 +1,4 @@
 ---
-gitea_app_name: 'ILYfam Gitea'
-gitea_fqdn: 'git.ilyfam.family'
-gitea_port: 3000
-gitea_ssh_port: 222
-
 # For geerlingguy.firewall role
 firewall_allowed_tcp_ports:
   - "22"                    # SSH

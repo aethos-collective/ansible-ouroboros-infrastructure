@@ -1,0 +1,16 @@
+---
+- name: Group hosts by architecture.
+  ansible.builtin.group_by:
+    key: '{{ ansible_architecture | lower }}'
+  changed_when: false
+- ansible.builtin.debug:
+    msg: '{{ ansible_architecture | lower }}'
+  tags: [ never, debug ]
+
+- name: Group hosts by OS family.
+  ansible.builtin.group_by:
+    key: '{{ ansible_os_family | lower | replace(" ","") }}_family'
+  changed_when: false
+- ansible.builtin.debug:
+    msg: '{{ ansible_os_family | lower | replace(" ","") }}_family'
+  tags: [ never, debug ]

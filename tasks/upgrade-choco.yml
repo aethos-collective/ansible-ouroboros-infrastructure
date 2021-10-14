@@ -1,0 +1,6 @@
+---
+- name: Upgrade choco packages.
+  become: true
+  chocolatey.chocolatey.win_chocolatey:
+    name: all
+    state: latest

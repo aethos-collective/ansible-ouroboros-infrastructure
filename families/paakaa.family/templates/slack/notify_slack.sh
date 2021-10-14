@@ -8,7 +8,7 @@
 # Short-Description: Script used to send notifications to Slack Shutdown/Startup
 ### END INIT INFO
 
-{{ ansible_managed }}
+# {{ ansible_managed }}
 
 # script adapted from http://www.whiteboardcoder.com/2015/07/notify-slack-when-ubuntu-startsstops.html
 
