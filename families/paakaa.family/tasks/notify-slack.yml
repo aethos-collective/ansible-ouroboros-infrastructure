@@ -2,7 +2,7 @@
 - name: Copy notify_slack.sh init script with owner and permissions.
   become: true
   ansible.builtin.template:
-    src: templates/slack/notify_slack.sh
+    src: templates/slack/notify_slack.sh.j2
     dest: /etc/init.d/notify_slack
     owner: root
     group: root
