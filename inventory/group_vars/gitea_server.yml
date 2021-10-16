@@ -1,12 +1,12 @@
 ---
 # For geerlingguy.firewall role
 firewall_allowed_tcp_ports:
-  - "22"                    # SSH
-  - "80"                    # HTTP
-  - "443"                   # HTTPS
-  - "{{ gitea_port }}"      # Gitea
-  - "{{ gitea_ssh_port }} " # Gitea SSH
-  - "9090"                  # Cockpit
+  - '{{ tcp_port_ssh }}'
+  - '{{ tcp_port_http }}'
+  - '{{ tcp_port_https }}'
+  - '{{ tcp_port_http_gitea }}'
+  - '{{ tcp_port_ssh_gitea }}'
+  - '{{ tcp_port_cockpit }}'
 
 # For trozz.ansible_nebula role
 inbound:
@@ -14,10 +14,14 @@ inbound:
     proto: icmp
     host: any
 
-  - port: '{{ gitea_port }}'
+  - port: '{{ tcp_port_ssh }}'
     proto: tcp
     host: any
 
-  - port: '{{ gitea_ssh_port }}'
+  - port: '{{ tcp_port_http_gitea }}'
+    proto: tcp
+    host: any
+
+  - port: '{{ tcp_port_ssh_gitea }}'
     proto: tcp
     host: any

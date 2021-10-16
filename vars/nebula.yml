@@ -7,7 +7,7 @@ punch_back: true
 
 listen:
   host: 0.0.0.0
-  port: 4242
+  port: '{{ udp_port_nebula }}'
 
 # TODO: compose this list
 lighthouses:

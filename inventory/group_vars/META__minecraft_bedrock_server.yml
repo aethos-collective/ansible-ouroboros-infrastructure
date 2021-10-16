@@ -1,3 +1,3 @@
 ---
-minecraft_bedrock_server_port_ipv4: 19132
-minecraft_bedrock_server_port_ipv6: 19133
+udp_port_minecraft_bedrock_server_ipv4: 19132
+udp_port_minecraft_bedrock_server_ipv6: 19133

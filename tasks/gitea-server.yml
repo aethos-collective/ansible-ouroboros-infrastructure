@@ -10,9 +10,9 @@
   ansible.builtin.import_role:
     name: salessandri.gitea
   vars:
-    gitea__ssh_port: '{{ gitea_ssh_port }}'
+    gitea__ssh_port: '{{ tcp_port_ssh_gitea }}'
     gitea__web_host: '{{ nebula_internal_ip }}'
-    gitea__web_port: '{{ gitea_port }}'
+    gitea__web_port: '{{ tcp_port_http_gitea }}'
     gitea__hostname: '{{ gitea_fqdn }}'
     gitea__root_url: 'https://{{ gitea_fqdn }}/'
     gitea__enable_lfs: true

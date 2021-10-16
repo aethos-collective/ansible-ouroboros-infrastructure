@@ -1,13 +1,29 @@
 ---
 can_sudo: true
 
+tcp_port_ssh: 22
+tcp_port_http: 80
+tcp_port_https: 443
+tcp_port_cockpit: 9090
+udp_port_nebula: 4242
+
 # For geerlingguy.firewall role
 firewall_allowed_tcp_ports:
-  - "22"   # SSH
-  - "80"   # HTTP
-  - "443"  # HTTPS
-  - "9090" # Cockpit
+  - '{{ tcp_port_ssh }}'
+  - '{{ tcp_port_http }}'
+  - '{{ tcp_port_https }}'
+  - '{{ tcp_port_cockpit }}'
 
 # For geerlingguy.firewall role
 firewall_allowed_udp_ports:
-  - "4242" # Nebula
+  - '{{ udp_port_nebula }}'
+
+# For trozz.ansible_nebula role
+inbound:
+  - port: any
+    proto: icmp
+    host: any
+
+  - port: '{{ tcp_port_ssh }}'
+    proto: tcp
+    host: any

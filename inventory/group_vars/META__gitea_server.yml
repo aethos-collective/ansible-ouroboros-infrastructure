@@ -1,5 +1,5 @@
 ---
 gitea_app_name: 'ILYfam Gitea'
 gitea_fqdn: 'git.ilyfam.family'
-gitea_port: 3000
-gitea_ssh_port: 222
+tcp_port_http_gitea: 3000
+tcp_port_ssh_gitea: 222

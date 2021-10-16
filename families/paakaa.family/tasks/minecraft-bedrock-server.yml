@@ -21,13 +21,13 @@
     restart_policy: always
     container_default_behavior: "compatibility"
     ports:
-      - "{{ minecraft_bedrock_server_port_ipv4 }}:{{ minecraft_bedrock_server_port_ipv4 }}/udp" # defined in /inventory/group_vars/minecraft_bedrock_server.yml
-      - "{{ minecraft_bedrock_server_port_ipv6 }}:{{ minecraft_bedrock_server_port_ipv6 }}/udp" # defined in /inventory/group_vars/minecraft_bedrock_server.yml
+      - "{{ udp_port_minecraft_bedrock_server_ipv4 }}:{{ udp_port_minecraft_bedrock_server_ipv4 }}/udp"
+      - "{{ udp_port_minecraft_bedrock_server_ipv6 }}:{{ udp_port_minecraft_bedrock_server_ipv6 }}/udp"
     env:
       EULA: "TRUE"
       VERSION: "LATEST"
-      SERVER_PORT: "{{ minecraft_bedrock_server_port_ipv4 | quote }}" # defined in /inventory/group_vars/minecraft_bedrock_server.yml
-      SERVER_PORT_V6: "{{ minecraft_bedrock_server_port_ipv6 | quote }}" # defined in /inventory/group_vars/minecraft_bedrock_server.yml
+      SERVER_PORT: "{{ udp_port_minecraft_bedrock_server_ipv4 | quote }}"
+      SERVER_PORT_V6: "{{ udp_port_minecraft_bedrock_server_ipv6 | quote }}"
       SERVER_NAME: "{{ server_name }}"
       LEVEL_NAME: "{{ level_name }}"
       GAMEMODE: "{{ game_mode }}"

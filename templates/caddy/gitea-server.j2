@@ -1,5 +1,5 @@
 {{ gitea_fqdn }} {
-  reverse_proxy http://{{ gitea_nebula_internal_ip }}:{{ gitea_port }} {
+  reverse_proxy http://{{ gitea_nebula_internal_ip }}:{{ tcp_port_http_gitea }} {
     header_up Host {upstream_hostport}
     header_up X-Forwarded-Host {host}
   }
