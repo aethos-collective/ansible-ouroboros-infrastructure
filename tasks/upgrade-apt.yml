@@ -6,6 +6,8 @@
   vars:
     python_apt_version: 2.2.1
   when: "'termux' in group_names"
+  tags:
+    - termux
 
 - name: Update apt cache and upgrade apt packages.
   become: '{{ can_sudo }}'
@@ -13,4 +15,9 @@
     upgrade: true
     update_cache: true
     cache_valid_time: 86400 # one day
-  when: "'debian_family' in group_names and 'shared' not in group_names"
+  when: "'PKG__apt' in group_names and 'shared' not in group_names"
+  tags:
+    - termux
+    - debian
+    - debian_family
+    - ubuntu

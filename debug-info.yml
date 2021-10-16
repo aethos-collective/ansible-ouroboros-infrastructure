@@ -1,6 +1,10 @@
 ---
 - hosts: all
   gather_facts: false
+  tags: [ always ]
+
+  vars_files:
+    - vars/main.yml
 
   vars:
     distribution: "{{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_major_version'] }}"
@@ -9,6 +13,9 @@
     - ansible.builtin.debug: var=ansible_facts['architecture']
     - ansible.builtin.debug: var=ansible_facts['machine']
     - ansible.builtin.debug: var=ansible_facts['os_family']
+    - ansible.builtin.debug: var=group_names
+    #- ansible.builtin.debug: var=groups
+    - ansible.builtin.debug: var=ansible_run_tags
     - ansible.builtin.debug: var=distribution
     - ansible.builtin.debug: var=firewall_allowed_tcp_ports
     - ansible.builtin.debug: var=firewall_allowed_udp_ports
@@ -17,5 +24,63 @@
     - name: Gather facts for all hosts in inventory.
       ansible.builtin.gather_facts:
         parallel: true
+      tags:
+        - always
+        - infra
+        - infrastructure
+        - meta
 
     - ansible.builtin.import_tasks: tasks/setup-ansible-groups.yml
+      tags:
+        - always
+        - infra
+        - infrastructure
+        - meta
+
+    - name: Load Nebula configuration variables.
+      ansible.builtin.include_vars: vars/nebula.yml
+      vars:
+        group_name: dedicated
+      when: "group_name in group_names or group_name in ansible_run_tags"
+      tags:
+        - configuration
+
+    - name: Load Yggdrasil configuration variables.
+      ansible.builtin.include_vars: vars/yggdrasil.yml
+      vars:
+        group_name: dedicated
+      when: "group_name in group_names or group_name in ansible_run_tags"
+      tags:
+        - configuration
+
+    - name: Load Caddy configuration variables.
+      ansible.builtin.include_vars: vars/caddy.yml
+      vars:
+        group_name: dedicated
+      when: "group_name in group_names or group_name in ansible_run_tags"
+      tags:
+        - configuration
+
+    - name: Load Cockpit configuration variables.
+      ansible.builtin.include_vars: vars/cockpit.yml
+      vars:
+        group_name: dedicated
+      when: "group_name in group_names or group_name in ansible_run_tags"
+      tags:
+        - configuration
+
+    - name: Load Gitea configuration variables.
+      ansible.builtin.include_vars: vars/gitea-server.yml
+      vars:
+        group_name: META__gitea
+      when: "group_name in group_names or group_name in ansible_run_tags"
+      tags:
+        - configuration
+
+    - name: Load Minecraft Bedrock Server configuration variables.
+      ansible.builtin.include_vars: families/paakaa.family/vars/minecraft_bedrock_server.yml
+      vars:
+        group_name: META__minecraft_bedrock_server
+      when: "group_name in group_names or group_name in ansible_run_tags"
+      tags:
+        - configuration

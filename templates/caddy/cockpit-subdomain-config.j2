@@ -1,5 +1,3 @@
-# {{ ansible_managed }}
-
 cockpit.{{ host_fqdn }} {
   reverse_proxy https://localhost:9090 {
     header_up Host {upstream_hostport}

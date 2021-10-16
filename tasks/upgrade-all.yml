@@ -1,12 +1,21 @@
 ---
 - ansible.builtin.import_tasks: upgrade-crew.yml
-  when: "'chromiumos' in group_names"
-  tags: [ never, chromeos, chromiumos, packages, upgrade, chromebrew, crew ]
+  when: "'PKG__crew' in group_names"
+  tags:
+    #- never
+    - chromebrew
+    - crew
 
 - ansible.builtin.import_tasks: upgrade-choco.yml
-  when: "'windows' in group_names"
-  tags: [ never, windows, packages, upgrade, chocolatey, choco ]
+  when: "'PKG__choco' in group_names"
+  tags:
+    #- never
+    - chocolatey
+    - choco
 
 - ansible.builtin.import_tasks: upgrade-apt.yml
-  when: "'debian_family' in group_names"
-  tags: [ never, debian, debian_family, ubuntu, termux, packages, upgrade, aptitude, apt ]
+  when: "'PKG__apt' in group_names"
+  tags:
+    #- never
+    - aptitude
+    - apt

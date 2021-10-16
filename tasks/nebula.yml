@@ -1,6 +1,8 @@
 ---
 - name: Load Nebula configuration variables.
   ansible.builtin.include_vars: vars/nebula.yml
+  tags:
+    - configuration
 
 - name: Create Nebula directory.
   become: true
@@ -8,6 +10,9 @@
     path: '{{ nebula_directory }}'
     state: directory
     mode: '0750'
+  tags:
+    - configuration
+    - sudo
 
 - name: Deploy Nebula certificates.
   become: true
@@ -21,6 +26,9 @@
     - 'ca.crt'
     - '{{ nebula_external_addr }}.crt'
     - '{{ nebula_external_addr }}.key'
+  tags:
+    - configuration
+    - sudo
 
 - name: Download Nebula release from Github (arm6).
   become: true
@@ -31,11 +39,19 @@
     mode: 0755
     creates: /bin/nebula
   when: "ansible_architecture == 'armv6l'"
+  tags:
+    - installation
+    - sudo
+
 - ansible.builtin.debug:
     msg: 'Group names- {{ group_names }}. Architecture- {{ ansible_architecture }}.'
   tags: [ never, debug ]
 
-- name: Install and configure Nebula mesh VPN on dedicated hosts.
+- name: Install and configure Nebula mesh VPN.
   become: true
   ansible.builtin.import_role:
     name: trozz.ansible_nebula
+  tags:
+    - installation
+    - configuration
+    - sudo

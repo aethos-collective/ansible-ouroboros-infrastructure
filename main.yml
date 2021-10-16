@@ -1,6 +1,6 @@
 ---
 - name: Set up ILYfam cloud infrastructure.
-  gather_facts: false
+  gather_facts: false # Facts are gathered in pre_tasks.
   hosts: all
 
   vars_files:
@@ -11,75 +11,170 @@
       vars:
         group_name: dedicated
       when: "group_name in group_names"
-      tags: [ infra, infrastructure, security, firewall ]
+      tags:
+        - infra
+        - infrastructure
+        - dedicated
+        - security
+        - firewall
 
     - ansible.builtin.import_tasks: tasks/core-utils.yml
       vars:
         group_name: dedicated
       when: "group_name in group_names"
-      tags: [ infra, infrastructure, core, utils, packages ]
+      tags:
+        - infra
+        - infrastructure
+        - dedicated
+        - core
+        - utils
+        - packages
+    - ansible.builtin.import_tasks: tasks/core-utils-termux.yml
+      vars:
+        group_name: termux
+      when: "group_name in group_names"
+      tags:
+        - infra
+        - infrastructure
+        - termux
+        - core
+        - utils
+        - packages
 
     - ansible.builtin.import_tasks: tasks/ddclient.yml
       vars:
         group_name: remote_dedicated
       when: "group_name in group_names"
-      tags: [ infra, infrastructure, networking, dns, ddclient ]
+      tags:
+        - infra
+        - infrastructure
+        - dedicated
+        - remote
+        - remote_dedicated
+        - networking
+        - dns
+        - ddclient
 
     - ansible.builtin.import_tasks: tasks/nebula.yml
       vars:
         group_name: dedicated
       when: "group_name in group_names"
-      tags: [ infra, infrastructure, networking, mesh, vpn, firewall, nebula ]
+      tags:
+        - infra
+        - infrastructure
+        - dedicated
+        - networking
+        - dns
+        - mesh
+        - vpn
+        - firewall
+        - nebula
     - ansible.builtin.import_tasks: tasks/yggdrasil.yml
       vars:
         group_name: dedicated
       when: "group_name in group_names"
-      tags: [ infra, infrastructure, networking, mesh, firewall, yggdrasil ]
+      tags:
+        - infra
+        - infrastructure
+        - dedicated
+        - networking
+        - mesh
+        - firewall
+        - yggdrasil
 
     - ansible.builtin.import_tasks: tasks/docker.yml
       vars:
         group_name: dedicated
       when: "group_name in group_names"
-      tags: [ infra, infrastructure, containers, firewall, docker ]
+      tags:
+        - infra
+        - infrastructure
+        - dedicated
+        - containers
+        - firewall
+        - docker
 
     - ansible.builtin.import_tasks: tasks/ansible.yml
       vars:
         group_name: dedicated
       when: "group_name in group_names"
-      tags: [ infra, infrastructure, automation, ansible ]
+      tags:
+        - infra
+        - infrastructure
+        - dedicated
+        - automation
+        - ansible
 
     - ansible.builtin.import_tasks: tasks/nodejs.yml
       when: "'dedicated' in group_names or 'shared' in group_names"
-      tags: [ infra, infrastructure, languages, javascript, nodejs ]
+      tags:
+        - infra
+        - infrastructure
+        - languages
+        - javascript
+        - nodejs
+
+    - ansible.builtin.import_tasks: tasks/caddy.yml
+      vars:
+        group_name: dedicated
+      when: "group_name in group_names"
+      tags:
+        - infra
+        - infrastructure
+        - dedicated
+        - servers
+        - web
+        - tcp
+        - caddy
 
     - ansible.builtin.import_tasks: tasks/cockpit.yml
       vars:
         group_name: dedicated
       when: "group_name in group_names"
-      tags: [ infra, infrastructure, admin, observability, cockpit ]
-    - ansible.builtin.import_tasks: tasks/caddy.yml
-      vars:
-        group_name: dedicated
-      when: "group_name in group_names"
-      tags: [ infra, infrastructure, servers, web, tcp, caddy ]
+      tags:
+        - infra
+        - infrastructure
+        - dedicated
+        - servers
+        - admin
+        - observability
+        - cockpit
 
   pre_tasks:
     - name: Gather facts for all hosts in inventory.
       ansible.builtin.gather_facts:
         parallel: true
-      tags: [ always, infra, infrastructure, meta ]
+      tags:
+        - always
+        - infra
+        - infrastructure
+        - meta
 
     - ansible.builtin.import_tasks: tasks/setup-ansible-groups.yml
-      tags: [ always, infra, infrastructure, meta ]
+      tags:
+        - always
+        - infra
+        - infrastructure
+        - meta
     - ansible.builtin.import_tasks: tasks/upgrade-all.yml
-      tags: [ infra, infrastructure, packages, upgrade ]
+      tags:
+        - infra
+        - infrastructure
+        - packages
+        - upgrade
 
   post_tasks:
     - name: Install Gitea and set up Nebula forwarding for Gitea via Caddy.
       ansible.builtin.import_tasks: tasks/gitea-server.yml
-      when: "'gitea_server' in group_names or 'gitea_server_proxy' in group_names"
-      tags: [ infra, infrastructure, servers, git, gitea ]
+      when: "'META__gitea_server' in group_names"
+      tags:
+        - infra
+        - infrastructure
+        - servers
+        - git
+        - gitea
 
 - name: Run playbooks for all participant families.
   ansible.builtin.import_playbook: families/main.yml
-  tags: [ families ]
+  tags:
+    - families

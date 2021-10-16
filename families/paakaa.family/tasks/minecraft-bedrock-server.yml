@@ -1,12 +1,16 @@
 ---
 - name: Load Minecraft Bedrock Server configuration variables.
   ansible.builtin.include_vars: vars/minecraft_bedrock_server.yml
+  tags:
+    - configuration
 
 - name: "Ensure Docker volume for Minecraft Bedrock Server named {{ server_name | quote }} is created."
   community.docker.docker_volume:
     name: minecraft_bedrock_server_volume
-    # TODO: get volume moved to Atomic Pi's SD card
+    # TODO: get volume moved to Atomic Pi's SD card and backed up
   when: "'minecraft_bedrock_server' in group_names"
+  tags:
+    - configuration
 
 - name: "Ensure Docker container for Minecraft Bedrock Server named {{ server_name | quote }} hosting level named {{ level_name | quote }} is started."
   community.docker.docker_container:
@@ -34,7 +38,14 @@
     volumes:
       - minecraft_bedrock_server_volume:/data
   when: "'minecraft_bedrock_server' in group_names"
+  tags:
+    - installation
+    - containers
+    - configuration
 
-- name: Set up Minecraft Bedrock Server forwarding.
+- name: TODO - Set up Minecraft Bedrock Server forwarding.
   ansible.builtin.debug: var=minecraft_bedrock_server_nebula_internal_ip
   when: "'minecraft_bedrock_server_proxy' in group_names"
+  tags:
+    - configuration
+    - reverse_proxy

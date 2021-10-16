@@ -1,6 +1,8 @@
 ---
 - name: Load Cockpit configuration variables.
   ansible.builtin.include_vars: vars/cockpit.yml
+  tags:
+    - configuration
 
 - name: Ensure Cockpit and accompanying application packages are installed and up-to-date.
   become: true
@@ -18,6 +20,8 @@
       - cockpit-system
       - cockpit-ws
     state: latest
+  tags:
+    - installation
 
 - name: Check if cockpit-docker package is installed.
   become: true
@@ -26,6 +30,8 @@
   failed_when: cockpit_docker_check_deb.rc > 1
   changed_when: cockpit_docker_check_deb.rc == 1
   when: "ansible_facts['os_family'] == 'Debian'"
+  tags:
+    - installation
 
 - name: Download cockpit-docker package.
   become: true
@@ -33,29 +39,57 @@
     url="{{ cockpit_docker_deb_url }}"
     dest="/tmp/{{ cockpit_docker_package }}.deb"
   when: ansible_facts['os_family'] == 'Debian' and cockpit_docker_check_deb.rc == 1
+  tags:
+    - installation
 
 - name: Install cockpit-docker package.
   become: true
   ansible.builtin.apt: deb="/tmp/{{ cockpit_docker_package }}.deb"
   when: ansible_facts['os_family'] == 'Debian' and cockpit_docker_check_deb.rc == 1
+  tags:
+    - installation
 
-- name: Ensure Cockpit configuration file exists.
+- name: Initialize Cockpit config if it's missing.
   become: true
-  ansible.builtin.copy:
-    content: ""
+  ansible.builtin.template:
+    src: templates/cockpit/init.j2
     dest: '{{ cockpit_config_path }}'
-    force: no
     owner: root
     group: root
     mode: '0644'
+    force: false
+  tags:
+    - configuration
 
 # https://caddy.community/t/example-cockpit/8283
 - name: Configure Cockpit to accept traffic at https://cockpit.HOST_FQDN in addition to https://ANSIBLE_HOST:9090.
   become: true
   ansible.builtin.blockinfile:
     path: '{{ cockpit_config_path }}'
-    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR COCKPIT CADDY REVERSE PROXY"
-    block: |
-      [WebService]
-      Origins = https://cockpit.{{ host_fqdn }} wss://cockpit.{{ host_fqdn }} https://{{ ansible_host }}:9090
-      ProtocolHeader = X-Forwarded-Proto
+    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR REVERSE PROXY"
+    block: "{{ lookup('template', 'templates/cockpit/reverse-proxy.j2') }}" # https://garthkerr.com/using-ansible-template-for-partial-file-block/
+  tags:
+    - configuration
+    - caddy
+
+# https://caddy.community/t/example-cockpit/8283
+- name: Configure Caddy to serve Cockpit subdomain with valid SSL cert.
+  become: true
+  ansible.builtin.blockinfile:
+    path: '{{ caddy_config_path }}'
+    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR COCKPIT"
+    block: "{{ lookup('template', 'templates/caddy/cockpit-subdomain-config.j2') }}" # https://garthkerr.com/using-ansible-template-for-partial-file-block/
+  register: caddy_cockpit_subdomain_config
+  tags:
+    - configuration
+    - caddy
+
+- name: Restart Caddy if config has changed.
+  become: true
+  ansible.builtin.service:
+    name: caddy
+    state: restarted
+  when: caddy_cockpit_subdomain_config.changed
+  tags:
+    - configuration
+    - caddy

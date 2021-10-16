@@ -2,7 +2,9 @@
 all:
   children:
 
-##### Local groups
+########################
+##### Local groups #####
+########################
     local:
       hosts:
         chromebook:
@@ -29,7 +31,9 @@ all:
       children:
         pi:
 
-##### Remote groups
+#########################
+##### Remote groups #####
+#########################
     google_cloud:
       hosts:
         gcp-free: # always-free
@@ -61,7 +65,9 @@ all:
         remote_dedicated:
         remote_shared:
 
-##### Hybrid local/remote groups
+######################################
+##### Hybrid local/remote groups #####
+######################################
     dedicated:
       children:
         local_dedicated:
@@ -71,7 +77,9 @@ all:
       children:
         remote_shared:
 
-##### Solution-oriented groups
+####################################
+##### Solution-oriented groups #####
+####################################
     caddy_server:
       children:
         dedicated:
@@ -82,7 +90,7 @@ all:
     gitea_server_proxy:
       children:
         remote_dedicated:
-    gitea:
+    META__gitea_server:
       children:
         gitea_server:
         gitea_server_proxy:
@@ -93,7 +101,7 @@ all:
     minecraft_bedrock_server_proxy:
       children:
         remote_dedicated:
-    minecraft_bedrock:
+    META__minecraft_bedrock_server:
       children:
         minecraft_bedrock_server:
         minecraft_bedrock_server_proxy:
@@ -103,23 +111,41 @@ all:
       children:
         remote_dedicated:
 
-##### Machine distro/architecture groups
-    chromeos:
+##########################################################
+##### Machine OS/package manager/architecture groups #####
+##### ---------------------------------------------- #####
+##### Run debug-info.yml playbook to get information #####
+##### for updating this section.                     #####
+##########################################################
+    chromiumos_family:
       children:
+        chromiumos:
         chromeos_family:
 
-    chromiumos:
+    chromeos_family:
       children:
-        chromiumos_family:
         chromeos:
+
+    debian_family:
+      children:
+        debian:
+        ubuntu:
 
     termux:
       hosts:
         chromebook-termux:
 
-    # Termux is not Debian, but it does use apt
-    debian_family:
+    PKG__crew:
       children:
+        chromiumos_family:
+
+    PKG__choco:
+      children:
+        windows:
+
+    PKG__apt:
+      children:
+        debian_family:
         termux:
 
     arm64:
@@ -133,3 +159,7 @@ all:
     amd64:
       children:
         x86_64:
+
+    amd32:
+      children:
+        x86:

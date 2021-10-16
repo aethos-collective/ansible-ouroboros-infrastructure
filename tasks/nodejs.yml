@@ -1,13 +1,16 @@
 ---
-- name: Install node.js on dedicated hosts.
-  become: '{{ can_sudo }}'
+- name: Install node.js on dedicated hosts or shared hosts with sudo.
+  become: true
   ansible.builtin.import_role:
     name: geerlingguy.nodejs
   when: "'dedicated' in group_names or ('shared' in group_names and can_sudo)"
+  tags:
+    - dedicated
+    - sudo
 
 # https://github.com/nvm-sh/nvm
 - name: Install Node Version Manager on shared hosts.
-  become: '{{ can_sudo }}'
+  become: false
   ansible.builtin.shell:
     cmd: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/{{ nvm_version }}/install.sh | bash
   vars:
@@ -15,3 +18,5 @@
   args:
     creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
   when: "'shared' in group_names and not can_sudo"
+  tags:
+    - shared

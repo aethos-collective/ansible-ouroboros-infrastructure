@@ -1,5 +1,5 @@
 ---
-- name: Install and configure ddclient on remote dedicated hosts for dynamic DNS resolution.
+- name: Install and configure ddclient for dynamic DNS resolution.
   become: true
   ansible.builtin.import_role:
     name: mivek.ddclient
@@ -19,7 +19,17 @@
         password: '{{ google_domains_password }}' # from inventory/host_vars/{{ inventory_hostname_short }}.yml
         hosts:
           - '{{ host_fqdn }}'
+  tags:
+    - installation
+    - packages
+    - configuration
+    - dns
+    - sudo
 
 - name: Force-update dynamic DNS entry.
   become: true
   ansible.builtin.command: ddclient -daemon=0 -verbose -force
+  tags:
+    - configuration
+    - dns
+    - sudo

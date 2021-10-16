@@ -11,9 +11,14 @@
     - name: Configure dedicated hosts to notify Slack on startup/shutdown.
       ansible.builtin.import_tasks: tasks/notify-slack.yml
       when: "'dedicated' in group_names"
-      tags: [ notifications, slack ]
+      tags:
+        - notifications
+        - slack
 
     - name: Install Minecraft Bedrock Server.
       ansible.builtin.import_tasks: tasks/minecraft-bedrock-server.yml
-      when: "'minecraft_bedrock_server' in group_names or 'minecraft_bedrock_server_proxy' in group_names"
-      tags: [ games, servers, minecraft ]
+      when: "'META__minecraft_bedrock_server' in group_names"
+      tags:
+        - games
+        - servers
+        - minecraft

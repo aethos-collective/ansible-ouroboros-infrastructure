@@ -1,45 +1,69 @@
 ---
 - name: Load Yggdrasil configuration variables.
   ansible.builtin.include_vars: vars/yggdrasil.yml
+  tags:
+    - configuration
 
-- name: Install Yggdrasil on dedicated hosts.
+- name: Install Yggdrasil.
   become: true
   ansible.builtin.import_role:
     name: adamruzicka.ansible_yggdrasil
+  tags:
+    - installation
+    - sudo
 
 - name: "Get Yggdrasil config JSON."
   become: true
   ansible.builtin.command: "yggdrasil -normaliseconf -useconffile {{ yggdrasil_config_path }} -json"
   register: yggdrasil_config
   changed_when: false
+  tags:
+    - configuration
+    - sudo
 
 - name: "Set fact for Yggdrasil config."
   ansible.builtin.set_fact: yggdrasil_config="{{ yggdrasil_config.stdout | from_json }}"
+  tags:
+    - configuration
 
 - name: "Set fact for Yggdrasil Public Key."
   ansible.builtin.set_fact: yggdrasil_public_key="{{ yggdrasil_config.PublicKey }}"
+  tags:
+    - configuration
 
 - name: "Get Yggdrasil address."
   become: true
   ansible.builtin.command: "yggdrasil -useconffile {{ yggdrasil_config_path }} -address"
   register: yggdrasil_address
   changed_when: false
+  tags:
+    - configuration
+    - sudo
 
 - name: "Set fact for Yggdrasil address."
   ansible.builtin.set_fact: yggdrasil_address="{{ yggdrasil_address.stdout }}"
+  tags:
+    - configuration
 
 - ansible.builtin.debug:
     var: groups[group_name]
   tags: [ never, debug ]
+
 - name: "Add Allowed Public Keys, Peers, and Listen addresses to Yggdrasil config."
   ansible.builtin.set_fact:
     yggdrasil_config: "{{ yggdrasil_config | combine({ 'AllowedPublicKeys': (groups[group_name] | map('extract', hostvars, 'yggdrasil_public_key') | list), 'Peers': (groups[group_name] | map('extract', hostvars, 'yggdrasil_address') | list), 'Listen': (yggdrasil_listen) }) }}"
+  tags:
+    - configuration
 
 - ansible.builtin.debug:
     var: yggdrasil_config
   tags: [ never, debug ]
+
 - name: "Write modified Yggdrasil config back to config file."
   become: true
   ansible.builtin.copy:
     content: "{{ yggdrasil_config | to_nice_json }}"
     dest: "{{ yggdrasil_config_path }}"
+  tags:
+    - configuration
+    - sudo

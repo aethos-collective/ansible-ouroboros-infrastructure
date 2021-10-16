@@ -1,13 +1,19 @@
 ---
-- name: Ensure pip is installed and install pip package for Docker on dedicated hosts.
+- name: Ensure pip is installed and install pip package for Docker.
   become: true
   ansible.builtin.import_role:
     name: geerlingguy.pip
   vars:
     pip_install_packages:
       - name: docker
+  tags:
+    - installation
+    - pip
+    - containers
+    - docker
+    - sudo
 
-- name: Install Docker on dedicated hosts.
+- name: Install Docker and Docker Compose.
   become: true
   ansible.builtin.import_role:
     name: geerlingguy.docker
@@ -22,3 +28,9 @@
     docker_install_compose: true
     docker_compose_version: "1.29.2"
     docker_compose_path: /usr/local/bin/docker-compose
+  tags:
+    - installation
+    - packages
+    - containers
+    - docker
+    - sudo

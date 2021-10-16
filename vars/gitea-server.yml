@@ -1,3 +1,2 @@
 ---
-# TODO: make group-based to decouple
-gitea_nebula_internal_ip: "{{ hostvars['paakaa-pi-0']['nebula_internal_ip'] }}"
+gitea_nebula_internal_ip: "{{ hostvars[groups['gitea_server'][0]]['nebula_internal_ip'] }}"

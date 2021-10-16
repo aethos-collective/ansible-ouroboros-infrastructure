@@ -1,5 +1,5 @@
 ---
-- name: Ensure core utility packages are installed and up-to-date on dedicated hosts.
+- name: Ensure core utility packages are installed and up-to-date.
   become: true
   ansible.builtin.package:
     name:
@@ -9,3 +9,7 @@
       - nmap
       - net-tools
     state: latest
+  tags:
+    - installation
+    - packages
+    - sudo

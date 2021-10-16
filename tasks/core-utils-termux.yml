@@ -1,0 +1,30 @@
+---
+- name: Ensure Termux is awesome.
+  become: false
+  ansible.builtin.apt:
+    name:
+      - python
+      - git
+      - cowsay
+      - openssh
+      - gnupg
+      - tor
+      - apt-transport-tor
+      - curl
+      - nodejs
+      - rust
+      - termux-api
+      - okc-agents
+      - caddy
+      - nmap
+      - net-tools
+      - gping
+      - vim
+      - nano
+      - ncdu
+
+      ### https://gist.github.com/oofnikj/e79aef095cd08756f7f26ed244355d62
+      - qemu-utils
+      - qemu-common
+      - qemu-system-x86_64-headless
+    state: latest

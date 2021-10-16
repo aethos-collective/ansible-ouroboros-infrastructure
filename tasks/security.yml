@@ -1,5 +1,5 @@
 ---
-- name: Run Jeff Geerling's security role on dedicated hosts.
+- name: Run Jeff Geerling's security role.
   become: true
   ansible.builtin.import_role:
     name: geerlingguy.security
@@ -7,10 +7,16 @@
     security_autoupdate_reboot: true
     security_autoupdate_mail_to: "maintainers@ilyfam.family"
     security_ssh_password_authentication: "yes" # SSH rules must be single-/double-quoted yes/no
+  tags:
+    - configuration
+    - sudo
 
-- name: Run Jeff Geerling's firewall role on dedicated hosts.
+- name: Run Jeff Geerling's firewall role.
   become: true
   ansible.builtin.import_role:
     name: geerlingguy.firewall
   vars:
     firewall_flush_rules_and_chains: false # Docker
+  tags:
+    - configuration
+    - sudo

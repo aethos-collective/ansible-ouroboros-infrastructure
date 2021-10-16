@@ -1,5 +1,9 @@
 ---
-- name: Install Ansible on dedicated hosts.
+- name: Install Ansible.
   become: true
   ansible.builtin.import_role:
     name: geerlingguy.ansible
+  tags:
+    - installation
+    - viral
+    - sudo
