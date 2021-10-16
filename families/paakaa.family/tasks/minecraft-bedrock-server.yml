@@ -1,6 +1,6 @@
 ---
 - name: Load Minecraft Bedrock Server configuration variables.
-  ansible.builtin.include_vars: vars/minecraft_bedrock_server.yml
+  ansible.builtin.include_vars: vars/minecraft-bedrock-server.yml
   tags:
     - configuration
 

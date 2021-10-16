@@ -78,7 +78,7 @@
   ansible.builtin.blockinfile:
     path: '{{ caddy_config_path }}'
     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR COCKPIT"
-    block: "{{ lookup('template', 'templates/caddy/cockpit-subdomain-config.j2') }}" # https://garthkerr.com/using-ansible-template-for-partial-file-block/
+    block: "{{ lookup('template', 'templates/caddy/cockpit.j2') }}" # https://garthkerr.com/using-ansible-template-for-partial-file-block/
   register: caddy_cockpit_subdomain_config
   tags:
     - configuration

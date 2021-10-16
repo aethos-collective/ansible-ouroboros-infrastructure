@@ -78,7 +78,7 @@
         - configuration
 
     - name: Load Minecraft Bedrock Server configuration variables.
-      ansible.builtin.include_vars: families/paakaa.family/vars/minecraft_bedrock_server.yml
+      ansible.builtin.include_vars: families/paakaa.family/vars/minecraft-bedrock-server.yml
       vars:
         group_name: META__minecraft_bedrock_server
       when: "group_name in group_names or group_name in ansible_run_tags"
