@@ -13,7 +13,7 @@
     - docker
     - sudo
 
-- name: Install Docker and Docker Compose.
+- name: Install Docker.
   become: true
   ansible.builtin.import_role:
     name: geerlingguy.docker
@@ -25,12 +25,136 @@
     docker_service_state: started
     docker_service_enabled: true
     docker_restart_handler_state: restarted
-    docker_install_compose: true
-    docker_compose_version: "1.29.2"
-    docker_compose_path: /usr/local/bin/docker-compose
+    docker_install_compose: false
   tags:
     - installation
     - packages
     - containers
     - docker
     - sudo
+
+- name: Install Docker Compose.
+
+  vars:
+    system: "{{ ansible_facts['system'] | lower }}"
+    system_architecture: "{{ ansible_facts['architecture'] }}"
+    supported_platforms: # as of 2021-10-17 - https://github.com/docker/compose/releases
+      darwin:
+      - aarch64
+      - x86_64
+      linux:
+      - aarch64
+      - armv6
+      - armv7
+      - s390x
+      - x86_64
+      windows:
+      - x86_64
+
+  block:
+  - name: Check hosts for Docker Compose compatibility.
+    ansible.builtin.set_fact:
+      docker_compose_architecture: "{{ item }}"
+    when: system_architecture.startswith(item)
+    with_items: "{{ supported_platforms[system] }}"
+    failed_when: docker_compose_architecture is not defined
+
+  - name: Install Docker Compose on compatible hosts.
+
+    vars:
+      docker_compose_version: "v2.0.1"
+      docker_compose_dir: /usr/libexec/docker/cli-plugins
+      docker_compose_filename: docker-compose
+
+      docker_compose_path: "{{ docker_compose_dir }}/{{ docker_compose_filename }}"
+      docker_compose_release_filename: "docker-compose-{{ ansible_facts['system'] | lower }}-{{ docker_compose_architecture }}"
+      docker_compose_release_url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version}}/{{ docker_compose_release_filename }}"
+      docker_compose_release_path: "{{ docker_compose_dir }}/{{ docker_compose_release_filename }}"
+      docker_compose_release_sha256sum_result_success: "{{ docker_compose_release_filename }}{{ ':' }} OK"
+
+    block:
+    - name: Check current docker-compose version.
+      ansible.builtin.command: "{{ docker_compose_path }} --version"
+      register: docker_compose_current_version
+      check_mode: no
+      changed_when: >
+        docker_compose_current_version.stdout is defined
+        and docker_compose_version not in docker_compose_current_version.stdout
+      failed_when: false
+
+    - name: Download and install Docker Compose (if different).
+      block:
+      - name: Download Docker Compose signature.
+        become: true
+        ansible.builtin.get_url:
+          url: "{{ docker_compose_release_url }}.sha256"
+          dest: "{{ docker_compose_release_path }}.sha256"
+          mode: 0644
+
+      - name: Download Docker Compose executable.
+        become: true
+        ansible.builtin.get_url:
+          url: "{{ docker_compose_release_url }}"
+          dest: "{{ docker_compose_release_path }}"
+          mode: 0644
+
+      - name: Verify Docker Compose executable against signature.
+        ansible.builtin.command:
+          chdir: "{{ docker_compose_dir }}"
+          cmd: "sha256sum -c {{ docker_compose_release_path }}.sha256"
+        register: docker_compose_release_sha256sum_result
+        changed_when: false
+        failed_when: >
+          docker_compose_release_sha256sum_result.stdout != docker_compose_release_sha256sum_result_success
+          or docker_compose_release_sha256sum_result.failed
+
+      - name: Copy downloaded executable to destination if executable checksum matches signature.
+        become: true
+        ansible.builtin.copy:
+          remote_src: true
+          src: "{{ docker_compose_release_path }}"
+          dest: "{{ docker_compose_path }}"
+          mode: 0755
+        when: docker_compose_release_sha256sum_result.stdout == docker_compose_release_sha256sum_result_success
+
+      rescue:
+      - ansible.builtin.fail:
+          msg: "WHOOPS!!! Checksum mismatch! Sorry. :-("
+
+      always:
+      - name: Delete downloaded executable.
+        become: true
+        ansible.builtin.file:
+          path: "{{ docker_compose_release_path }}"
+          state: absent
+
+      - name: Delete downloaded signature.
+        become: true
+        ansible.builtin.file:
+          path: "{{ docker_compose_release_path }}.sha256"
+          state: absent
+
+      when: >
+        docker_compose_current_version.stdout is not defined
+        or docker_compose_version not in docker_compose_current_version.stdout
+
+    - name: Check current docker-compose version.
+      ansible.builtin.command: "{{ docker_compose_path }} --version"
+      register: docker_compose_current_version
+      check_mode: no
+      changed_when: false
+      failed_when: >
+        docker_compose_current_version.stdout is not defined
+        or docker_compose_version not in docker_compose_current_version.stdout
+
+    rescue:
+    - ansible.builtin.fail:
+        msg: "WHOOPS!!! Versions still don't match! Sorry. :-("
+
+    when: docker_compose_architecture is defined
+
+  rescue:
+  - ansible.builtin.fail:
+      msg: "WHOOPS!!! The {{ ansible_facts['system'] }} {{ system_architecture }} platform is unsupported by Docker Compose. Sorry. :-("
+
+  when: supported_platforms[system] is defined

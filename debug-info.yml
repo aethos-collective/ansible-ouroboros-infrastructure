@@ -20,6 +20,10 @@
     - ansible.builtin.debug: var=firewall_allowed_tcp_ports
     - ansible.builtin.debug: var=firewall_allowed_udp_ports
 
+    - ansible.builtin.debug: var=ansible_facts
+      when: "inventory_hostname_short in ansible_run_tags"
+      tags: [ never, ansible_facts ]
+
   pre_tasks:
     - name: Gather facts for all hosts in inventory.
       ansible.builtin.gather_facts:
