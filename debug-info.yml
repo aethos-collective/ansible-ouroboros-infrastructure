@@ -76,7 +76,7 @@
     - name: Load Gitea configuration variables.
       ansible.builtin.include_vars: vars/gitea-server.yml
       vars:
-        group_name: META__gitea
+        group_name: META__gitea_server
       when: "group_name in group_names or group_name in ansible_run_tags"
       tags:
         - configuration
