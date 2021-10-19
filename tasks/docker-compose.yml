@@ -1,0 +1,162 @@
+---
+- name: Install Docker Compose.
+  vars:
+    system: "{{ ansible_facts['system'] | lower }}"
+    system_architecture: "{{ ansible_facts['architecture'] }}"
+    supported_platforms: # as of 2021-10-17 - https://github.com/docker/compose/releases
+      darwin:
+        desktop: true
+        architectures:
+        - aarch64
+        - x86_64
+      linux:
+        desktop: false
+        architectures:
+        - aarch64
+        - armv6
+        - armv7
+        - s390x
+        - x86_64
+      windows:
+        desktop: true
+        architectures:
+        - x86_64
+
+  block:
+  - name: Unsupported by Docker Compose.
+    when: docker_compose_install and supported_platforms[system] is not defined
+    ansible.builtin.fail:
+      msg: "WHOOPS!!! {{ ansible_facts['system'] }} is unsupported by Docker Compose. Sorry. :-("
+
+  - name: Check if system is supported by Docker Compose.
+    when: docker_compose_install and supported_platforms[system] is defined
+    block:
+
+    - name: Check hosts for Docker Desktop support.
+      assert:
+        that:
+          - not supported_platforms[system].desktop
+        success_msg: "{{ inventory_hostname_short }} is a {{ ansible_facts['system'] }}-based host, which is not a Docker Desktop system. Continuing with Docker Compose installation."
+        fail_msg:    "{{ inventory_hostname_short }} is a {{ ansible_facts['system'] }}-based host, which is a Docker Desktop system. Docker Compose is included in Docker Desktop for {{ supported_platforms[system].architectures }} {{ ansible_facts['system'] }}-based hosts. Skipping Docker Compose installation."
+
+    - name: Install Docker Compose on non-Docker-Desktop hosts.
+      when: not supported_platforms[system].desktop
+      block:
+
+      - name: Check hosts for Docker Compose compatibility.
+        ansible.builtin.set_fact:
+          docker_compose_architecture: "{{ item }}"
+        when: system_architecture.startswith(item)
+        with_items: "{{ supported_platforms[system].architectures }}"
+        failed_when: docker_compose_architecture is not defined
+
+      - name: Install Docker Compose on compatible hosts.
+        when: docker_compose_architecture is defined
+        vars:
+          docker_compose_path: "{{ docker_compose_dir }}/{{ docker_compose_filename }}"
+          docker_compose_release_filename: "docker-compose-{{ system }}-{{ docker_compose_architecture }}"
+          docker_compose_release_url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version}}/{{ docker_compose_release_filename }}"
+          docker_compose_release_path: "{{ docker_compose_dir }}/{{ docker_compose_release_filename }}"
+          docker_compose_release_sha256sum_result_success: "{{ docker_compose_release_filename }}{{ ':' }} OK"
+        block:
+
+        - name: Remove Docker Compose to test installation procedure.
+          tags: [ never, remove, test ]
+          when: "'remove' in ansible_run_tags or 'test' in ansible_run_tags"
+          become: true
+          ansible.builtin.file:
+            path: "{{ docker_compose_path }}"
+            state: absent
+          tags: [ sudo ]
+
+        - name: Check current Docker Compose version.
+          ansible.builtin.command: "{{ docker_compose_path }} --version"
+          register: docker_compose_current_version
+          check_mode: no
+          changed_when: >
+            docker_compose_current_version.stdout is defined
+            and docker_compose_version not in docker_compose_current_version.stdout
+          failed_when: false
+
+        - name: Download and install Docker Compose (if different).
+          when: >
+            docker_compose_current_version.stdout is not defined
+            or docker_compose_version not in docker_compose_current_version.stdout
+          block:
+
+          - name: Download Docker Compose signature.
+            become: true
+            ansible.builtin.get_url:
+              url: "{{ docker_compose_release_url }}.sha256"
+              dest: "{{ docker_compose_release_path }}.sha256"
+              mode: 0644
+            tags: [ sudo ]
+
+          - name: Download Docker Compose executable.
+            become: true
+            ansible.builtin.get_url:
+              url: "{{ docker_compose_release_url }}"
+              dest: "{{ docker_compose_release_path }}"
+              mode: 0644
+            tags: [ sudo ]
+
+          - name: Verify Docker Compose executable against signature.
+            ansible.builtin.command:
+              chdir: "{{ docker_compose_dir }}"
+              cmd: "sha256sum -c {{ docker_compose_release_path }}.sha256"
+            register: docker_compose_release_sha256sum_result
+            changed_when: false
+            failed_when: >
+              docker_compose_release_sha256sum_result.stdout != docker_compose_release_sha256sum_result_success
+              or docker_compose_release_sha256sum_result.failed
+
+          - name: Copy downloaded executable to destination if executable checksum matches signature.
+            when: >
+              docker_compose_release_sha256sum_result.stdout == docker_compose_release_sha256sum_result_success
+              and not docker_compose_release_sha256sum_result.failed
+            become: true
+            ansible.builtin.copy:
+              remote_src: true
+              src: "{{ docker_compose_release_path }}"
+              dest: "{{ docker_compose_path }}"
+              mode: 0755
+            tags: [ sudo ]
+
+          rescue:
+          - name: Downloaded executable checksum does not match signature.
+            ansible.builtin.fail:
+              msg: "WHOOPS!!! Checksum mismatch! Sorry. :-("
+
+          always:
+          - name: Delete downloaded executable.
+            become: true
+            ansible.builtin.file:
+              path: "{{ docker_compose_release_path }}"
+              state: absent
+            tags: [ sudo ]
+
+          - name: Delete downloaded signature.
+            become: true
+            ansible.builtin.file:
+              path: "{{ docker_compose_release_path }}.sha256"
+              state: absent
+            tags: [ sudo ]
+
+          - name: Check current Docker Compose version.
+            ansible.builtin.command: "{{ docker_compose_path }} --version"
+            register: docker_compose_current_version
+            check_mode: no
+            changed_when: false
+            failed_when: >
+              docker_compose_current_version.stdout is not defined
+              or docker_compose_version not in docker_compose_current_version.stdout
+
+        rescue:
+        - name: Installed version does not match specified version.
+          ansible.builtin.fail:
+            msg: "WHOOPS!!! Versions still don't match! Sorry. :-("
+
+    rescue:
+    - name: Unsupported by Docker Compose.
+      ansible.builtin.fail:
+        msg: "WHOOPS!!! {{ ansible_facts['system'] }} {{ system_architecture }} is unsupported by Docker Compose. Sorry. :-("
