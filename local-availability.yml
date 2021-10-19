@@ -1,0 +1,6 @@
+---
+- hosts: local
+
+  tasks:
+    - name: Check local host availability.
+      ansible.builtin.ping:

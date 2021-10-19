@@ -1,4 +1,0 @@
----
-ansible_host: localhost
-ansible_port: 8022
-ansible_python_interpreter: /data/data/com.termux/files/usr/bin/python
