@@ -1,0 +1,29 @@
+---
+all:
+  children:
+
+##############################
+##### Development groups #####
+##############################
+    devel:
+      hosts:
+        chromebook:
+        chromebook-termux:
+
+    chromiumos_family:
+      children:
+        chromiumos:
+        chromeos_family:
+
+    chromeos_family:
+      children:
+        chromeos:
+
+    termux:
+      hosts:
+        chromebook-termux:
+
+    PKG__crew:
+      children:
+        chromiumos_family:
+

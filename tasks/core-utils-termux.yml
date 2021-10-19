@@ -1,30 +1,24 @@
 ---
 - name: Ensure Termux is awesome.
   become: false
-  ansible.builtin.apt:
-    name:
-      - python
-      - git
-      - cowsay
-      - openssh
-      - gnupg
-      - tor
-      - apt-transport-tor
-      - curl
-      - nodejs
-      - rust
-      - termux-api
-      - okc-agents
-      - caddy
-      - nmap
-      - net-tools
-      - gping
-      - vim
-      - nano
-      - ncdu
+  vars:
+    # Please keep this list alphabetized.
+    core_utils_termux:
+    - caddy
+    - gping
+    - nodejs
+    - okc-agents
 
-      ### https://gist.github.com/oofnikj/e79aef095cd08756f7f26ed244355d62
-      - qemu-utils
-      - qemu-common
-      - qemu-system-x86_64-headless
+    ### https://gist.github.com/oofnikj/e79aef095cd08756f7f26ed244355d62
+    - qemu-common
+    - qemu-system-x86_64-headless
+    - qemu-utils
+
+    - rust
+    - termux-api
+  ansible.builtin.apt:
+    name: "{{ core_utils + core_utils_apt + core_utils_termux }}"
     state: latest
+  tags:
+  - installation
+  - packages

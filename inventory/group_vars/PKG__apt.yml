@@ -1,0 +1,3 @@
+---
+core_utils_apt:
+- apt-transport-tor

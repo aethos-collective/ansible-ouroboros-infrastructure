@@ -2,3 +2,18 @@
 can_sudo: false
 
 ansible_python_interpreter: auto
+
+# Please keep this list alphabetized.
+core_utils:
+- cowsay
+- curl
+- git
+- gnupg
+- jq
+- net-tools
+- nano
+- nmap
+- openssh
+- python
+- tor
+- vim

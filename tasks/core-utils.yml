@@ -1,15 +1,24 @@
 ---
-- name: Ensure core utility packages are installed and up-to-date.
-  become: true
-  ansible.builtin.package:
-    name:
-      - cowsay
-      - cloud-utils
-      - iputils-ping
-      - nmap
-      - net-tools
-    state: latest
+- ansible.builtin.import_tasks: tasks/core-utils-debian.yml
+  vars:
+    group_name: debian_family
+  when: "group_name in group_names"
   tags:
-    - installation
+    - infra
+    - infrastructure
+    - dedicated
+    - core
+    - utils
     - packages
-    - sudo
+
+- ansible.builtin.import_tasks: tasks/core-utils-termux.yml
+  vars:
+    group_name: termux
+  when: "group_name in group_names"
+  tags:
+    - infra
+    - infrastructure
+    - dedicated
+    - core
+    - utils
+    - packages

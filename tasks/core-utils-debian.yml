@@ -1,0 +1,14 @@
+---
+- name: Ensure latest versions of core utility packages are installed on Debian.
+  become: true
+  vars:
+    core_utils_debian:
+    - cloud-utils
+    - iputils-ping
+  ansible.builtin.package:
+    name: "{{ core_utils + core_utils_apt + core_utils_debian }}"
+    state: latest
+  tags:
+  - installation
+  - packages
+  - sudo

@@ -29,17 +29,6 @@
         - core
         - utils
         - packages
-    - ansible.builtin.import_tasks: tasks/core-utils-termux.yml
-      vars:
-        group_name: termux
-      when: "group_name in group_names"
-      tags:
-        - infra
-        - infrastructure
-        - termux
-        - core
-        - utils
-        - packages
 
     - ansible.builtin.import_tasks: tasks/ddclient.yml
       vars:

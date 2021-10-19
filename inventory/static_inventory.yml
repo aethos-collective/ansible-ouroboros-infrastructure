@@ -5,23 +5,6 @@ all:
 ########################
 ##### Local groups #####
 ########################
-    local:
-      hosts:
-        chromebook:
-        chromebook-termux:
-        paakaa-pi-0:
-        paakaa-pi-1:
-        paakaa-pi-2:
-
-    raspberry_pi:
-      hosts:
-        paakaa-pi-0:
-        paakaa-pi-1:
-
-    atomic_pi:
-      hosts:
-        paakaa-pi-2:
-
     pi:
       children:
         raspberry_pi:
@@ -31,26 +14,13 @@ all:
       children:
         pi:
 
+    local:
+      children:
+        local_dedicated:
+
 #########################
 ##### Remote groups #####
 #########################
-    google_cloud:
-      hosts:
-        gcp-free: # always-free
-
-    oracle_cloud:
-      hosts:
-        oci-free-0: # always-free
-        oci-free-1: # always-free
-        oci-free-2: # always-free
-        oci-free-3: # always-free
-        oci-free-4: # always-free
-        oci-free-5: # always-free
-
-    dreamhost_shared:
-      hosts:
-        dreamhost-shared:
-
     remote_dedicated:
       children:
         google_cloud:
@@ -95,17 +65,6 @@ all:
         gitea_server:
         gitea_server_proxy:
 
-    minecraft_bedrock_server:
-      hosts:
-        paakaa-pi-2:
-    minecraft_bedrock_server_proxy:
-      children:
-        remote_dedicated:
-    META__minecraft_bedrock_server:
-      children:
-        minecraft_bedrock_server:
-        minecraft_bedrock_server_proxy:
-
     # Make sure nebula_lighthouse group stays last!
     nebula_lighthouse:
       children:
@@ -117,27 +76,10 @@ all:
 ##### Run debug-info.yml playbook to get information #####
 ##### for updating this section.                     #####
 ##########################################################
-    chromiumos_family:
-      children:
-        chromiumos:
-        chromeos_family:
-
-    chromeos_family:
-      children:
-        chromeos:
-
     debian_family:
       children:
         debian:
         ubuntu:
-
-    termux:
-      hosts:
-        chromebook-termux:
-
-    PKG__crew:
-      children:
-        chromiumos_family:
 
     PKG__choco:
       children:
