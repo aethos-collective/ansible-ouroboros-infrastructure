@@ -4,7 +4,12 @@
     key: '{{ ansible_architecture | lower }}'
   changed_when: false
 
-- name: Group hosts by OS family.
+- name: Group hosts by OS family (bare).
+  ansible.builtin.group_by:
+    key: '{{ ansible_os_family | lower | replace(" ","") }}'
+  changed_when: false
+
+- name: Group hosts by OS family (_family).
   ansible.builtin.group_by:
     key: '{{ ansible_os_family | lower | replace(" ","") }}_family'
   changed_when: false
