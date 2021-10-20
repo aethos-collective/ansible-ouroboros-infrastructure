@@ -4,6 +4,56 @@
   tags:
     - configuration
 
+- name: Populate list of lighthouses.
+  ansible.builtin.set_fact:
+    lighthouses: "{{ groups['nebula_lighthouse'] | map('extract', hostvars, ['nebula']) | list }}"
+  tags:
+    - configuration
+
+- name: Create Nebula Certificate Authority.
+  local_action:
+    module: ansible.builtin.command
+    chdir: files/nebula/
+    cmd: 'nebula-cert ca -name "{{ family_cloud_name }}"'
+    creates: ca.key
+  failed_when: false
+  tags:
+    - configuration
+
+- name: Decrypt Nebula Certificate Authority files.
+  local_action:
+    module: ansible.builtin.command
+    cmd: 'ansible-vault decrypt files/nebula/ca.crt files/nebula/ca.key'
+  failed_when: false
+  tags:
+    - configuration
+
+- name: Create Nebula certificates.
+  local_action:
+    module: ansible.builtin.command
+    chdir: files/nebula/
+    cmd: 'nebula-cert sign -name "{{ nebula.external_addr }}" -ip "{{ nebula.nebula_ip }}/24"'
+    creates: "{{ nebula.external_addr }}.crt"
+  register: nebula_certificate_create
+  tags:
+    - configuration
+
+- name: Encrypt Nebula Certificate Authority files.
+  local_action:
+    module: ansible.builtin.command
+    cmd: 'ansible-vault encrypt --encrypt-vault-id {{ family_domain }} files/nebula/ca.crt files/nebula/ca.key'
+  failed_when: false
+  tags:
+    - configuration
+
+- name: Encrypt Nebula certificates.
+  local_action:
+    module: ansible.builtin.command
+    cmd: 'ansible-vault encrypt --encrypt-vault-id {{ family_domain }} files/nebula/{{ nebula.external_addr }}.crt files/nebula/{{ nebula.external_addr }}.key'
+  when: nebula_certificate_create.changed
+  tags:
+    - configuration
+
 - name: Create Nebula directory.
   become: true
   ansible.builtin.file:
@@ -17,20 +67,20 @@
 - name: Deploy Nebula certificates.
   become: true
   ansible.builtin.copy:
-    src: 'families/paakaa.family/files/nebula/{{ item }}'
+    src: 'files/nebula/{{ item }}'
     dest: '{{ nebula_directory }}/{{ item }}'
     owner: root
     group: root
     mode: '0600'
   with_items:
     - 'ca.crt'
-    - '{{ nebula_external_addr }}.crt'
-    - '{{ nebula_external_addr }}.key'
+    - '{{ nebula.external_addr }}.crt'
+    - '{{ nebula.external_addr }}.key'
   tags:
     - configuration
     - sudo
 
-- name: Download Nebula release from Github (arm6).
+- name: Download Nebula release from GitHub (arm6).
   become: true
   ansible.builtin.unarchive:
     src: https://github.com/slackhq/nebula/releases/download/v{{ nebula_version }}/nebula-{{ ansible_system|lower }}-arm-6.tar.gz
@@ -38,14 +88,10 @@
     remote_src: yes
     mode: 0755
     creates: /bin/nebula
-  when: "ansible_architecture == 'armv6l'"
+  when: "ansible_architecture.startswith('armv6')"
   tags:
     - installation
     - sudo
-
-- ansible.builtin.debug:
-    msg: 'Group names- {{ group_names }}. Architecture- {{ ansible_architecture }}.'
-  tags: [ never, debug ]
 
 - name: Install and configure Nebula mesh VPN.
   become: true

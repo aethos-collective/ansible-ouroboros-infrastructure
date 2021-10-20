@@ -9,30 +9,10 @@ listen:
   host: 0.0.0.0
   port: '{{ udp_port_nebula }}'
 
-# TODO: compose this list
 lighthouses:
-  - nebula_ip: 192.168.100.1
-    external_addr: 0.nodes.nebula.paakaa.family
-
-  - nebula_ip: 192.168.100.2
-    external_addr: 1.nodes.nebula.paakaa.family
-
-  - nebula_ip: 192.168.100.3
-    external_addr: 2.nodes.nebula.paakaa.family
-
-  - nebula_ip: 192.168.100.4
-    external_addr: 3.nodes.nebula.paakaa.family
-
-  - nebula_ip: 192.168.100.5
-    external_addr: 4.nodes.nebula.paakaa.family
-
-  - nebula_ip: 192.168.100.6
-    external_addr: 5.nodes.nebula.paakaa.family
-
-  - nebula_ip: 192.168.100.7
-    external_addr: 6.nodes.nebula.paakaa.family
+# To be populated via task.
 
 pki:
   ca: '{{ nebula_directory }}/ca.crt'
-  cert: '{{ nebula_directory }}/{{ nebula_external_addr }}.crt'
-  key: '{{ nebula_directory }}/{{ nebula_external_addr }}.key'
+  cert: '{{ nebula_directory }}/{{ nebula.external_addr }}.crt'
+  key: '{{ nebula_directory }}/{{ nebula.external_addr }}.key'

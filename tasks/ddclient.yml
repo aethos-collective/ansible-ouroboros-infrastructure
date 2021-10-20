@@ -15,8 +15,8 @@
         mx: null
         mxpri: null
         wildcard: null
-        login: '{{ google_domains_username }}' # from inventory/host_vars/{{ inventory_hostname_short }}.yml
-        password: '{{ google_domains_password }}' # from inventory/host_vars/{{ inventory_hostname_short }}.yml
+        login: '{{ dynamic_dns.google_domains.username }}'
+        password: '{{ dynamic_dns.google_domains.password }}'
         hosts:
           - '{{ host_fqdn }}'
   tags:

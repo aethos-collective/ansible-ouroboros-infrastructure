@@ -2,7 +2,10 @@
 ansible_host: paakaa-pi-1.local
 ansible_user: pi
 
-host_fqdn: paakaa-pi-1.machines.paakaa.family
+family_domain: paakaa.family
 
-nebula_internal_ip: 192.168.100.9
-nebula_external_addr: 8.nodes.nebula.paakaa.family
+host_fqdn: "paakaa-pi-1.machines.{{ family_domain }}"
+
+nebula:
+  nebula_ip: 192.168.100.9
+  external_addr: "8.nodes.nebula.{{ family_domain }}"
