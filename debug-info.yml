@@ -11,22 +11,32 @@
     distribution: "{{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_major_version'] }}"
 
   tasks:
-    - ansible.builtin.debug: var=ansible_facts['architecture']
-    - ansible.builtin.debug: var=ansible_facts['machine']
-    - ansible.builtin.debug: var=ansible_facts['os_family']
-    - ansible.builtin.debug: var=group_names
-    #- ansible.builtin.debug: var=groups
-    - ansible.builtin.debug: var=ansible_run_tags
-    - ansible.builtin.debug: var=distribution
-    - ansible.builtin.debug: var=firewall_allowed_tcp_ports
-    - ansible.builtin.debug: var=firewall_allowed_udp_ports
+    - name: architecture
+      ansible.builtin.debug: var=ansible_facts['architecture']
+    - name: machine
+      ansible.builtin.debug: var=ansible_facts['machine']
+    - name: os_family
+      ansible.builtin.debug: var=ansible_facts['os_family']
+    - name: group_names
+      ansible.builtin.debug: var=group_names
+    #- name: groups
+    #  ansible.builtin.debug: var=groups
+    - name: ansible_run_tags
+      ansible.builtin.debug: var=ansible_run_tags
+    - name: distribution
+      ansible.builtin.debug: var=distribution
+    - name: firewall_allowed_tcp_ports
+      ansible.builtin.debug: var=firewall_allowed_tcp_ports
+    - name: firewall_allowed_udp_ports
+      ansible.builtin.debug: var=firewall_allowed_udp_ports
 
-    - ansible.builtin.debug: var=ansible_facts
+    - name: ansible_facts for inventory host names specified in tags in addition to 'ansible_facts' tag
+      ansible.builtin.debug: var=ansible_facts
       when: "inventory_hostname_short in ansible_run_tags"
       tags: [ never, ansible_facts ]
 
   pre_tasks:
-    - name: Gather facts for all hosts in inventory.
+    - name: Gather facts for all dedicated and development hosts in inventory.
       ansible.builtin.gather_facts:
         parallel: true
       tags:
