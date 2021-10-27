@@ -41,6 +41,7 @@
         - remote_dedicated
         - networking
         - dns
+        - dynamic_dns
         - ddclient
 
     - ansible.builtin.include_tasks: tasks/nebula.yml

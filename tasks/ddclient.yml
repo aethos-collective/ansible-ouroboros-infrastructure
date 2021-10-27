@@ -1,35 +1,29 @@
 ---
-- name: Install and configure ddclient for dynamic DNS resolution.
-  become: true
-  ansible.builtin.import_role:
-    name: mivek.ddclient
-  vars:
-    daemon: 0
-    configs:
-      - 
-        protocol: googledomains
-        ssl: yes
-        use: web
-        server: domains.google.com
-        backupmx: null
-        mx: null
-        mxpri: null
-        wildcard: null
-        login: '{{ dynamic_dns.google_domains.username }}'
-        password: '{{ dynamic_dns.google_domains.password }}'
-        hosts:
-          - '{{ host_fqdn }}'
-  tags:
-    - installation
-    - packages
-    - configuration
-    - dns
-    - sudo
+- tags: [ ddclient, dns, dynamic_dns, networking ]
+  block:
 
-- name: Force-update dynamic DNS entry.
-  become: true
-  ansible.builtin.command: ddclient -daemon=0 -verbose -force
-  tags:
-    - configuration
-    - dns
-    - sudo
+  - name: Install and configure ddclient for dynamic DNS resolution.
+    become: true
+    ansible.builtin.import_role:
+      name: mivek.ddclient
+    vars:
+      daemon: 0
+      configs:
+        - protocol: googledomains
+          ssl: yes
+          use: web
+          server: domains.google.com
+          backupmx: null
+          mx: null
+          mxpri: null
+          wildcard: null
+          login: '{{ dynamic_dns.google_domains.username }}'
+          password: '{{ dynamic_dns.google_domains.password }}'
+          hosts:
+            - '{{ host_fqdn }}'
+    tags: [ sudo, packages, installation, configuration ]
+
+  - name: Force-update dynamic DNS entry.
+    become: true
+    ansible.builtin.command: ddclient -daemon=0 -verbose -force
+    tags: [ sudo, configuration ]
