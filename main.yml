@@ -102,6 +102,8 @@
       tags:
         - infra
         - infrastructure
+        - installation
+        - packages
         - languages
         - javascript
         - nodejs
