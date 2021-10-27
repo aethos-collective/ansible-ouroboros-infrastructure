@@ -27,3 +27,15 @@ inbound_dedicated:
   - port: '{{ tcp_port_ssh }}'
     proto: tcp
     host: any
+
+  - port: '{{ tcp_port_http }}'
+    proto: tcp
+    host: any
+
+  - port: '{{ tcp_port_https }}'
+    proto: tcp
+    host: any
+
+  - port: '{{ tcp_port_cockpit }}'
+    proto: tcp
+    host: any
