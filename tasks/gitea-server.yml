@@ -1,51 +1,43 @@
 ---
-- name: Load Gitea configuration variables.
-  ansible.builtin.include_vars: vars/gitea-server.yml
-  tags:
-    - configuration
+- tags: [ servers, git, gitea ]
+  block:
 
-  # TODO: convert to use Docker module directly, migrate data from filesystem mount to Docker volume, and get volume backed up
-- name: Install Gitea.
-  become: true
-  ansible.builtin.import_role:
-    name: salessandri.gitea
-  vars:
-    gitea__ssh_port: '{{ tcp_port_ssh_gitea }}'
-    gitea__web_host: '{{ nebula_internal_ip }}'
-    gitea__web_port: '{{ tcp_port_http_gitea }}'
-    gitea__hostname: '{{ gitea_fqdn }}'
-    gitea__root_url: 'https://{{ gitea_fqdn }}/'
-    gitea__enable_lfs: true
-    gitea__app_name: '{{ gitea_app_name }}'
-  when: "'gitea_server' in group_names"
-  tags:
-    - installation
-    - containers
-    - configuration
-    - sudo
+  - name: Load Gitea configuration variables.
+    ansible.builtin.include_vars: vars/gitea-server.yml
+    tags: [ configuration, reverse_proxy, caddy ]
 
-- name: Add reverse proxy block to Caddyfile for Gitea server.
-  become: true
-  ansible.builtin.blockinfile:
-    path: '{{ caddy_config_path }}'
-    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR GITEA"
-    block: "{{ lookup('template', 'templates/caddy/gitea-server.j2') }}" # https://garthkerr.com/using-ansible-template-for-partial-file-block/
-  register: caddy_gitea_subdomain_config
-  when: "'gitea_server_proxy' in group_names"
-  tags:
-    - configuration
-    - reverse_proxy
-    - caddy
-    - sudo
+    # TODO: convert to use Docker module directly, migrate data from filesystem mount to Docker volume, and get volume backed up
+  - name: Install Gitea.
+    ansible.builtin.include_role:
+      name: salessandri.gitea
+      apply:
+        become: true
+        vars:
+          gitea__ssh_port: '{{ tcp_port_ssh_gitea }}'
+          gitea__web_host: '{{ nebula.nebula_ip }}'
+          gitea__web_port: '{{ tcp_port_http_gitea }}'
+          gitea__hostname: '{{ gitea_fqdn }}'
+          gitea__root_url: 'https://{{ gitea_fqdn }}/'
+          gitea__enable_lfs: true
+          gitea__app_name: '{{ gitea_app_name }}'
+    when: "'gitea_server' in group_names"
+    tags: [ sudo, installation, configuration, containers, docker ]
 
-- name: Restart Caddy if config has changed.
-  become: true
-  ansible.builtin.service:
-    name: caddy
-    state: restarted
-  when: "'gitea_server_proxy' in group_names and caddy_gitea_subdomain_config.changed"
-  tags:
-    - configuration
-    - reverse_proxy
-    - caddy
-    - sudo
+  - name: Add reverse proxy block to Caddyfile for Gitea server.
+    become: true
+    ansible.builtin.blockinfile:
+      path: '{{ caddy_config_path }}'
+      marker: "# {mark} ANSIBLE MANAGED BLOCK FOR GITEA"
+      block: "{{ lookup('template', 'templates/caddy/gitea-server.j2') }}" # https://garthkerr.com/using-ansible-template-for-partial-file-block/
+    register: caddy_gitea_subdomain_config
+    when: "'gitea_server_proxy' in group_names"
+    tags: [ sudo, configuration, reverse_proxy, caddy ]
+
+  - name: Reload Caddy if config has changed.
+    become: true
+    ansible.builtin.service:
+      name: caddy
+      enabled: true
+      state: reloaded
+    when: "'gitea_server_proxy' in group_names and caddy_gitea_subdomain_config.changed"
+    tags: [ sudo, configuration, reverse_proxy, caddy ]

@@ -1,5 +1,5 @@
 ---
-minecraft_bedrock_server_nebula_internal_ip: "{{ hostvars[groups['minecraft_bedrock_server'][0]]['nebula_internal_ip'] }}"
+minecraft_bedrock_server_nebula_internal_ip: "{{ hostvars[groups['minecraft_bedrock_server'][0]]['nebula']['nebula_ip'] }}"
 
 server_name: "{{ family_cloud_name }} MC" # defined in /families/paakaa.family/vars/family.yml
 level_name: "CP ~ Creative & Peaceful"
