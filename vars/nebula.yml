@@ -1,6 +1,13 @@
 ---
 nebula_version: 1.4.0
-nebula_directory: /etc/nebula
+nebula_download_directory: /tmp
+nebula_bin_directory: /bin
+nebula_config_directory: /etc/nebula
+
+nebula_armv6_release: nebula-{{ ansible_system|lower }}-arm-6.tar.gz
+nebula_armv6_release_url: 'https://github.com/slackhq/nebula/releases/download/v{{ nebula_version }}/{{ nebula_armv6_release }}'
+nebula_checksums: SHASUM256.txt
+nebula_checksums_url: 'https://github.com/slackhq/nebula/releases/download/v{{ nebula_version }}/{{ nebula_checksums }}'
 
 punchy: true
 punch_back: true
@@ -9,10 +16,9 @@ listen:
   host: 0.0.0.0
   port: '{{ udp_port_nebula }}'
 
-lighthouses:
-# To be populated via task.
+lighthouses: [] # task-populated
 
 pki:
-  ca: '{{ nebula_directory }}/ca.crt'
-  cert: '{{ nebula_directory }}/{{ nebula.external_addr }}.crt'
-  key: '{{ nebula_directory }}/{{ nebula.external_addr }}.key'
+  ca: '{{ nebula_config_directory }}/ca.crt'
+  cert: '{{ nebula_config_directory }}/{{ nebula.external_addr }}.crt'
+  key: '{{ nebula_config_directory }}/{{ nebula.external_addr }}.key'

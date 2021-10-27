@@ -1,103 +1,176 @@
 ---
-- name: Load Nebula configuration variables.
-  ansible.builtin.include_vars: vars/nebula.yml
-  tags:
-    - configuration
+- tags: [ networking, dns, mesh, vpn, firewall, nebula ]
+  block:
 
-- name: Populate list of lighthouses.
-  ansible.builtin.set_fact:
-    lighthouses: "{{ groups['nebula_lighthouse'] | map('extract', hostvars, ['nebula']) | list }}"
-  tags:
-    - configuration
+  - name: Load Nebula configuration variables.
+    ansible.builtin.include_vars: vars/nebula.yml
+    tags: [ configuration ]
 
-- name: Create Nebula Certificate Authority.
-  local_action:
-    module: ansible.builtin.command
-    chdir: files/nebula/
-    cmd: 'nebula-cert ca -name "{{ family_cloud_name }}"'
-    creates: ca.key
-  failed_when: false
-  tags:
-    - configuration
+  - name: Populate list of lighthouses.
+    local_action:
+      module: ansible.builtin.set_fact
+      lighthouses: "{{ groups['nebula_lighthouse'] | map('extract', hostvars, ['nebula']) | list }}"
+    run_once: true
+    tags: [ configuration ]
 
-- name: Decrypt Nebula Certificate Authority files.
-  local_action:
-    module: ansible.builtin.command
-    cmd: 'ansible-vault decrypt files/nebula/ca.crt files/nebula/ca.key'
-  failed_when: false
-  tags:
-    - configuration
+  - name: Create Nebula Certificate Authority.
+    local_action:
+      module: ansible.builtin.command
+      chdir: files/nebula/
+      cmd: 'nebula-cert ca -name "{{ family_cloud_name }}"'
+      creates: ca.key
+    register: nebula_ca_create
+    run_once: true
+    tags: [ configuration ]
 
-- name: Create Nebula certificates.
-  local_action:
-    module: ansible.builtin.command
-    chdir: files/nebula/
-    cmd: 'nebula-cert sign -name "{{ nebula.external_addr }}" -ip "{{ nebula.nebula_ip }}/24"'
-    creates: "{{ nebula.external_addr }}.crt"
-  register: nebula_certificate_create
-  tags:
-    - configuration
+  - name: Decrypt Nebula Certificate Authority files.
+    local_action:
+      module: ansible.builtin.command
+      cmd: 'ansible-vault decrypt files/nebula/ca.crt files/nebula/ca.key'
+    when: not nebula_ca_create.changed
+    run_once: true
+    tags: [ configuration ]
 
-- name: Encrypt Nebula Certificate Authority files.
-  local_action:
-    module: ansible.builtin.command
-    cmd: 'ansible-vault encrypt --encrypt-vault-id {{ family_domain }} files/nebula/ca.crt files/nebula/ca.key'
-  failed_when: false
-  tags:
-    - configuration
+  - name: Create Nebula certificates.
+    local_action:
+      module: ansible.builtin.command
+      chdir: files/nebula/
+      cmd: 'nebula-cert sign -name "{{ nebula.external_addr }}" -ip "{{ nebula.nebula_ip }}/24"'
+      creates: "{{ nebula.external_addr }}.crt"
+    register: nebula_certificates_create
+    tags: [ configuration ]
 
-- name: Encrypt Nebula certificates.
-  local_action:
-    module: ansible.builtin.command
-    cmd: 'ansible-vault encrypt --encrypt-vault-id {{ family_domain }} files/nebula/{{ nebula.external_addr }}.crt files/nebula/{{ nebula.external_addr }}.key'
-  when: nebula_certificate_create.changed
-  tags:
-    - configuration
+  - name: Encrypt Nebula Certificate Authority files.
+    local_action:
+      module: ansible.builtin.command
+      cmd: 'ansible-vault encrypt --encrypt-vault-id {{ family_domain }} files/nebula/ca.crt files/nebula/ca.key'
+    run_once: true
+    tags: [ configuration ]
 
-- name: Create Nebula directory.
-  become: true
-  ansible.builtin.file:
-    path: '{{ nebula_directory }}'
-    state: directory
-    mode: '0750'
-  tags:
-    - configuration
-    - sudo
+  - name: Encrypt Nebula certificates.
+    local_action:
+      module: ansible.builtin.command
+      cmd: 'ansible-vault encrypt --encrypt-vault-id {{ family_domain }} files/nebula/{{ nebula.external_addr }}.crt files/nebula/{{ nebula.external_addr }}.key'
+    when: nebula_certificates_create.changed
+    tags: [ configuration ]
 
-- name: Deploy Nebula certificates.
-  become: true
-  ansible.builtin.copy:
-    src: 'files/nebula/{{ item }}'
-    dest: '{{ nebula_directory }}/{{ item }}'
-    owner: root
-    group: root
-    mode: '0600'
-  with_items:
-    - 'ca.crt'
-    - '{{ nebula.external_addr }}.crt'
-    - '{{ nebula.external_addr }}.key'
-  tags:
-    - configuration
-    - sudo
+  - name: Create Nebula configuration directory.
+    become: true
+    ansible.builtin.file:
+      path: '{{ nebula_config_directory }}'
+      state: directory
+      mode: '0750'
+    tags: [ sudo, configuration ]
 
-- name: Download Nebula release from GitHub (arm6).
-  become: true
-  ansible.builtin.unarchive:
-    src: https://github.com/slackhq/nebula/releases/download/v{{ nebula_version }}/nebula-{{ ansible_system|lower }}-arm-6.tar.gz
-    dest: /bin
-    remote_src: yes
-    mode: 0755
-    creates: /bin/nebula
-  when: "ansible_architecture.startswith('armv6')"
-  tags:
-    - installation
-    - sudo
+  - name: Deploy Nebula certificates to configuration directory.
+    become: true
+    ansible.builtin.copy:
+      src: 'files/nebula/{{ item }}'
+      dest: '{{ nebula_config_directory }}/{{ item }}'
+      owner: root
+      group: root
+      mode: '0600'
+    with_items:
+      - 'ca.crt'
+      - '{{ nebula.external_addr }}.crt'
+      - '{{ nebula.external_addr }}.key'
+    register: nebula_certificates_deploy
+    tags: [ sudo, configuration ]
 
-- name: Install and configure Nebula mesh VPN.
-  become: true
-  ansible.builtin.import_role:
-    name: trozz.ansible_nebula
-  tags:
-    - installation
-    - configuration
-    - sudo
+  - name: Check if Nebula is already installed.
+    ansible.builtin.stat:
+      path: "{{ nebula_bin_directory }}/nebula"
+    register: nebula_is_installed
+    changed_when: not nebula_is_installed.stat.exists
+    tags: [ installation ]
+
+  - name: Download and install Nebula if it isn't already installed.
+    tags: [ installation ]
+    when: not nebula_is_installed.stat.exists
+    vars:
+      nebula_armv6_release_download_path: '{{ nebula_download_directory }}/{{ nebula_armv6_release }}'
+      nebula_checksums_download_path: '{{ nebula_download_directory }}/{{ nebula_checksums }}'
+      nebula_release_sha256sum_result_success: "{{ nebula_armv6_release }}{{ ':' }} OK"
+    block:
+
+    - name: Download and install Nebula for ARMv6 hosts.
+      when: "ansible_architecture.startswith('armv6')"
+      block:
+
+      - name: Download Nebula checksums file.
+        become: true
+        ansible.builtin.get_url:
+          url: "{{ nebula_checksums_url }}"
+          dest: "{{ nebula_checksums_download_path }}"
+        tags: [ sudo ]
+
+      - name: Download Nebula release artifact from GitHub (arm6).
+        become: true
+        ansible.builtin.get_url:
+          url: "{{ nebula_armv6_release_url }}"
+          dest: "{{ nebula_armv6_release_download_path }}"
+        tags: [ sudo ]
+
+      - name: Verify Nebula release artifact against checksums file.
+        ansible.builtin.command:
+          chdir: "{{ nebula_download_directory }}"
+          cmd: "sha256sum -c {{ nebula_checksums_download_path }}"
+        register: nebula_release_sha256sum_result
+        changed_when: false
+        failed_when: nebula_release_sha256sum_result_success not in nebula_release_sha256sum_result.stdout
+
+      - name: Install Nebula.
+        when: nebula_release_sha256sum_result_success in nebula_release_sha256sum_result.stdout
+        become: true
+        ansible.builtin.unarchive:
+          src: "{{ nebula_armv6_release_download_path }}"
+          dest: "{{ nebula_bin_directory }}"
+          remote_src: yes
+          mode: 0755
+          creates: "{{ nebula_bin_directory }}/nebula"
+        register: nebula_armv6_install
+        tags: [ sudo ]
+
+      rescue:
+      - name: Downloaded release artifact checksum does not checksums file.
+        ansible.builtin.fail:
+          msg: "WHOOPS!!! Checksum mismatch! Sorry. :-("
+
+      always:
+      - name: Delete downloaded release artifact.
+        become: true
+        ansible.builtin.file:
+          path: "{{ nebula_armv6_release_download_path }}"
+          state: absent
+        tags: [ sudo ]
+
+      - name: Delete downloaded checksums file.
+        become: true
+        ansible.builtin.file:
+          path: "{{ nebula_checksums_download_path }}"
+          state: absent
+        tags: [ sudo ]
+
+    - name: Install and configure Nebula mesh VPN.
+      when: not nebula_is_installed.stat.exists
+      ansible.builtin.include_role:
+        name: trozz.ansible_nebula
+        apply:
+          become: true
+      failed_when: false
+      tags: [ sudo, configuration ]
+
+  - name: Reset Nebula systemd "service failed" state.
+    become: true
+    ansible.builtin.shell:
+      cmd: systemctl reset-failed nebula
+    changed_when: false
+    tags: [ sudo, configuration ]
+
+  - name: Reload Nebula service after configuration changes.
+    become: true
+    ansible.builtin.service:
+      name: nebula
+      enabled: true
+      state: reloaded
+    tags: [ sudo, configuration ]
