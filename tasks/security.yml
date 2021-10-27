@@ -1,22 +1,37 @@
 ---
-- name: Run Jeff Geerling's security role.
-  become: true
-  ansible.builtin.import_role:
-    name: geerlingguy.security
-  vars:
-    security_autoupdate_reboot: true
-    security_autoupdate_mail_to: "maintainers@ilyfam.family"
-    security_ssh_password_authentication: "yes" # SSH rules must be single-/double-quoted yes/no
-  tags:
-    - configuration
-    - sudo
+- tags: [ configuration ]
+  block:
 
-- name: Run Jeff Geerling's firewall role.
-  become: true
-  ansible.builtin.import_role:
-    name: geerlingguy.firewall
-  vars:
-    firewall_flush_rules_and_chains: false # Docker
-  tags:
-    - configuration
-    - sudo
+  - name: Run Jeff Geerling's security role.
+    become: true
+    ansible.builtin.import_role:
+      name: geerlingguy.security
+    vars:
+      security_autoupdate_reboot: true
+      security_autoupdate_mail_to: "maintainers@ilyfam.family"
+      security_ssh_password_authentication: "yes" # SSH rules must be single-/double-quoted yes/no
+    tags: [ sudo ]
+
+  - name: Run Jeff Geerling's firewall role.
+    become: true
+    ansible.builtin.import_role:
+      name: geerlingguy.firewall
+    vars:
+      firewall_flush_rules_and_chains: false # Docker
+    failed_when: false
+    tags: [ sudo, firewall ]
+
+  - name: Reset firewall systemd "service failed" state.
+    become: true
+    ansible.builtin.shell:
+      cmd: systemctl reset-failed firewall
+    changed_when: false
+    tags: [ sudo, firewall, configuration ]
+
+  - name: Restart firewall service after configuration changes.
+    become: true
+    ansible.builtin.service:
+      name: firewall
+      enabled: true
+      state: restarted
+    tags: [ sudo, firewall, configuration ]
