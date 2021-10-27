@@ -94,7 +94,7 @@
     - name: Load Yggdrasil configuration variables.
       ansible.builtin.include_vars: vars/yggdrasil.yml
       vars:
-        group_name: dedicated
+        group_name: yggdrasil
       when: "group_name in group_names or group_name in ansible_run_tags"
       tags:
         - configuration

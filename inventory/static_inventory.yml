@@ -65,10 +65,16 @@ all:
         gitea_server:
         gitea_server_proxy:
 
-    # Make sure nebula_lighthouse group stays last!
+#####
+##### Make sure these groups stay last in this section!
+#####
     nebula_lighthouse:
       children:
         remote_dedicated:
+
+    yggdrasil:
+      children:
+        dedicated:
 
 ##########################################################
 ##### Machine OS/package manager/architecture groups #####

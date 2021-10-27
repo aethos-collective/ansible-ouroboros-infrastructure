@@ -1,0 +1,45 @@
+---
+yggdrasil_config_path: /etc/yggdrasil.conf
+
+yggdrasil_uri_scheme: tcp # tcp or tls
+tcp_port_yggdrasil: 9183
+
+# For geerlingguy.firewall role
+firewall_allowed_tcp_ports_yggdrasil:
+  - '{{ tcp_port_yggdrasil }}'
+
+# For trozz.ansible_nebula role
+inbound_yggdrasil:
+  - port: '{{ tcp_port_yggdrasil }}'
+    proto: tcp
+    host: any
+
+yggdrasil_peering_addresses:
+- '{{ yggdrasil_uri_scheme }}://{{ ansible_host }}:{{ tcp_port_yggdrasil }}'
+- '{{ yggdrasil_uri_scheme }}://{{ host_fqdn }}:{{ tcp_port_yggdrasil }}'
+- '{{ yggdrasil_uri_scheme }}://{{ nebula.nebula_ip }}:{{ tcp_port_yggdrasil }}'
+- '{{ yggdrasil_uri_scheme }}://{{ nebula.external_addr }}:{{ tcp_port_yggdrasil }}'
+
+yggdrasil_listen: # listen on all interfaces
+- '{{ yggdrasil_uri_scheme }}://0.0.0.0:{{ tcp_port_yggdrasil }}'
+
+yggdrasil_multicast_interfaces: []
+#- Regex: nebula.*
+#  Beacon: true
+#  Listen: true
+#  Port: '{{ tcp_port_yggdrasil }}'
+#
+#- Regex: eth.*
+#  Beacon: true
+#  Listen: true
+#  Port: '{{ tcp_port_yggdrasil }}'
+#
+#- Regex: wlan.*
+#  Beacon: true
+#  Listen: true
+#  Port: '{{ tcp_port_yggdrasil }}'
+#
+#- Regex: .*
+#  Beacon: true
+#  Listen: true
+#  Port: '{{ tcp_port_yggdrasil }}'

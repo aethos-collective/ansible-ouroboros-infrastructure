@@ -61,7 +61,7 @@
 
     - ansible.builtin.include_tasks: tasks/yggdrasil.yml
       vars:
-        group_name: dedicated
+        group_name: yggdrasil
       when: "group_name in group_names"
       tags:
         - infra
