@@ -76,6 +76,13 @@
         - infrastructure
         - meta
 
+    - ansible.builtin.include_tasks: tasks/meta/compile-lists.yml
+      tags:
+        - always
+        - infra
+        - infrastructure
+        - meta
+
     - name: Load Nebula configuration variables.
       ansible.builtin.include_vars: vars/nebula.yml
       vars:

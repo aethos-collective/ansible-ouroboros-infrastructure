@@ -138,6 +138,9 @@
         - cockpit
 
   pre_tasks:
+  # IMPORTANT: Please add any tasks in this pre_tasks section to the pre_tasks section
+  #            of debug-info.yml for environment parity.
+
     - name: Gather facts for all hosts in inventory.
       ansible.builtin.gather_facts:
         parallel: true
@@ -177,6 +180,14 @@
         - infra
         - infrastructure
         - meta
+
+    - ansible.builtin.import_tasks: tasks/meta/compile-lists.yml
+      tags:
+        - always
+        - infra
+        - infrastructure
+        - meta
+
     - ansible.builtin.import_tasks: tasks/upgrade-all.yml
       tags:
         - infra

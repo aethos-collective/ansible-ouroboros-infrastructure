@@ -8,18 +8,18 @@ tcp_port_cockpit: 9090
 udp_port_nebula: 4242
 
 # For geerlingguy.firewall role
-firewall_allowed_tcp_ports:
+firewall_allowed_tcp_ports_dedicated:
   - '{{ tcp_port_ssh }}'
   - '{{ tcp_port_http }}'
   - '{{ tcp_port_https }}'
   - '{{ tcp_port_cockpit }}'
 
 # For geerlingguy.firewall role
-firewall_allowed_udp_ports:
+firewall_allowed_udp_ports_dedicated:
   - '{{ udp_port_nebula }}'
 
 # For trozz.ansible_nebula role
-inbound:
+inbound_dedicated:
   - port: any
     proto: icmp
     host: any

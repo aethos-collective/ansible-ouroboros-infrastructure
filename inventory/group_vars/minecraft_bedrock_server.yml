@@ -1,20 +1,11 @@
 ---
 # For geerlingguy.firewall role
-firewall_allowed_udp_ports:
-  - '{{ udp_port_nebula }}'
+firewall_allowed_udp_ports_minecraft_bedrock_server:
   - '{{ udp_port_minecraft_bedrock_server_ipv4 }}'
   - '{{ udp_port_minecraft_bedrock_server_ipv6 }}'
 
 # For trozz.ansible_nebula role
-inbound:
-  - port: any
-    proto: icmp
-    host: any
-
-  - port: '{{ tcp_port_ssh }}'
-    proto: tcp
-    host: any
-
+inbound_minecraft_bedrock_server:
   - port: '{{ udp_port_minecraft_bedrock_server_ipv4 }}'
     proto: udp
     host: any

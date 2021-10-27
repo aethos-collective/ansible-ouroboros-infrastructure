@@ -1,0 +1,52 @@
+---
+# This set of tasks made possible by
+# - https://serverfault.com/a/988829/16374
+# - https://blog.crisp.se/2016/10/20/maxwenzin/how-to-append-to-lists-in-ansible
+
+- name: Initialize 'firewall_allowed_tcp_ports' list.
+  ansible.builtin.set_fact:
+    firewall_allowed_tcp_ports: []
+- name: Gather list of 'firewall_allowed_tcp_ports' lists.
+  ansible.builtin.set_fact:
+    firewall_allowed_tcp_ports_lists: "{{ lookup('varnames','firewall_allowed_tcp_ports.*') }}"
+- name: Normalize list of 'firewall_allowed_tcp_ports' lists.
+  ansible.builtin.set_fact:
+    firewall_allowed_tcp_ports_lists: "{{ firewall_allowed_tcp_ports_lists.split(',') if firewall_allowed_tcp_ports_lists != [] else firewall_allowed_tcp_ports_lists }}"
+- name: Compile 'firewall_allowed_tcp_ports' list.
+  ansible.builtin.set_fact:
+    firewall_allowed_tcp_ports: '{{ firewall_allowed_tcp_ports + hostvars[inventory_hostname_short][firewall_allowed_tcp_ports_list] }}'
+  with_items: "{{ firewall_allowed_tcp_ports_lists }}"
+  loop_control:
+    loop_var: firewall_allowed_tcp_ports_list
+
+- name: Initialize 'firewall_allowed_udp_ports' list.
+  ansible.builtin.set_fact:
+    firewall_allowed_udp_ports: []
+- name: Gather list of 'firewall_allowed_udp_ports' lists.
+  ansible.builtin.set_fact:
+    firewall_allowed_udp_ports_lists: "{{ lookup('varnames','firewall_allowed_udp_ports.*') }}"
+- name: Normalize list of 'firewall_allowed_udp_ports' lists.
+  ansible.builtin.set_fact:
+    firewall_allowed_udp_ports_lists: "{{ firewall_allowed_udp_ports_lists.split(',') if firewall_allowed_udp_ports_lists != [] else firewall_allowed_udp_ports_lists }}"
+- name: Compile 'firewall_allowed_udp_ports' list.
+  ansible.builtin.set_fact:
+    firewall_allowed_udp_ports: '{{ firewall_allowed_udp_ports + hostvars[inventory_hostname_short][firewall_allowed_udp_ports_list] }}'
+  with_items: "{{ firewall_allowed_udp_ports_lists }}"
+  loop_control:
+    loop_var: firewall_allowed_udp_ports_list
+
+- name: Initialize 'inbound' list.
+  ansible.builtin.set_fact:
+    inbound: []
+- name: Gather list of 'inbound' lists.
+  ansible.builtin.set_fact:
+    inbound_lists: "{{ lookup('varnames','inbound.*') }}"
+- name: Normalize list of 'inbound' lists.
+  ansible.builtin.set_fact:
+    inbound_lists: "{{ inbound_lists.split(',') if inbound_lists != [] else inbound_lists }}"
+- name: Compile 'inbound' list.
+  ansible.builtin.set_fact:
+    inbound: '{{ inbound + hostvars[inventory_hostname_short][inbound_list] }}'
+  with_items: "{{ inbound_lists }}"
+  loop_control:
+    loop_var: inbound_list
