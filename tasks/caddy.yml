@@ -1,44 +1,123 @@
 ---
-- name: Load Caddy configuration variables.
-  ansible.builtin.include_vars: vars/caddy.yml
-  tags:
-    - configuration
+- tags: [ servers, networking, reverse_proxy, web, tcp, caddy ]
+  block:
 
-- name: Install Caddy.
-  become: true
-  ansible.builtin.import_role:
-    name: nvjacobo.caddy
-  tags:
-    - installation
-    - sudo
+  - name: Load Caddy configuration variables.
+    ansible.builtin.include_vars: vars/caddy.yml
+    tags: [ configuration ]
 
-- name: Download Caddy for Debian ARMv6.
-  become: true
-  ansible.builtin.get_url:
-    url="{{ caddy_armv6_deb_url }}"
-    dest="/tmp/{{ caddy_armv6_deb }}"
-  when: "ansible_facts['os_family'] == 'Debian' and ansible_facts['architecture'] == 'armv6l'"
-  tags:
-    - installation
-    - sudo
+  - when: "'termux' in group_names"
+    tags: [ termux ]
+    block:
 
-- name: Install Caddy for Debian ARMv6.
-  become: true
-  ansible.builtin.apt: deb="/tmp/{{ caddy_armv6_deb }}"
-  when: "ansible_facts['os_family'] == 'Debian' and ansible_facts['architecture'] == 'armv6l'"
-  tags:
-    - installation
-    - sudo
+    - name: Install Caddy on Termux hosts.
+      become: false
+      ansible.builtin.apt:
+        name: caddy
+        state: latest
 
-- name: Initialize Caddy config if it's missing.
-  become: true
-  ansible.builtin.template:
-    src: templates/caddy/init.j2
-    dest: '{{ caddy_config_path }}'
-    owner: root
-    group: root
-    mode: '0644'
-    force: false
-  tags:
-    - configuration
-    - sudo
+  - when: "'termux' not in group_names"
+    block:
+
+    - name: Install Caddy.
+      when: "ansible_facts['os_family'] != 'Debian' or (ansible_facts['os_family'] == 'Debian' and not ansible_facts['architecture'].startswith('armv6'))"
+      ansible.builtin.include_role:
+        name: nvjacobo.caddy
+        apply:
+          become: true
+      tags: [ sudo, installation ]
+
+    - name: Install Caddy for Debian ARMv6.
+      when: "ansible_facts['os_family'] == 'Debian' and ansible_facts['architecture'].startswith('armv6')"
+      tags: [ installation ]
+      block:
+
+      - name: Check if Caddy is already installed.
+        ansible.builtin.set_fact:
+          caddy_armv6_is_installed: "{{ ansible_facts['packages']['caddy'] is defined }}"
+        changed_when: not caddy_armv6_is_installed
+
+      - name: Download and install Caddy if it isn't already installed.
+        when: not caddy_armv6_is_installed
+        vars:
+          caddy_armv6_deb_download_path: '/tmp/{{ caddy_armv6_deb }}'
+          caddy_checksums_download_path: '/tmp/{{ caddy_checksums }}'
+          caddy_release_sha512sum_result_success: "{{ caddy_armv6_deb }}{{ ':' }} OK"
+        block:
+
+        - name: Ensure dependencies are installed.
+          become: true
+          ansible.builtin.apt:
+            name:
+              - debian-keyring
+              - debian-archive-keyring
+              - apt-transport-https
+              - gnupg2
+              - curl
+            state: present
+          tags: [ sudo ]
+
+        - name: Download Caddy checksums file.
+          become: true
+          ansible.builtin.get_url:
+            url: "{{ caddy_checksums_url }}"
+            dest: "{{ caddy_checksums_download_path }}"
+          tags: [ sudo ]
+
+        - name: Download Caddy package.
+          become: true
+          ansible.builtin.get_url:
+            url: "{{ caddy_armv6_deb_url }}"
+            dest: "{{ caddy_armv6_deb_download_path }}"
+          tags: [ sudo ]
+
+        - name: Verify Caddy package against checksums file.
+          ansible.builtin.command:
+            chdir: "/tmp"
+            cmd: "sha512sum -c {{ caddy_checksums_download_path }}"
+          register: caddy_release_sha512sum_result
+          changed_when: false
+          failed_when: caddy_release_sha512sum_result_success not in caddy_release_sha512sum_result.stdout
+
+        - name: Install Caddy package.
+          when: caddy_release_sha512sum_result_success in caddy_release_sha512sum_result.stdout
+          become: true
+          ansible.builtin.apt:
+            deb: "{{ caddy_armv6_deb_download_path }}"
+          register: caddy_armv6_install
+          tags: [ sudo ]
+
+        rescue:
+        - name: Downloaded package checksum does not checksums file.
+          ansible.builtin.fail:
+            msg: "WHOOPS!!! Checksum mismatch! Sorry. :-("
+
+        always:
+        - name: Delete downloaded package.
+          become: true
+          ansible.builtin.file:
+            path: "{{ caddy_armv6_deb_download_path }}"
+            state: absent
+          tags: [ sudo ]
+
+        - name: Delete downloaded checksums file.
+          become: true
+          ansible.builtin.file:
+            path: "{{ caddy_checksums_download_path }}"
+            state: absent
+          tags: [ sudo ]
+
+  - name: Ensure Caddy config directory exists.
+    become: '{{ can_sudo }}'
+    ansible.builtin.file:
+      path: '{{ caddy_config_dir }}'
+      state: directory
+    tags: [ sudo, configuration ]
+
+  - name: Initialize Caddy config if it's missing.
+    become: '{{ can_sudo }}'
+    ansible.builtin.template:
+      src: templates/caddy/init.j2
+      dest: '{{ caddy_config_path }}'
+      force: false
+    tags: [ sudo, configuration ]

@@ -2,3 +2,5 @@
 caddy_version: 2.4.5
 caddy_armv6_deb: caddy_{{ caddy_version }}_linux_armv6.deb
 caddy_armv6_deb_url: 'https://github.com/caddyserver/caddy/releases/download/v{{ caddy_version }}/{{ caddy_armv6_deb }}'
+caddy_checksums: caddy_{{ caddy_version }}_checksums.txt
+caddy_checksums_url: 'https://github.com/caddyserver/caddy/releases/download/v{{ caddy_version }}/{{ caddy_checksums }}'

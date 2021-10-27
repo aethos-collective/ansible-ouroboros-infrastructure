@@ -110,13 +110,14 @@
 
     - ansible.builtin.include_tasks: tasks/caddy.yml
       vars:
-        group_name: dedicated
+        group_name: caddy_server
       when: "group_name in group_names"
       tags:
         - infra
         - infrastructure
         - dedicated
         - servers
+        - reverse_proxy
         - web
         - tcp
         - caddy
@@ -132,6 +133,8 @@
         - servers
         - admin
         - observability
+        - reverse_proxy
+        - caddy
         - cockpit
 
   pre_tasks:
@@ -165,6 +168,8 @@
         - infra
         - infrastructure
         - servers
+        - reverse_proxy
+        - caddy
         - git
         - gitea
 
