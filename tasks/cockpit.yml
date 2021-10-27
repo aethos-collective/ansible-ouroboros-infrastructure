@@ -1,95 +1,92 @@
 ---
-- name: Load Cockpit configuration variables.
-  ansible.builtin.include_vars: vars/cockpit.yml
-  tags:
-    - configuration
+- tags: [ servers, admin, observability, cockpit ]
+  block:
 
-- name: Ensure Cockpit and accompanying application packages are installed and up-to-date.
-  become: true
-  ansible.builtin.package:
-    name:
-      - cockpit
-      - cockpit-bridge
-      - cockpit-dashboard
-      - cockpit-doc
-      - cockpit-machines
-      - cockpit-networkmanager
-      - cockpit-packagekit
-      - cockpit-pcp
-      - cockpit-storaged
-      - cockpit-system
-      - cockpit-ws
-    state: latest
-  tags:
-    - installation
+  - name: Load Cockpit configuration variables.
+    ansible.builtin.include_vars: vars/cockpit.yml
+    tags: [ configuration, reverse_proxy, caddy ]
 
-- name: Check if cockpit-docker package is installed.
-  become: true
-  ansible.builtin.command: dpkg-query -W {{ cockpit_docker_package }}
-  register: cockpit_docker_check_deb
-  failed_when: cockpit_docker_check_deb.rc > 1
-  changed_when: cockpit_docker_check_deb.rc == 1
-  when: "ansible_facts['os_family'] == 'Debian'"
-  tags:
-    - installation
+  - name: Ensure Cockpit and accompanying application packages are installed and up-to-date.
+    become: true
+    ansible.builtin.package:
+      name:
+        - cockpit
+        - cockpit-bridge
+        - cockpit-dashboard
+        - cockpit-doc
+        - cockpit-machines
+        - cockpit-networkmanager
+        - cockpit-packagekit
+        - cockpit-pcp
+        - cockpit-storaged
+        - cockpit-system
+        - cockpit-ws
+      state: latest
+    tags: [ sudo, installation ]
 
-- name: Download cockpit-docker package.
-  become: true
-  ansible.builtin.get_url:
-    url="{{ cockpit_docker_deb_url }}"
-    dest="/tmp/{{ cockpit_docker_package }}.deb"
-  when: ansible_facts['os_family'] == 'Debian' and cockpit_docker_check_deb.rc == 1
-  tags:
-    - installation
+  - when: "ansible_facts['os_family'] == 'Debian'"
+    block:
 
-- name: Install cockpit-docker package.
-  become: true
-  ansible.builtin.apt: deb="/tmp/{{ cockpit_docker_package }}.deb"
-  when: ansible_facts['os_family'] == 'Debian' and cockpit_docker_check_deb.rc == 1
-  tags:
-    - installation
+    - name: Check if cockpit-docker package is installed.
+      become: true
+      ansible.builtin.command:
+        cmd: "dpkg-query -W {{ cockpit_docker_package }}"
+      register: cockpit_docker_check_deb
+      failed_when: cockpit_docker_check_deb.rc > 1
+      changed_when: cockpit_docker_check_deb.rc == 1
+      tags: [ sudo, installation ]
 
-- name: Initialize Cockpit config if it's missing.
-  become: true
-  ansible.builtin.template:
-    src: templates/cockpit/init.j2
-    dest: '{{ cockpit_config_path }}'
-    owner: root
-    group: root
-    mode: '0644'
-    force: false
-  tags:
-    - configuration
+    - when: cockpit_docker_check_deb.rc == 1
+      block:
 
-# https://caddy.community/t/example-cockpit/8283
-- name: Configure Cockpit to accept traffic at https://cockpit.HOST_FQDN in addition to https://ANSIBLE_HOST:9090.
-  become: true
-  ansible.builtin.blockinfile:
-    path: '{{ cockpit_config_path }}'
-    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR REVERSE PROXY"
-    block: "{{ lookup('template', 'templates/cockpit/reverse-proxy.j2') }}" # https://garthkerr.com/using-ansible-template-for-partial-file-block/
-  tags:
-    - configuration
-    - caddy
+      - name: Download cockpit-docker package.
+        become: true
+        ansible.builtin.get_url:
+          url: "{{ cockpit_docker_deb_url }}"
+          dest: "/tmp/{{ cockpit_docker_package }}.deb"
+        tags: [ sudo, installation ]
 
-# https://caddy.community/t/example-cockpit/8283
-- name: Configure Caddy to serve Cockpit subdomain with valid SSL cert.
-  become: true
-  ansible.builtin.blockinfile:
-    path: '{{ caddy_config_path }}'
-    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR COCKPIT"
-    block: "{{ lookup('template', 'templates/caddy/cockpit.j2') }}" # https://garthkerr.com/using-ansible-template-for-partial-file-block/
-  register: caddy_cockpit_subdomain_config
-  tags:
-    - configuration
-    - caddy
+      - name: Install cockpit-docker package.
+        become: true
+        ansible.builtin.apt:
+          deb: "/tmp/{{ cockpit_docker_package }}.deb"
+        tags: [ sudo, installation ]
 
-- name: Restart Caddy if config has changed.
-  become: true
-  ansible.builtin.service:
-    name: caddy
-    state: restarted
-  when: caddy_cockpit_subdomain_config.changed
-  tags:
-    - configuration
-    - caddy
+  - name: Initialize Cockpit config if it's missing.
+    become: true
+    ansible.builtin.template:
+      src: templates/cockpit/init.j2
+      dest: '{{ cockpit_config_path }}'
+      owner: root
+      group: root
+      mode: '0644'
+      force: false
+    tags: [ sudo, configuration ]
+
+  # https://caddy.community/t/example-cockpit/8283
+  - name: Configure Cockpit to accept traffic at https://cockpit.HOST_FQDN in addition to https://ANSIBLE_HOST:9090.
+    become: true
+    ansible.builtin.blockinfile:
+      path: '{{ cockpit_config_path }}'
+      marker: "# {mark} ANSIBLE MANAGED BLOCK FOR REVERSE PROXY"
+      block: "{{ lookup('template', 'templates/cockpit/reverse-proxy.j2') }}" # https://garthkerr.com/using-ansible-template-for-partial-file-block/
+    tags: [ sudo, configuration, reverse_proxy, caddy ]
+
+  # https://caddy.community/t/example-cockpit/8283
+  - name: Configure Caddy to serve Cockpit subdomain with valid SSL cert.
+    become: true
+    ansible.builtin.blockinfile:
+      path: '{{ caddy_config_path }}'
+      marker: "# {mark} ANSIBLE MANAGED BLOCK FOR COCKPIT"
+      block: "{{ lookup('template', 'templates/caddy/cockpit.j2') }}" # https://garthkerr.com/using-ansible-template-for-partial-file-block/
+    register: caddy_cockpit_subdomain_config
+    tags: [ sudo, configuration, reverse_proxy, caddy ]
+
+  - name: Reload Caddy if config has changed.
+    become: true
+    ansible.builtin.service:
+      name: caddy
+      enabled: true
+      state: reloaded
+    when: caddy_cockpit_subdomain_config.changed
+    tags: [ sudo, configuration, reverse_proxy, caddy ]
