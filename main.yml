@@ -7,7 +7,7 @@
     - vars/main.yml
 
   tasks:
-    - ansible.builtin.import_tasks: tasks/security.yml
+    - ansible.builtin.include_tasks: tasks/security.yml
       vars:
         group_name: dedicated
       when: "group_name in group_names"
@@ -30,7 +30,7 @@
         - utils
         - packages
 
-    - ansible.builtin.import_tasks: tasks/ddclient.yml
+    - ansible.builtin.include_tasks: tasks/ddclient.yml
       vars:
         group_name: remote_dedicated
       when: "group_name in group_names"
@@ -44,7 +44,7 @@
         - dns
         - ddclient
 
-    - ansible.builtin.import_tasks: tasks/nebula.yml
+    - ansible.builtin.include_tasks: tasks/nebula.yml
       vars:
         group_name: dedicated
       when: "group_name in group_names"
@@ -58,7 +58,8 @@
         - vpn
         - firewall
         - nebula
-    - ansible.builtin.import_tasks: tasks/yggdrasil.yml
+
+    - ansible.builtin.include_tasks: tasks/yggdrasil.yml
       vars:
         group_name: dedicated
       when: "group_name in group_names"
@@ -71,7 +72,7 @@
         - firewall
         - yggdrasil
 
-    - ansible.builtin.import_tasks: tasks/docker.yml
+    - ansible.builtin.include_tasks: tasks/docker.yml
       vars:
         group_name: dedicated
       when: "group_name in group_names"
@@ -83,7 +84,7 @@
         - firewall
         - docker
 
-    - ansible.builtin.import_tasks: tasks/ansible.yml
+    - ansible.builtin.include_tasks: tasks/ansible.yml
       vars:
         group_name: dedicated
       when: "group_name in group_names"
@@ -94,7 +95,7 @@
         - automation
         - ansible
 
-    - ansible.builtin.import_tasks: tasks/nodejs.yml
+    - ansible.builtin.include_tasks: tasks/nodejs.yml
       when: "'dedicated' in group_names or 'shared' in group_names"
       tags:
         - infra
@@ -103,7 +104,7 @@
         - javascript
         - nodejs
 
-    - ansible.builtin.import_tasks: tasks/caddy.yml
+    - ansible.builtin.include_tasks: tasks/caddy.yml
       vars:
         group_name: dedicated
       when: "group_name in group_names"
@@ -116,7 +117,7 @@
         - tcp
         - caddy
 
-    - ansible.builtin.import_tasks: tasks/cockpit.yml
+    - ansible.builtin.include_tasks: tasks/cockpit.yml
       vars:
         group_name: dedicated
       when: "group_name in group_names"
@@ -154,7 +155,7 @@
 
   post_tasks:
     - name: Install Gitea and set up Nebula forwarding for Gitea via Caddy.
-      ansible.builtin.import_tasks: tasks/gitea-server.yml
+      ansible.builtin.include_tasks: tasks/gitea-server.yml
       when: "'META__gitea_server' in group_names"
       tags:
         - infra
