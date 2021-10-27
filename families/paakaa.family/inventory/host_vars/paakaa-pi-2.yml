@@ -4,7 +4,7 @@ ansible_user: atomicpi
 
 family_domain: paakaa.family
 
-host_fqdn: "paakaa-pi-2.machines.{{ family_domain }}"
+host_fqdn: "{{ inventory_hostname_short }}.machines.{{ family_domain }}"
 
 nebula:
   nebula_ip: 192.168.100.10

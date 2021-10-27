@@ -4,7 +4,7 @@ ansible_user: sa_101777986754765670648
 
 family_domain: paakaa.family
 
-host_fqdn: "gcp-free.machines.{{ family_domain }}"
+host_fqdn: "{{ inventory_hostname_short }}.machines.{{ family_domain }}"
 
 dynamic_dns:
   google_domains:
