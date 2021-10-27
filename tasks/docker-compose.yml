@@ -61,8 +61,8 @@
         block:
 
         - name: Remove Docker Compose to test installation procedure.
-          tags: [ never, sudo, remove, test ]
-          when: "'remove' in ansible_run_tags or 'test' in ansible_run_tags"
+          tags: [ never, sudo, reset, remove, test ]
+          when: "'reset' in ansible_run_tags or 'remove' in ansible_run_tags or 'test' in ansible_run_tags"
           become: true
           ansible.builtin.file:
             path: "{{ docker_compose_path }}"
