@@ -93,6 +93,8 @@
         - infrastructure
         - dedicated
         - automation
+        - meta
+        - viral
         - ansible
 
     - ansible.builtin.include_tasks: tasks/nodejs.yml

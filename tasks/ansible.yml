@@ -1,9 +1,9 @@
 ---
-- name: Install Ansible.
-  become: true
-  ansible.builtin.import_role:
-    name: geerlingguy.ansible
-  tags:
-    - installation
-    - viral
-    - sudo
+- tags: [ automation, meta, fractal, viral, ansible ]
+  block:
+
+  - name: Install Ansible.
+    become: true
+    ansible.builtin.import_role:
+      name: geerlingguy.ansible
+    tags: [ sudo, installation ]
