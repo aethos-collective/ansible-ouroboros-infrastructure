@@ -54,6 +54,21 @@ all:
       children:
         dedicated:
 
+    postgresql:
+      hosts:
+        paakaa-pi-0:
+
+    adminer:
+      hosts:
+        paakaa-pi-0:
+    adminer_proxy:
+      children:
+        remote_dedicated:
+    META__adminer:
+      children:
+        adminer:
+        adminer_proxy:
+
     gitea_server:
       hosts:
         paakaa-pi-0:

@@ -115,6 +115,14 @@
       tags:
         - configuration
 
+    - name: Load Adminer configuration variables.
+      ansible.builtin.include_vars: vars/db/adminer.yml
+      vars:
+        group_name: META__adminer
+      when: "group_name in group_names or group_name in ansible_run_tags"
+      tags:
+        - configuration
+
     - name: Load Gitea configuration variables.
       ansible.builtin.include_vars: vars/gitea-server.yml
       vars:

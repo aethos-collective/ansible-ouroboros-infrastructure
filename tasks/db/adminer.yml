@@ -1,0 +1,43 @@
+---
+- tags: [ admin, adminer ]
+  block:
+
+  - name: Load Adminer configuration variables.
+    ansible.builtin.include_vars: vars/db/adminer.yml
+    tags: [ configuration, reverse_proxy, caddy ]
+
+  - name: "Ensure Docker container for Adminer is started."
+    community.docker.docker_container:
+      name: adminer
+      image: adminer:latest
+      pull: true
+      state: started
+      restart_policy: always
+      container_default_behavior: "compatibility"
+      ports:
+        - "{{ nebula.nebula_ip }}:{{ tcp_port_adminer }}:{{ tcp_port_adminer }}"
+      env:
+        ADMINER_DEFAULT_SERVER: postgresql
+    when: "'adminer' in group_names"
+    tags: [ installation, configuration, containers, docker ]
+
+  - when: "'adminer_proxy' in group_names"
+    block:
+
+    - name: Add reverse proxy block to Caddyfile for Adminer.
+      become: true
+      ansible.builtin.blockinfile:
+        path: '{{ caddy_config_path }}'
+        marker: "# {mark} ANSIBLE MANAGED BLOCK FOR ADMINER"
+        block: "{{ lookup('template', 'templates/caddy/adminer.j2') }}" # https://garthkerr.com/using-ansible-template-for-partial-file-block/
+      register: caddy_adminer_subdomain_config
+      tags: [ sudo, configuration, reverse_proxy, caddy ]
+
+    - name: Reload Caddy if config has changed.
+      become: true
+      ansible.builtin.service:
+        name: caddy
+        enabled: true
+        state: reloaded
+      when: caddy_adminer_subdomain_config.changed
+      tags: [ sudo, configuration, reverse_proxy, caddy ]

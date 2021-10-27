@@ -1,0 +1,15 @@
+---
+- tags: [ database, db ]
+  block:
+
+  - ansible.builtin.include_tasks: tasks/db/postgresql.yml
+    vars:
+      group_name: postgresql
+    when: "group_name in group_names"
+    tags: [ postgres, postgresql ]
+
+  - ansible.builtin.include_tasks: tasks/db/adminer.yml
+    vars:
+      group_name: META__adminer
+    when: "group_name in group_names"
+    tags: [ admin, reverse_proxy, caddy, adminer ]

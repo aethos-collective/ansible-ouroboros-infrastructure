@@ -1,0 +1,36 @@
+---
+- tags: [ postgres, postgresql ]
+  block:
+
+  - name: "Ensure Docker volume for PostgreSQL is created."
+    community.docker.docker_volume:
+      name: postgresql_volume
+      # TODO: get volume backed up
+    when: "'postgresql' in group_names"
+    tags: [ configuration, containers, docker ]
+
+  - name: "Ensure Docker container for PostgreSQL is started."
+    vars:
+      postgres_superuser_password: !vault |
+            $ANSIBLE_VAULT;1.2;AES256;ilyfam
+            35366330313839656139646330313932303836336331363463633062303739613339666464663136
+            6337336134366365373639623932386261613733653337350a633964396163383730376163373838
+            61303564353231656335363831653736356164653332303831366465313233313463343134373262
+            6461643234653737330a303631326464636262623861646330376235383964313430353136626633
+            35643764643233373538346637353262363439666265643036616436653864373264666264303363
+            3561306339666664343962626431626436336163623965303037
+    community.docker.docker_container:
+      name: postgresql
+      image: postgres:latest
+      pull: true
+      state: started
+      restart_policy: always
+      container_default_behavior: "compatibility"
+      env:
+        POSTGRES_PASSWORD: "{{ postgres_superuser_password }}"
+        POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
+        POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+      volumes:
+        - postgresql_volume:/data
+    when: "'postgresql' in group_names"
+    tags: [ installation, configuration, containers, docker ]

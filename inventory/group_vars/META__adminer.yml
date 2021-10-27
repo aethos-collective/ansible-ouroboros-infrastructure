@@ -1,0 +1,3 @@
+---
+adminer_fqdn: 'db.ilyfam.family'
+tcp_port_adminer: 8080

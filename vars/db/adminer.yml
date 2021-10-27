@@ -1,0 +1,2 @@
+---
+adminer_nebula_internal_ip: "{{ hostvars[groups['adminer'][0]]['nebula']['nebula_ip'] }}"

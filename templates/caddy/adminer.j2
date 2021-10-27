@@ -1,0 +1,6 @@
+{{ adminer_fqdn }} {
+  reverse_proxy http://{{ adminer_nebula_internal_ip }}:{{ tcp_port_adminer }} {
+    header_up Host {upstream_hostport}
+    header_up X-Forwarded-Host {host}
+  }
+}

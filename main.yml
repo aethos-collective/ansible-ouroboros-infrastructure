@@ -137,6 +137,20 @@
         - caddy
         - cockpit
 
+    - ansible.builtin.include_tasks: tasks/db/main.yml
+      vars:
+        group_name: dedicated
+      when: "group_name in group_names"
+      tags:
+        - infra
+        - infrastructure
+        - dedicated
+        - servers
+        - database
+        - db
+        - reverse_proxy
+        - caddy
+
   pre_tasks:
   # IMPORTANT: Please add any tasks in this pre_tasks section to the pre_tasks section
   #            of debug-info.yml for environment parity.

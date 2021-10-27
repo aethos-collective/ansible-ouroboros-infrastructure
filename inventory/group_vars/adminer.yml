@@ -1,0 +1,10 @@
+---
+# For geerlingguy.firewall role
+firewall_allowed_tcp_ports_adminer:
+  - '{{ tcp_port_adminer }}'
+
+# For trozz.ansible_nebula role
+inbound_adminer:
+  - port: '{{ tcp_port_adminer }}'
+    proto: tcp
+    host: any

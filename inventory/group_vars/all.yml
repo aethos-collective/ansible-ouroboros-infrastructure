@@ -1,7 +1,8 @@
 ---
 can_sudo: false
-
 ansible_python_interpreter: auto
+
+family_domain: ilyfam.family
 
 # Please keep this list alphabetized.
 core_utils:
