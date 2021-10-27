@@ -2,6 +2,57 @@
 - tags: [ core_utils, coreutils, core, utils, packages, installation, debian, debian_family, apt ]
   block:
 
+  - name: Initialize baseline fact for Tor Project Debian repository support.
+    ansible.builtin.set_fact:
+      tor_repo_supported: false
+
+  - name: Add Tor Project repository to Debian-based hosts with supported architectures.
+    when: ansible_architecture in [ 'x86_64', 'aarch64', 'i386' ]
+    vars: # 2021-10-20 https://support.torproject.org/apt/tor-deb-repo/
+      tor_apt_key_path: /usr/share/keyrings/tor-archive-keyring.gpg
+    block:
+
+    - name: Update fact for Tor Project Debian repository support.
+      ansible.builtin.set_fact:
+        tor_repo_supported: true
+
+    - name: Add Tor Project apt key.
+      become: true
+      ansible.builtin.apt_key: # 2021-10-20 https://support.torproject.org/apt/tor-deb-repo/
+        url: https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc
+        id: "A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89"
+        keyring: "{{ tor_apt_key_path }}"
+        state: present
+
+    - name: Add Tor Project repository.
+      become: true
+      ansible.builtin.apt_repository:
+        repo: "{{ item }}"
+        filename: tor
+        state: present
+        update_cache: false
+      with_items: # 2021-10-20 https://support.torproject.org/apt/tor-deb-repo/
+        - "deb     [signed-by={{ tor_apt_key_path }}] tor+https://deb.torproject.org/torproject.org {{ ansible_facts['distribution_release'] }} main"
+        - "deb-src [signed-by={{ tor_apt_key_path }}] tor+https://deb.torproject.org/torproject.org {{ ansible_facts['distribution_release'] }} main"
+        - "deb     [signed-by={{ tor_apt_key_path }}] tor+http://deb.torproject.org/torproject.org {{ ansible_facts['distribution_release'] }} main"
+        - "deb-src [signed-by={{ tor_apt_key_path }}] tor+http://deb.torproject.org/torproject.org {{ ansible_facts['distribution_release'] }} main"
+        - "deb     [signed-by={{ tor_apt_key_path }}] https://deb.torproject.org/torproject.org {{ ansible_facts['distribution_release'] }} main"
+        - "deb-src [signed-by={{ tor_apt_key_path }}] https://deb.torproject.org/torproject.org {{ ansible_facts['distribution_release'] }} main"
+        - "deb     [signed-by={{ tor_apt_key_path }}] http://deb.torproject.org/torproject.org {{ ansible_facts['distribution_release'] }} main"
+        - "deb-src [signed-by={{ tor_apt_key_path }}] http://deb.torproject.org/torproject.org {{ ansible_facts['distribution_release'] }} main"
+      register: tor_repo
+
+    - name: Update apt cache if repo was added.
+      ansible.builtin.apt:
+        update_cache: true
+      when: tor_repo.changed
+
+    tags:
+    - installation
+    - packages
+    - tor
+    - sudo
+
   - name: Ensure latest versions of core utility packages are installed on Debian-based hosts.
     become: true
     vars:
@@ -17,7 +68,7 @@
       - rust-doc
       - rustc
     ansible.builtin.apt:
-      name: "{{ core_utils + core_utils_apt + core_utils_debian }}"
+      name: "{{ core_utils + core_utils_apt + core_utils_debian + [ 'deb.torproject.org-keyring' ] if tor_repo_supported else [] }}"
       state: latest
     tags:
     - installation
