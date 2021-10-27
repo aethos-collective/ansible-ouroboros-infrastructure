@@ -106,11 +106,6 @@ all:
       children:
         windows:
 
-    PKG__apt:
-      children:
-        debian_family:
-        termux:
-
     arm64:
       children:
         aarch64:
@@ -122,6 +117,10 @@ all:
     amd64:
       children:
         x86_64:
+
+    x86:
+      children:
+        i386:
 
     amd32:
       children:

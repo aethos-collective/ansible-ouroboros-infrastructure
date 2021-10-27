@@ -1,15 +1,41 @@
 ---
 - name: Group hosts by architecture.
   ansible.builtin.group_by:
-    key: '{{ ansible_architecture | lower }}'
+    key: "{{ ansible_facts['architecture'] | lower }}"
   changed_when: false
 
-- name: Group hosts by OS family (bare).
+- name: Group hosts by OS.
   ansible.builtin.group_by:
-    key: '{{ ansible_os_family | lower | replace(" ","") }}'
+    key: "{{ ansible_facts['system'] | lower }}"
   changed_when: false
 
-- name: Group hosts by OS family (_family).
+- name: Group hosts by OS family (w/o "_family" suffix).
   ansible.builtin.group_by:
-    key: '{{ ansible_os_family | lower | replace(" ","") }}_family'
+    key: "{{ ansible_facts['os_family'] | lower | replace(' ','') }}"
+  changed_when: false
+
+- name: Group hosts by OS family (w/ "_family" suffix).
+  ansible.builtin.group_by:
+    key: "{{ ansible_facts['os_family'] | lower | replace(' ','') }}_family"
+  changed_when: false
+
+- name: Group Linux hosts by LSB ID.
+  ansible.builtin.group_by:
+    key: "{{ ansible_facts['lsb'].id | lower }}"
+  when: >
+    ansible_facts['system'] == 'Linux'
+      and
+    ansible_facts['lsb'] is defined
+      and
+    ansible_facts['lsb'].id is defined
+  changed_when: false
+
+- name: Group hosts by package manager (w/o "PKG__" prefix).
+  ansible.builtin.group_by:
+    key: "{{ pkg_mgr if pkg_mgr is defined else ansible_facts['pkg_mgr'] }}"
+  changed_when: false
+
+- name: Group hosts by package manager (w/ "PKG__" prefix).
+  ansible.builtin.group_by:
+    key: "PKG__{{ pkg_mgr if pkg_mgr is defined else ansible_facts['pkg_mgr'] }}"
   changed_when: false
