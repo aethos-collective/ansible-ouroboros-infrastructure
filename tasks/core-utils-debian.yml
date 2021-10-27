@@ -53,6 +53,51 @@
     - tor
     - sudo
 
+  - name: Add official Debian onion service repositories to Debian (NOT Raspbian) hosts.
+    # https://wiki.debian.org/DontBreakDebian
+    # https://www.raspbian.org/RaspbianFAQ#Can_I_mix_packages_from_the_Debian_repositories_with_Raspbian.3F
+    when: ansible_facts['distribution'] == 'Debian' and ansible_facts['lsb'].id != 'Raspbian'
+    block:
+
+    - name: Add Debian apt keys.
+      become: true
+      ansible.builtin.apt_key:
+        url: "{{ item.url }}"
+        id: "{{ item.fingerprint }}"
+        state: present
+      with_items: # 2021-10-20 https://ftp-master.debian.org/keys.html
+        - url: "https://ftp-master.debian.org/keys/release-{{ ansible_facts['distribution_major_version'] }}.asc"
+          fingerprint: 6D33866EDD8FFA41C0143AEDDCC9EFBF77E11517
+        - url: "https://ftp-master.debian.org/keys/archive-key-{{ ansible_facts['distribution_major_version'] }}.asc"
+          fingerprint: 80D15823B7FD1561F9F7BCDDDC30D7C23CBBABEE
+        - url: "https://ftp-master.debian.org/keys/archive-key-{{ ansible_facts['distribution_major_version'] }}-security.asc"
+          fingerprint: 5E61B217265DA9807A23C5FF4DFAB270CAA96DFA
+
+    - name: Add Debian onion service repositories.
+      become: true
+      ansible.builtin.apt_repository:
+        repo: "{{ item }}"
+        filename: debian-onions
+        state: present
+        update_cache: false
+      with_items: # 2021-10-20 https://onion.debian.org
+        - "deb tor+http://2s4yqjx5ul6okpp3f2gaunr2syex5jgbfpfvhxxbbjwnrsvbk5v3qbid.onion/debian          {{ ansible_facts['distribution_release'] }}            main"
+        - "deb tor+http://2s4yqjx5ul6okpp3f2gaunr2syex5jgbfpfvhxxbbjwnrsvbk5v3qbid.onion/debian          {{ ansible_facts['distribution_release'] }}-updates    main"
+        - "deb tor+http://5ajw6aqf3ep7sijnscdzw77t7xq4xjpsy335yb2wiwgouo7yfxtjlmid.onion/debian-security {{ ansible_facts['distribution_release'] }}/updates    main"
+        - "deb tor+http://2s4yqjx5ul6okpp3f2gaunr2syex5jgbfpfvhxxbbjwnrsvbk5v3qbid.onion/debian          {{ ansible_facts['distribution_release'] }}-backports  main"
+      register: debian_onion_repos
+
+    - name: Update apt cache if repos were added.
+      ansible.builtin.apt:
+        update_cache: true
+      when: debian_onion_repos.changed
+
+    tags:
+    - installation
+    - packages
+    - tor
+    - sudo
+
   - name: Ensure latest versions of core utility packages are installed on Debian-based hosts.
     become: true
     vars:
