@@ -5,6 +5,10 @@ all:
 ########################
 ##### Local groups #####
 ########################
+    bare_metal:
+      children:
+        pi:
+
     pi:
       children:
         raspberry_pi:
@@ -21,6 +25,11 @@ all:
 #########################
 ##### Remote groups #####
 #########################
+    cloud:
+      children:
+        google_cloud:
+        oracle_cloud:
+
     remote_dedicated:
       children:
         google_cloud:
