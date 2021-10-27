@@ -1,5 +1,5 @@
 ---
-- name: debug info for dedicated hosts
+- name: Show debug info for all dedicated and development hosts in inventory.
   hosts: [ dedicated, devel ]
   gather_facts: false
   tags: [ always ]
