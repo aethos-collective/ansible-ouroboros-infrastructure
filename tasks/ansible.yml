@@ -2,6 +2,15 @@
 - tags: [ automation, meta, fractal, viral, ansible ]
   block:
 
+  - name: Ensure pip is installed and install pip package for yamllint.
+    become: true
+    ansible.builtin.import_role:
+      name: geerlingguy.pip
+    vars:
+      pip_install_packages:
+        - name: yamllint
+    tags: [ sudo, pip, installation ]
+
   - name: Install Ansible.
     become: true
     ansible.builtin.import_role:
