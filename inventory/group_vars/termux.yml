@@ -1,0 +1,8 @@
+---
+ansible_port: 8022
+ansible_python_interpreter: '${PREFIX}/bin/python'
+ansible_remote_tmp: '${HOME}/.ansible/tmp'
+
+pkg_mgr: apt
+
+caddy_config_dir: '${PREFIX}/etc/caddy'

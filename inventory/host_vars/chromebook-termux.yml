@@ -1,4 +1,11 @@
 ---
 ansible_host: localhost
-ansible_port: 8022
-ansible_python_interpreter: /data/data/com.termux/files/usr/bin/python
+ansible_user: u0_a140
+
+yggdrasil_allowed_public_keys: [] # task-populated
+
+yggdrasil_peers: [] # task-populated
+
+# public key retrieved from Yggdrasil app for Android
+yggdrasil_public_key: 5cfc5ab83c2e69a63203f57488e6f44c8ef64e28cee537df7051e590a6796a13
+yggdrasil_peering_addresses: []
