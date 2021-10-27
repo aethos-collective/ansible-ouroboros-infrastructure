@@ -1,21 +1,25 @@
 ---
-- name: Ensure python-apt is installed on Termux hosts.
-  # IMPORTANT: python and git packages must be installed manually on Termux hosts before this will succeed.
-  ansible.builtin.pip:
-    name: git+https://salsa.debian.org/apt-team/python-apt.git@{{ python_apt_version }}#egg=python-apt
-  vars:
-    python_apt_version: 2.2.1
-  when: "'termux' in group_names"
-  tags:
-    - termux
+- when: "'termux' in group_names"
+  tags: [ termux ]
+  block:
+  - name: Check if python-apt is installed on Termux hosts.
+    ansible.builtin.shell:
+      cmd: 'python -c "import apt"'
+    register: python_apt_is_installed
+    changed_when: python_apt_is_installed.rc != 0
+    failed_when: false
+  - name: Install python-apt on Termux hosts.
+    ansible.builtin.include_tasks: tasks/termux/install-python-apt.yml
+    when: "python_apt_is_installed.rc != 0"
 
-- name: Update apt cache and upgrade apt packages.
+- name: Update apt cache, upgrade apt packages, and autoremove packages no longer required.
   become: '{{ can_sudo }}'
   ansible.builtin.apt:
     upgrade: true
     update_cache: true
     cache_valid_time: 86400 # one day
-  when: "'PKG__apt' in group_names and 'shared' not in group_names"
+    autoremove: true
+  when: "'PKG__apt' in group_names and ('shared' not in group_names or can_sudo or 'termux' in group_names)"
   tags:
     - termux
     - debian
