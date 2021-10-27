@@ -1,24 +1,25 @@
 ---
-- name: Ensure Termux is awesome.
-  become: false
-  vars:
-    # Please keep this list alphabetized.
-    core_utils_termux:
-    - caddy
-    - gping
-    - nodejs
-    - okc-agents
+- tags: [ core_utils, coreutils, core, utils, packages, installation, termux, apt ]
+  block:
 
-    ### https://gist.github.com/oofnikj/e79aef095cd08756f7f26ed244355d62
-    - qemu-common
-    - qemu-system-x86_64-headless
-    - qemu-utils
+  - name: Ensure latest versions of core utility packages are installed on Termux hosts.
+    become: false
+    vars:
+      # Please keep this list alphabetized.
+      core_utils_termux:
+      - gping
+      - okc-agents
+      - openssh
+      - python # Python 3
 
-    - rust
-    - termux-api
-  ansible.builtin.apt:
-    name: "{{ core_utils + core_utils_apt + core_utils_termux }}"
-    state: latest
-  tags:
-  - installation
-  - packages
+      ### https://gist.github.com/oofnikj/e79aef095cd08756f7f26ed244355d62
+      - qemu-common
+      - qemu-system-x86_64-headless
+      - qemu-utils
+
+      - rust
+      - termux-api
+
+    ansible.builtin.apt:
+        name: "{{ core_utils + core_utils_apt + core_utils_termux }}"
+        state: latest

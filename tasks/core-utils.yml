@@ -1,24 +1,15 @@
 ---
-- ansible.builtin.import_tasks: tasks/core-utils-debian.yml
-  vars:
-    group_name: debian_family
-  when: "group_name in group_names"
-  tags:
-    - infra
-    - infrastructure
-    - dedicated
-    - core
-    - utils
-    - packages
+- tags: [ infra, infrastructure, core_utils, coreutils, core, utils, packages, installation ]
+  block:
 
-- ansible.builtin.import_tasks: tasks/core-utils-termux.yml
-  vars:
-    group_name: termux
-  when: "group_name in group_names"
-  tags:
-    - infra
-    - infrastructure
-    - dedicated
-    - core
-    - utils
-    - packages
+  - ansible.builtin.include_tasks: tasks/core-utils-debian.yml
+    vars:
+      group_name: debian_family
+    when: "group_name in group_names and can_sudo"
+    tags: [ debian, debian_family, apt ]
+
+  - ansible.builtin.include_tasks: tasks/core-utils-termux.yml
+    vars:
+      group_name: termux
+    when: "group_name in group_names"
+    tags: [ termux, apt ]

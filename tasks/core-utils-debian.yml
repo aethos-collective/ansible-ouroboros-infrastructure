@@ -1,14 +1,25 @@
 ---
-- name: Ensure latest versions of core utility packages are installed on Debian.
-  become: true
-  vars:
-    core_utils_debian:
-    - cloud-utils
-    - iputils-ping
-  ansible.builtin.package:
-    name: "{{ core_utils + core_utils_apt + core_utils_debian }}"
-    state: latest
-  tags:
-  - installation
-  - packages
-  - sudo
+- tags: [ core_utils, coreutils, core, utils, packages, installation, debian, debian_family, apt ]
+  block:
+
+  - name: Ensure latest versions of core utility packages are installed on Debian-based hosts.
+    become: true
+    vars:
+      # Please keep this list alphabetized.
+      core_utils_debian:
+      - apt-transport-https
+      - cloud-utils
+      - iputils-ping
+      - openssh-client
+      - openssh-server
+      - python3
+      - python3-apt
+      - rust-doc
+      - rustc
+    ansible.builtin.apt:
+      name: "{{ core_utils + core_utils_apt + core_utils_debian }}"
+      state: latest
+    tags:
+    - installation
+    - packages
+    - sudo

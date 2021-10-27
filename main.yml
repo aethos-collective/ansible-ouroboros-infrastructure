@@ -19,16 +19,15 @@
         - firewall
 
     - ansible.builtin.import_tasks: tasks/core-utils.yml
-      vars:
-        group_name: dedicated
-      when: "group_name in group_names"
       tags:
         - infra
         - infrastructure
-        - dedicated
+        - core_utils
+        - coreutils
         - core
         - utils
         - packages
+        - installation
 
     - ansible.builtin.include_tasks: tasks/ddclient.yml
       vars:

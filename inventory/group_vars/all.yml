@@ -13,7 +13,6 @@ core_utils:
 - net-tools
 - nano
 - nmap
-- openssh
-- python
 - tor
 - vim
+- wget
