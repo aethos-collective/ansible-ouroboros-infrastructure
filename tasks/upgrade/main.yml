@@ -1,19 +1,19 @@
 ---
-- ansible.builtin.include_tasks: upgrade-crew.yml
+- ansible.builtin.include_tasks: crew.yml
   when: "'PKG__crew' in group_names"
   tags:
     #- never
     - chromebrew
     - crew
 
-- ansible.builtin.include_tasks: upgrade-choco.yml
+- ansible.builtin.include_tasks: choco.yml
   when: "'PKG__choco' in group_names"
   tags:
     #- never
     - chocolatey
     - choco
 
-- ansible.builtin.include_tasks: upgrade-apt.yml
+- ansible.builtin.include_tasks: apt.yml
   when: "'PKG__apt' in group_names"
   tags:
     #- never
