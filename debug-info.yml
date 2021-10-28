@@ -38,6 +38,9 @@
     - name: firewall_allowed_udp_ports
       ansible.builtin.debug: var=firewall_allowed_udp_ports
 
+    - name: Nebula addresses
+      ansible.builtin.debug: var=nebula
+
     - name: ansible_facts (when 'ansible_facts' and inventory host names in tags)
       ansible.builtin.debug: var=ansible_facts
       when: "inventory_hostname_short in ansible_run_tags and 'packages' not in ansible_run_tags"
