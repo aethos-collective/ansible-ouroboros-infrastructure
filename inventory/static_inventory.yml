@@ -78,16 +78,16 @@ all:
         adminer:
         adminer_proxy:
 
-    gitea_server:
+    gitea:
       hosts:
         paakaa-pi-0:
-    gitea_server_proxy:
+    gitea_proxy:
       children:
         remote_dedicated:
-    META__gitea_server:
+    META__gitea:
       children:
-        gitea_server:
-        gitea_server_proxy:
+        gitea:
+        gitea_proxy:
 
 #####
 ##### Make sure these groups stay last in this section!

@@ -95,7 +95,7 @@
         - infrastructure
         - meta
 
-    - ansible.builtin.import_tasks: tasks/setup-ansible-groups.yml
+    - ansible.builtin.import_tasks: tasks/meta/setup-groups.yml
       tags:
         - always
         - infra
@@ -150,9 +150,9 @@
         - configuration
 
     - name: Load Gitea configuration variables.
-      ansible.builtin.include_vars: vars/gitea-server.yml
+      ansible.builtin.include_vars: vars/gitea.yml
       vars:
-        group_name: META__gitea_server
+        group_name: META__gitea
       when: "group_name in group_names or group_name in ansible_run_tags"
       tags:
         - configuration

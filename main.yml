@@ -18,7 +18,7 @@
         - security
         - firewall
 
-    - ansible.builtin.import_tasks: tasks/core-utils.yml
+    - ansible.builtin.import_tasks: tasks/core-utils/main.yml
       tags:
         - infra
         - infrastructure
@@ -188,7 +188,7 @@
         - infrastructure
         - meta
 
-    - ansible.builtin.import_tasks: tasks/setup-ansible-groups.yml
+    - ansible.builtin.import_tasks: tasks/meta/setup-groups.yml
       tags:
         - always
         - infra
@@ -202,7 +202,7 @@
         - infrastructure
         - meta
 
-    - ansible.builtin.import_tasks: tasks/upgrade-all.yml
+    - ansible.builtin.import_tasks: tasks/upgrade/main.yml
       tags:
         - infra
         - infrastructure
@@ -211,8 +211,8 @@
 
   post_tasks:
     - name: Install Gitea and set up Nebula forwarding for Gitea via Caddy.
-      ansible.builtin.include_tasks: tasks/gitea-server.yml
-      when: "'META__gitea_server' in group_names"
+      ansible.builtin.include_tasks: tasks/gitea.yml
+      when: "'META__gitea' in group_names"
       tags:
         - infra
         - infrastructure
