@@ -2,13 +2,15 @@
 - tags: [ infra, infrastructure, core_utils, coreutils, core, utils, packages, installation ]
   block:
 
-  - ansible.builtin.include_tasks: debian.yml
+  - name: Install core utilities on Debian-based hosts.
+    ansible.builtin.include_tasks: debian.yml
     vars:
       group_name: debian_family
     when: "group_name in group_names and can_sudo"
     tags: [ debian, debian_family, apt ]
 
-  - ansible.builtin.include_tasks: termux.yml
+  - name: Install core utilities on Termux hosts.
+    ansible.builtin.include_tasks: termux.yml
     vars:
       group_name: termux
     when: "group_name in group_names"

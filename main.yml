@@ -7,7 +7,8 @@
     - vars/main.yml
 
   tasks:
-    - ansible.builtin.include_tasks: tasks/security.yml
+    - name: Make machines more secure than by default.
+      ansible.builtin.include_tasks: tasks/security.yml
       vars:
         group_name: dedicated
       when: "group_name in group_names"
@@ -18,7 +19,8 @@
         - security
         - firewall
 
-    - ansible.builtin.import_tasks: tasks/core-utils/main.yml
+    - name: Install core utilities.
+      ansible.builtin.import_tasks: tasks/core-utils/main.yml
       tags:
         - infra
         - infrastructure
@@ -29,7 +31,8 @@
         - packages
         - installation
 
-    - ansible.builtin.include_tasks: tasks/ddclient.yml
+    - name: Set up dynamic DNS.
+      ansible.builtin.include_tasks: tasks/ddclient.yml
       vars:
         group_name: remote_dedicated
       when: "group_name in group_names"
@@ -44,7 +47,8 @@
         - dynamic_dns
         - ddclient
 
-    - ansible.builtin.include_tasks: tasks/nebula.yml
+    - name: Set up Nebula mesh.
+      ansible.builtin.include_tasks: tasks/nebula.yml
       vars:
         group_name: dedicated
       when: "group_name in group_names"
@@ -59,7 +63,8 @@
         - firewall
         - nebula
 
-    - ansible.builtin.include_tasks: tasks/yggdrasil.yml
+    - name: Set up Yggdrasil mesh.
+      ansible.builtin.include_tasks: tasks/yggdrasil.yml
       vars:
         group_name: yggdrasil
       when: "group_name in group_names"
@@ -72,7 +77,8 @@
         - firewall
         - yggdrasil
 
-    - ansible.builtin.include_tasks: tasks/docker.yml
+    - name: Set up Docker.
+      ansible.builtin.include_tasks: tasks/docker.yml
       vars:
         group_name: dedicated
       when: "group_name in group_names"
@@ -84,7 +90,8 @@
         - firewall
         - docker
 
-    - ansible.builtin.include_tasks: tasks/ansible.yml
+    - name: Set up Ansible ... using Ansible.
+      ansible.builtin.include_tasks: tasks/ansible.yml
       vars:
         group_name: dedicated
       when: "group_name in group_names"
@@ -97,7 +104,8 @@
         - viral
         - ansible
 
-    - ansible.builtin.include_tasks: tasks/nodejs.yml
+    - name: Set up Node.js.
+      ansible.builtin.include_tasks: tasks/nodejs.yml
       when: "'dedicated' in group_names or 'shared' in group_names"
       tags:
         - infra
@@ -108,7 +116,8 @@
         - javascript
         - nodejs
 
-    - ansible.builtin.include_tasks: tasks/caddy.yml
+    - name: Set up Caddy server.
+      ansible.builtin.include_tasks: tasks/caddy.yml
       vars:
         group_name: caddy_server
       when: "group_name in group_names"
@@ -122,7 +131,8 @@
         - tcp
         - caddy
 
-    - ansible.builtin.include_tasks: tasks/cockpit.yml
+    - name: Set up Cockpit.
+      ansible.builtin.include_tasks: tasks/cockpit.yml
       vars:
         group_name: dedicated
       when: "group_name in group_names"
@@ -137,7 +147,8 @@
         - caddy
         - cockpit
 
-    - ansible.builtin.include_tasks: tasks/db/main.yml
+    - name: Set up databases and database management.
+      ansible.builtin.include_tasks: tasks/db/main.yml
       vars:
         group_name: dedicated
       when: "group_name in group_names"
@@ -155,7 +166,8 @@
     - name: Initialize Ansible environment.
       ansible.builtin.import_tasks: tasks/meta/init.yml
 
-    - ansible.builtin.import_tasks: tasks/upgrade/main.yml
+    - name: Upgrade packages.
+      ansible.builtin.import_tasks: tasks/upgrade/main.yml
       tags:
         - infra
         - infrastructure

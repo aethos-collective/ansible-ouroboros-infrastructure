@@ -18,5 +18,6 @@
     changed_when: python_apt_is_installed.rc != 0
     failed_when: false
 
-  - when: python_apt_is_installed.rc != 0
+  - name: Install python-apt.
+    when: python_apt_is_installed.rc != 0
     ansible.builtin.include_tasks: python-apt/install.yml
