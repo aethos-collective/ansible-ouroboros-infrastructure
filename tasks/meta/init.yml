@@ -1,0 +1,41 @@
+---
+- name: Gather facts for {{ play_hosts }}.
+  ansible.builtin.gather_facts:
+    parallel: true
+  tags:
+    - always
+    - infra
+    - infrastructure
+    - meta
+
+- name: Ensure python-apt is installed on Termux hosts.
+  ansible.builtin.include_tasks: tasks/termux/python-apt.yml
+  tags: [ termux, meta, infrastructure, infra, always ]
+  when: "'termux' in group_names"
+
+- name: Gather package facts for {{ play_hosts }}.
+  ansible.builtin.package_facts:
+    manager: auto
+    strategy: all
+  failed_when: false # Fails on Chromium OS and derivatives
+  tags:
+    - always
+    - infra
+    - infrastructure
+    - meta
+
+- name: Set up Ansible groups.
+  ansible.builtin.import_tasks: setup-groups.yml
+  tags:
+    - always
+    - infra
+    - infrastructure
+    - meta
+
+- name: Compile Ansible lists.
+  ansible.builtin.import_tasks: compile-lists.yml
+  tags:
+    - always
+    - infra
+    - infrastructure
+    - meta

@@ -152,47 +152,8 @@
         - caddy
 
   pre_tasks:
-  # IMPORTANT: Please add any tasks in this pre_tasks section to the pre_tasks section
-  #            of debug-info.yml for environment parity.
-
-    - name: Gather facts for all hosts in inventory.
-      ansible.builtin.gather_facts:
-        parallel: true
-      tags:
-        - always
-        - infra
-        - infrastructure
-        - meta
-
-    - name: Ensure python-apt is installed on Termux hosts.
-      ansible.builtin.include_tasks: tasks/termux/python-apt.yml
-      tags: [ termux, meta, infrastructure, infra, always ]
-      when: "'termux' in group_names"
-
-    - name: Gather package facts for all hosts in inventory.
-      ansible.builtin.package_facts:
-        manager: auto
-        strategy: all
-      failed_when: false # Fails on Chromium OS and derivatives
-      tags:
-        - always
-        - infra
-        - infrastructure
-        - meta
-
-    - ansible.builtin.import_tasks: tasks/meta/setup-groups.yml
-      tags:
-        - always
-        - infra
-        - infrastructure
-        - meta
-
-    - ansible.builtin.import_tasks: tasks/meta/compile-lists.yml
-      tags:
-        - always
-        - infra
-        - infrastructure
-        - meta
+    - name: Initialize Ansible environment.
+      ansible.builtin.import_tasks: tasks/meta/init.yml
 
     - ansible.builtin.import_tasks: tasks/upgrade/main.yml
       tags:
