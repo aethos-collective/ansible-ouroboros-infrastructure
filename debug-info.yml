@@ -40,6 +40,8 @@
 
     - name: Nebula addresses
       ansible.builtin.debug: var=nebula
+    - name: Yggdrasil address
+      ansible.builtin.debug: var=yggdrasil_address
 
     - name: ansible_facts (when 'ansible_facts' and inventory host names in tags)
       ansible.builtin.debug: var=ansible_facts
@@ -76,11 +78,18 @@
       tags:
         - configuration
 
-    - name: Load Yggdrasil configuration variables.
-      ansible.builtin.include_vars: vars/yggdrasil.yml
+    - name: Initialize Yggdrasil environment.
       vars:
         group_name: yggdrasil
       when: "group_name in group_names or group_name in ansible_run_tags"
+      block:
+
+      - name: Load Yggdrasil configuration variables.
+        ansible.builtin.include_vars: vars/yggdrasil.yml
+
+      - name: Get Yggdrasil address.
+        ansible.builtin.import_tasks: tasks/yggdrasil/get-address.yml
+
       tags:
         - configuration
 

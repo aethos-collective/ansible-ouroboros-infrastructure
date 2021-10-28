@@ -1,0 +1,54 @@
+---
+- name: Get Yggdrasil address (via installed package command).
+  when: ansible_facts['packages']['yggdrasil'] is defined
+  block:
+  - name: Get Yggdrasil address (via yggdrasil command).
+    ansible.builtin.shell:
+      cmd: 'yggdrasil -useconffile {{ yggdrasil_config_path }} -address'
+    register: yggdrasil_address_cmd
+    changed_when: false
+
+  - name: Set Yggdrasil address fact.
+    when: yggdrasil_address_cmd.stdout != ''
+    ansible.builtin.set_fact:
+      yggdrasil_address: '{{ yggdrasil_address_cmd.stdout }}'
+
+- name: Get Yggdrasil address (via ansible_facts).
+  when: >
+    yggdrasil_address is not defined
+      and
+    ansible_facts[yggdrasil_interface] is defined
+      and
+    ansible_facts[yggdrasil_interface].device == yggdrasil_interface
+      and
+    ansible_facts[yggdrasil_interface].active
+      and
+    item.prefix == '7'
+  ansible.builtin.set_fact:
+    yggdrasil_address: "{{ item.address }}"
+  with_items: '{{ ansible_facts[yggdrasil_interface].ipv6 }}'
+
+- name: Get Yggdrasil address (via shell command).
+  when: yggdrasil_address is not defined
+  block:
+
+  - name: Query system for Yggdrasil address (via interface {{ yggdrasil_interface }}).
+    ansible.builtin.shell:
+      cmd: "ifconfig {{ yggdrasil_interface }} | grep inet6 | grep 'prefixlen 7' | awk '{ print $2 }'"
+    register: yggdrasil_address_cmd
+    changed_when: false
+    failed_when: yggdrasil_address_cmd.stdout == ''
+
+  - name: Set Yggdrasil address fact.
+    when: yggdrasil_address_cmd.stdout != ''
+    ansible.builtin.set_fact:
+      yggdrasil_address: '{{ yggdrasil_address_cmd.stdout }}'
+
+  - when: yggdrasil_address is not defined
+    ansible.builtin.fail:
+
+  rescue:
+
+  - name: Could not get Yggdrasil address.
+    ansible.builtin.debug:
+      msg: "WHOOPS!!! Yggdrasil address is unavailable on {{ inventory_hostname_short }}! Sorry. :-("

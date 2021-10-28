@@ -119,3 +119,6 @@
         enabled: true
         state: reloaded
       tags: [ sudo, configuration ]
+
+  - name: Get Yggdrasil address.
+    ansible.builtin.import_tasks: yggdrasil/get-address.yml

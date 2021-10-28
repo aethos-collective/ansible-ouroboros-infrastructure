@@ -1,6 +1,8 @@
 ---
 yggdrasil_config_path: /etc/yggdrasil.conf
 
+yggdrasil_interface: tun0
+
 yggdrasil_uri_scheme: tcp # tcp or tls
 tcp_port_yggdrasil: 9183
 
