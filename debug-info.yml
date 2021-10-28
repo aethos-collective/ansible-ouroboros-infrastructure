@@ -71,18 +71,10 @@
         - infrastructure
         - meta
 
-    - when: "'termux' in group_names"
+    - name: Ensure python-apt is installed on Termux hosts.
+      ansible.builtin.include_tasks: tasks/termux/python-apt.yml
       tags: [ termux, meta, infrastructure, infra, always ]
-      block:
-      - name: Check if python-apt is installed on Termux hosts.
-        ansible.builtin.shell:
-          cmd: 'python -c "import apt"'
-        register: python_apt_is_installed
-        changed_when: python_apt_is_installed.rc != 0
-        failed_when: false
-      - name: Install python-apt on Termux hosts.
-        ansible.builtin.include_tasks: tasks/termux/install-python-apt.yml
-        when: "python_apt_is_installed.rc != 0"
+      when: "'termux' in group_names"
 
     - name: Gather package facts for all hosts in inventory.
       ansible.builtin.package_facts:

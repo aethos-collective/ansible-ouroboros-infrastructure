@@ -1,6 +1,6 @@
 ---
 # Run this on Termux host to test:
-#   apt remove git python gcc-11 -y && apt autoremove -y && rm $PREFIX/etc/apt/sources.list.d/pointless.list && rm -rf $HOME/src && apt update && apt install python -y
+#   apt remove git python gcc-11 -y && apt autoremove -y && rm ${PREFIX}/etc/apt/sources.list.d/pointless.list && rm -rf ${HOME}/src && apt update && apt install python -y
 
 - name: Ensure python-apt v{{ python_apt_version }} is installed on Termux hosts.
   when: "'termux' in group_names"
@@ -8,7 +8,6 @@
 
   vars:
     python_apt_version: 2.2.1
-    python_apt_url: git+https://salsa.debian.org/apt-team/python-apt.git@{{ python_apt_version }}#egg=python-apt
 
   block:
 
@@ -19,155 +18,5 @@
     changed_when: python_apt_is_installed.rc != 0
     failed_when: false
 
-  - name: Install python-apt v{{ python_apt_version }} and dependencies.
-    when: python_apt_is_installed.rc != 0
-    vars:
-      termux_home: /data/data/com.termux/files/home
-      python_distutils_extra_version: 2.39
-      python_distutils_extra_url: https://launchpad.net/python-distutils-extra/trunk/{{ python_distutils_extra_version }}/+download/python-distutils-extra-{{ python_distutils_extra_version }}.tar.gz
-      python_distutils_extra_build_path: '{{ termux_home }}/python-distutils-extra-{{ python_distutils_extra_version }}'
-      pointless_repo_setup_script_url: https://its-pointless.github.io/setup-pointless-repo.sh
-      pointless_repo_setup_script_download_path: '{{ termux_home }}/setup-pointless-repo.sh'
-      pointless_repo_list_path: /data/data/com.termux/files/usr/etc/apt/sources.list.d/pointless.list
-    block:
-
-    - name: Check if Git is already installed.
-      ansible.builtin.shell:
-        cmd: git --version
-      register: git_is_installed
-      changed_when: git_is_installed.rc != 0
-      failed_when: false
-    
-    - name: Install Git.
-      when: git_is_installed.rc != 0
-      block:
-
-      - name: Install Git from official Termux repository.
-        ansible.builtin.shell:
-          cmd: apt install --upgrade git -y
-        register: git_install
-        changed_when: '"git is already the newest version" not in git_install.stdout'
-
-      - name: Check if Git installation succeeded.
-        ansible.builtin.shell:
-          cmd: git --version
-        register: git_is_installed
-        changed_when: false
-        failed_when: git_is_installed.rc != 0
-
-      rescue:
-      - name: Git could not be installed.
-        ansible.builtin.fail:
-          msg: "WHOOPS!!! Git couldn't be installed! Sorry. :-("
-
-    - name: Ensure latest versions of pip and sphinx are installed.
-      ansible.builtin.pip:
-        name:
-        - pip
-        - sphinx
-        state: latest
-
-    - name: Check if python-distutils-extra v{{ python_distutils_extra_version }} is already installed.
-      ansible.builtin.shell:
-        cmd: "pip list | grep python-distutils-extra | grep {{ python_distutils_extra_version }}"
-      register: python_distutils_extra_is_installed
-      changed_when: not python_distutils_extra_is_installed.stdout.startswith('python-distutils-extra')
-      failed_when: false
-
-    - name: Install python-distutils-extra v{{ python_distutils_extra_version }}.
-      when: not python_distutils_extra_is_installed.stdout.startswith('python-distutils-extra')
-      block:
-
-      - name: Download python-distutils-extra v{{ python_distutils_extra_version }}.
-        ansible.builtin.unarchive:
-          src: "{{ python_distutils_extra_url }}"
-          dest: "{{ termux_home }}"
-          remote_src: yes
-          mode: 0755
-          creates: '{{ python_distutils_extra_build_path }}/setup.py'
-
-      - name: Build python-distutils-extra v{{ python_distutils_extra_version }}.
-        ansible.builtin.shell:
-          chdir: "{{ python_distutils_extra_build_path }}"
-          cmd: ./setup.py build
-
-      - name: Install python-distutils-extra v{{ python_distutils_extra_version }}.
-        ansible.builtin.shell:
-          chdir: "{{ python_distutils_extra_build_path }}"
-          cmd: ./setup.py install
-
-      - name: Cleanup python-distutils-extra v{{ python_distutils_extra_version }} build files post-install.
-        ansible.builtin.file:
-          path: "{{ python_distutils_extra_build_path }}"
-          state: absent
-
-      - name: Check if python-distutils-extra v{{ python_distutils_extra_version }} installation succeeded.
-        ansible.builtin.shell:
-          cmd: "pip list | grep python-distutils-extra | grep {{ python_distutils_extra_version }}"
-        register: python_distutils_extra_is_installed
-        changed_when: false
-        failed_when: not python_distutils_extra_is_installed.stdout.startswith('python-distutils-extra')
-
-      rescue:
-      - name: python-distutils-extra v{{ python_distutils_extra_version }} could not be installed.
-        ansible.builtin.fail:
-          msg: "WHOOPS!!! python-distutils-extra v{{ python_distutils_extra_version }} couldn't be installed! Sorry. :-("
-
-    - name: Check if 'pointless' Termux repository already exists.
-      ansible.builtin.stat:
-        path: "{{ pointless_repo_list_path }}"
-      register: pointless_repo_exists
-      changed_when: not pointless_repo_exists.stat.exists
-
-    - name: Install 'pointless' Termux repository.
-      when: not pointless_repo_exists.stat.exists
-      block:
-
-      - name: Download 'pointless' Termux repository setup script.
-        ansible.builtin.get_url:
-          url: "{{ pointless_repo_setup_script_url }}"
-          dest: "{{ pointless_repo_setup_script_download_path }}"
-          mode: 0755
-        register: pointless_repo_setup_script_downloaded
-
-      - name: Run 'pointless' Termux repository setup script.
-        ansible.builtin.shell:
-          cmd: "{{ pointless_repo_setup_script_download_path }}"
-        when: pointless_repo_setup_script_downloaded.changed
-
-      - name: Cleanup 'pointless' Termux repository setup script post-install.
-        ansible.builtin.file:
-          path: "{{ pointless_repo_setup_script_download_path }}"
-          state: absent
-        when: pointless_repo_setup_script_downloaded.changed
-
-      - name: Check if 'pointless' Termux repository installation succeeded.
-        ansible.builtin.stat:
-          path: "{{ pointless_repo_list_path }}"
-        register: pointless_repo_exists
-        changed_when: false
-        failed_when: not pointless_repo_exists.stat.exists
-
-      rescue:
-      - name: The 'pointless' Termux repository could not be installed.
-        ansible.builtin.fail:
-          msg: "WHOOPS!!! The 'pointless' Termux repository couldn't be installed! Sorry. :-("
-
-    - name: Install GCC 11 from 'pointless' Termux repository.
-      ansible.builtin.shell:
-        cmd: apt install --upgrade gcc-11 -y
-      register: gcc_install
-      changed_when: '"gcc-11 is already the newest version" not in gcc_install.stdout'
-
-    - name: Install python-apt v{{ python_apt_version }}.
-      ansible.builtin.shell:
-        cmd: 'pip install -e "{{ python_apt_url }}"'
-      register: python_apt_install
-      failed_when: '"Successfully installed python-apt" not in python_apt_install.stdout'
-
-    - name: Check if python-apt installation succeeded.
-      ansible.builtin.command:
-        cmd: 'python -c "import apt"'
-      register: python_apt_is_installed
-      changed_when: false
-      failed_when: python_apt_is_installed.rc != 0
+  - when: python_apt_is_installed.rc != 0
+    ansible.builtin.include_tasks: python-apt/install.yml
