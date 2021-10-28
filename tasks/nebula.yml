@@ -157,7 +157,6 @@
         name: trozz.ansible_nebula
         apply:
           become: true
-      failed_when: false
       tags: [ sudo, configuration ]
 
   - name: Reset Nebula systemd "service failed" state.
