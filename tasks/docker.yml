@@ -37,7 +37,8 @@
       docker_apt_repository: "deb [arch={{ docker_apt_arch }}] {{ docker_repo_url }}/{{ docker_distribution }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
     tags: [ sudo, packages ]
 
-  - ansible.builtin.import_tasks: ./docker-compose.yml
+  - name: Install Docker Compose.
+    ansible.builtin.import_tasks: docker-compose.yml
     vars:
       docker_compose_install: true
       docker_compose_version: "v2.0.1"
