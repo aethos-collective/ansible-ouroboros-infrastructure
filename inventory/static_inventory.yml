@@ -59,7 +59,7 @@ all:
 ####################################
 ##### Solution-oriented groups #####
 ####################################
-    caddy_server:
+    caddy:
       children:
         dedicated:
 

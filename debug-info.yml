@@ -94,7 +94,7 @@
   - name: Load Caddy configuration variables.
     ansible.builtin.include_vars: vars/caddy.yml
     vars:
-      group_name: caddy_server
+      group_name: caddy
     when: "group_name in group_names or group_name in ansible_run_tags"
     tags: [ configuration ]
 
