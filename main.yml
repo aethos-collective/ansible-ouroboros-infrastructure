@@ -50,7 +50,7 @@
   - name: Set up Nebula mesh.
     ansible.builtin.include_tasks: tasks/nebula.yml
     vars:
-      group_name: dedicated
+      group_name: nebula
     when: "group_name in group_names"
     tags:
     - infra

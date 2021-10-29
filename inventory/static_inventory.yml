@@ -92,6 +92,10 @@ all:
 #####
 ##### Make sure these groups stay last in this section!
 #####
+    nebula:
+      children:
+        dedicated:
+
     nebula_lighthouse:
       children:
         remote_dedicated:

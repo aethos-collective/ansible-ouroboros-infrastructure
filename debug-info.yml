@@ -73,7 +73,7 @@
   - name: Load Nebula configuration variables.
     ansible.builtin.include_vars: vars/nebula.yml
     vars:
-      group_name: dedicated
+      group_name: nebula
     when: "group_name in group_names or group_name in ansible_run_tags"
     tags: [ configuration ]
 
