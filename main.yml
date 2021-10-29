@@ -149,7 +149,7 @@
     - caddy
     - cockpit
 
-  - name: Set up databases and database management.
+  - name: Set up databases and database management systems.
     ansible.builtin.include_tasks: tasks/db/main.yml
     vars:
       group_name: dedicated
