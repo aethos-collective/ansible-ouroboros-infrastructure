@@ -8,13 +8,13 @@ tcp_port_yggdrasil: 9183
 
 # For geerlingguy.firewall role
 firewall_allowed_tcp_ports_yggdrasil:
-  - '{{ tcp_port_yggdrasil }}'
+- '{{ tcp_port_yggdrasil }}'
 
 # For trozz.ansible_nebula role
 inbound_yggdrasil:
-  - port: '{{ tcp_port_yggdrasil }}'
-    proto: tcp
-    host: any
+- port: '{{ tcp_port_yggdrasil }}'
+  proto: tcp
+  host: any
 
 yggdrasil_peering_addresses:
 - '{{ yggdrasil_uri_scheme }}://{{ ansible_host }}:{{ tcp_port_yggdrasil }}'

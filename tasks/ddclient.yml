@@ -9,18 +9,18 @@
     vars:
       daemon: 0
       configs:
-        - protocol: googledomains
-          ssl: yes
-          use: web
-          server: domains.google.com
-          backupmx: null
-          mx: null
-          mxpri: null
-          wildcard: null
-          login: '{{ dynamic_dns.google_domains.username }}'
-          password: '{{ dynamic_dns.google_domains.password }}'
-          hosts:
-            - '{{ host_fqdn }}'
+      - protocol: googledomains
+        ssl: yes
+        use: web
+        server: domains.google.com
+        backupmx: null
+        mx: null
+        mxpri: null
+        wildcard: null
+        login: '{{ dynamic_dns.google_domains.username }}'
+        password: '{{ dynamic_dns.google_domains.password }}'
+        hosts:
+        - '{{ host_fqdn }}'
     tags: [ sudo, packages, installation, configuration ]
 
   - name: Force-update dynamic DNS entry.

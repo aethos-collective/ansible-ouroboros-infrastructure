@@ -35,7 +35,7 @@
     - name: Check hosts for Docker Desktop support.
       assert:
         that:
-          - not supported_platforms[system].desktop
+        - not supported_platforms[system].desktop
         success_msg: "{{ inventory_hostname_short }} is a {{ ansible_facts['system'] }}-based host, which is not a Docker Desktop system. Continuing with Docker Compose installation."
         fail_msg:    "{{ inventory_hostname_short }} is a {{ ansible_facts['system'] }}-based host, which is a Docker Desktop system. Docker Compose is included in Docker Desktop for {{ supported_platforms[system].architectures }} {{ ansible_facts['system'] }}-based hosts. Skipping Docker Compose installation."
 

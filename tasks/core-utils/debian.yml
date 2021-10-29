@@ -32,14 +32,14 @@
         state: present
         update_cache: false
       with_items: # 2021-10-20 https://support.torproject.org/apt/tor-deb-repo/
-        - "deb     [signed-by={{ tor_apt_key_path }}] tor+https://deb.torproject.org/torproject.org {{ ansible_facts['distribution_release'] }} main"
-        - "deb-src [signed-by={{ tor_apt_key_path }}] tor+https://deb.torproject.org/torproject.org {{ ansible_facts['distribution_release'] }} main"
-        - "deb     [signed-by={{ tor_apt_key_path }}] tor+http://deb.torproject.org/torproject.org {{ ansible_facts['distribution_release'] }} main"
-        - "deb-src [signed-by={{ tor_apt_key_path }}] tor+http://deb.torproject.org/torproject.org {{ ansible_facts['distribution_release'] }} main"
-        - "deb     [signed-by={{ tor_apt_key_path }}] https://deb.torproject.org/torproject.org {{ ansible_facts['distribution_release'] }} main"
-        - "deb-src [signed-by={{ tor_apt_key_path }}] https://deb.torproject.org/torproject.org {{ ansible_facts['distribution_release'] }} main"
-        - "deb     [signed-by={{ tor_apt_key_path }}] http://deb.torproject.org/torproject.org {{ ansible_facts['distribution_release'] }} main"
-        - "deb-src [signed-by={{ tor_apt_key_path }}] http://deb.torproject.org/torproject.org {{ ansible_facts['distribution_release'] }} main"
+      - "deb     [signed-by={{ tor_apt_key_path }}] tor+https://deb.torproject.org/torproject.org {{ ansible_facts['distribution_release'] }} main"
+      - "deb-src [signed-by={{ tor_apt_key_path }}] tor+https://deb.torproject.org/torproject.org {{ ansible_facts['distribution_release'] }} main"
+      - "deb     [signed-by={{ tor_apt_key_path }}] tor+http://deb.torproject.org/torproject.org {{ ansible_facts['distribution_release'] }} main"
+      - "deb-src [signed-by={{ tor_apt_key_path }}] tor+http://deb.torproject.org/torproject.org {{ ansible_facts['distribution_release'] }} main"
+      - "deb     [signed-by={{ tor_apt_key_path }}] https://deb.torproject.org/torproject.org {{ ansible_facts['distribution_release'] }} main"
+      - "deb-src [signed-by={{ tor_apt_key_path }}] https://deb.torproject.org/torproject.org {{ ansible_facts['distribution_release'] }} main"
+      - "deb     [signed-by={{ tor_apt_key_path }}] http://deb.torproject.org/torproject.org {{ ansible_facts['distribution_release'] }} main"
+      - "deb-src [signed-by={{ tor_apt_key_path }}] http://deb.torproject.org/torproject.org {{ ansible_facts['distribution_release'] }} main"
       register: tor_repo
 
     - name: Update apt cache if repo was added.
@@ -66,12 +66,12 @@
         id: "{{ item.fingerprint }}"
         state: present
       with_items: # 2021-10-20 https://ftp-master.debian.org/keys.html
-        - url: "https://ftp-master.debian.org/keys/release-{{ ansible_facts['distribution_major_version'] }}.asc"
-          fingerprint: 6D33866EDD8FFA41C0143AEDDCC9EFBF77E11517
-        - url: "https://ftp-master.debian.org/keys/archive-key-{{ ansible_facts['distribution_major_version'] }}.asc"
-          fingerprint: 80D15823B7FD1561F9F7BCDDDC30D7C23CBBABEE
-        - url: "https://ftp-master.debian.org/keys/archive-key-{{ ansible_facts['distribution_major_version'] }}-security.asc"
-          fingerprint: 5E61B217265DA9807A23C5FF4DFAB270CAA96DFA
+      - url: "https://ftp-master.debian.org/keys/release-{{ ansible_facts['distribution_major_version'] }}.asc"
+        fingerprint: 6D33866EDD8FFA41C0143AEDDCC9EFBF77E11517
+      - url: "https://ftp-master.debian.org/keys/archive-key-{{ ansible_facts['distribution_major_version'] }}.asc"
+        fingerprint: 80D15823B7FD1561F9F7BCDDDC30D7C23CBBABEE
+      - url: "https://ftp-master.debian.org/keys/archive-key-{{ ansible_facts['distribution_major_version'] }}-security.asc"
+        fingerprint: 5E61B217265DA9807A23C5FF4DFAB270CAA96DFA
 
     - name: Add Debian onion service repositories.
       become: true
@@ -81,10 +81,10 @@
         state: present
         update_cache: false
       with_items: # 2021-10-20 https://onion.debian.org
-        - "deb tor+http://2s4yqjx5ul6okpp3f2gaunr2syex5jgbfpfvhxxbbjwnrsvbk5v3qbid.onion/debian          {{ ansible_facts['distribution_release'] }}            main"
-        - "deb tor+http://2s4yqjx5ul6okpp3f2gaunr2syex5jgbfpfvhxxbbjwnrsvbk5v3qbid.onion/debian          {{ ansible_facts['distribution_release'] }}-updates    main"
-        - "deb tor+http://5ajw6aqf3ep7sijnscdzw77t7xq4xjpsy335yb2wiwgouo7yfxtjlmid.onion/debian-security {{ ansible_facts['distribution_release'] }}/updates    main"
-        - "deb tor+http://2s4yqjx5ul6okpp3f2gaunr2syex5jgbfpfvhxxbbjwnrsvbk5v3qbid.onion/debian          {{ ansible_facts['distribution_release'] }}-backports  main"
+      - "deb tor+http://2s4yqjx5ul6okpp3f2gaunr2syex5jgbfpfvhxxbbjwnrsvbk5v3qbid.onion/debian          {{ ansible_facts['distribution_release'] }}            main"
+      - "deb tor+http://2s4yqjx5ul6okpp3f2gaunr2syex5jgbfpfvhxxbbjwnrsvbk5v3qbid.onion/debian          {{ ansible_facts['distribution_release'] }}-updates    main"
+      - "deb tor+http://5ajw6aqf3ep7sijnscdzw77t7xq4xjpsy335yb2wiwgouo7yfxtjlmid.onion/debian-security {{ ansible_facts['distribution_release'] }}/updates    main"
+      - "deb tor+http://2s4yqjx5ul6okpp3f2gaunr2syex5jgbfpfvhxxbbjwnrsvbk5v3qbid.onion/debian          {{ ansible_facts['distribution_release'] }}-backports  main"
       register: debian_onion_repos
 
     - name: Update apt cache if repos were added.

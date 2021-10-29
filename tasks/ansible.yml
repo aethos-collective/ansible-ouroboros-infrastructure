@@ -8,7 +8,7 @@
       name: geerlingguy.pip
     vars:
       pip_install_packages:
-        - name: yamllint
+      - name: yamllint
     tags: [ sudo, pip, installation ]
 
   - name: Install Ansible.

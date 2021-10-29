@@ -15,7 +15,7 @@
       restart_policy: always
       container_default_behavior: "compatibility"
       ports:
-        - "{{ nebula.nebula_ip }}:{{ tcp_port_adminer }}:{{ tcp_port_adminer }}"
+      - "{{ nebula.nebula_ip }}:{{ tcp_port_adminer }}:{{ tcp_port_adminer }}"
       env:
         ADMINER_DEFAULT_SERVER: postgresql
     when: "'adminer' in group_names"

@@ -31,6 +31,6 @@
         POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
         POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
       volumes:
-        - postgresql_volume:/data
+      - postgresql_volume:/data
     when: "'postgresql' in group_names"
     tags: [ installation, configuration, containers, docker ]

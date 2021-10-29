@@ -14,9 +14,7 @@
     slack_channel: "#tech-smarthome-logs"
     slack_username: "paakaa-family"
     slack_icon_emoji: ":paakaa-family:"
-  tags:
-    - configuration
-    - sudo
+  tags: [ sudo, configuration ]
 
 - name: Make sure notify_slack is registered and started.
   become: true
@@ -24,6 +22,4 @@
     name: notify_slack
     state: started
     enabled: true
-  tags:
-    - configuration
-    - sudo
+  tags: [ sudo, configuration ]

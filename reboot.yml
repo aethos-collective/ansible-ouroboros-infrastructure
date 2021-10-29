@@ -4,4 +4,4 @@
   hosts: dedicated
 
   tasks:
-    - ansible.builtin.reboot:
+  - ansible.builtin.reboot:

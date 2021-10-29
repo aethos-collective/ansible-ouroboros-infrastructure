@@ -1,15 +1,15 @@
 ---
 # For geerlingguy.firewall role
 firewall_allowed_udp_ports_minecraft_bedrock_server:
-  - '{{ udp_port_minecraft_bedrock_server_ipv4 }}'
-  - '{{ udp_port_minecraft_bedrock_server_ipv6 }}'
+- '{{ udp_port_minecraft_bedrock_server_ipv4 }}'
+- '{{ udp_port_minecraft_bedrock_server_ipv6 }}'
 
 # For trozz.ansible_nebula role
 inbound_minecraft_bedrock_server:
-  - port: '{{ udp_port_minecraft_bedrock_server_ipv4 }}'
-    proto: udp
-    host: any
+- port: '{{ udp_port_minecraft_bedrock_server_ipv4 }}'
+  proto: udp
+  host: any
 
-  - port: '{{ udp_port_minecraft_bedrock_server_ipv6 }}'
-    proto: udp
-    host: any
+- port: '{{ udp_port_minecraft_bedrock_server_ipv6 }}'
+  proto: udp
+  host: any

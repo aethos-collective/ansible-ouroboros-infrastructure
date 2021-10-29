@@ -10,17 +10,17 @@
     become: true
     ansible.builtin.package:
       name:
-        - cockpit
-        - cockpit-bridge
-        - cockpit-dashboard
-        - cockpit-doc
-        - cockpit-machines
-        - cockpit-networkmanager
-        - cockpit-packagekit
-        - cockpit-pcp
-        - cockpit-storaged
-        - cockpit-system
-        - cockpit-ws
+      - cockpit
+      - cockpit-bridge
+      - cockpit-dashboard
+      - cockpit-doc
+      - cockpit-machines
+      - cockpit-networkmanager
+      - cockpit-packagekit
+      - cockpit-pcp
+      - cockpit-storaged
+      - cockpit-system
+      - cockpit-ws
       state: latest
     tags: [ sudo, installation ]
 

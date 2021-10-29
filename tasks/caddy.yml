@@ -49,11 +49,11 @@
           become: true
           ansible.builtin.apt:
             name:
-              - debian-keyring
-              - debian-archive-keyring
-              - apt-transport-https
-              - gnupg2
-              - curl
+            - debian-keyring
+            - debian-archive-keyring
+            - apt-transport-https
+            - gnupg2
+            - curl
             state: present
           tags: [ sudo ]
 

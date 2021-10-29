@@ -13,7 +13,7 @@
     autoremove: true
   when: "'PKG__apt' in group_names and ('shared' not in group_names or can_sudo or 'termux' in group_names)"
   tags:
-    - termux
-    - debian
-    - debian_family
-    - ubuntu
+  - termux
+  - debian
+  - debian_family
+  - ubuntu

@@ -5,130 +5,123 @@
   tags: [ always ]
 
   vars_files:
-    - vars/main.yml
+  - vars/main.yml
 
   vars:
     distribution: "{{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_major_version'] }}"
 
   tasks:
-    - name: ansible_facts['architecture']
-      ansible.builtin.debug: var=ansible_facts['architecture']
-    - name: ansible_facts['machine']
-      ansible.builtin.debug: var=ansible_facts['machine']
-    - name: ansible_facts['system']
-      ansible.builtin.debug: var=ansible_facts['system']
-    - name: ansible_facts['os_family']
-      ansible.builtin.debug: var=ansible_facts['os_family']
-    - name: ansible_facts['distribution'] + ansible_facts['distribution_major_version']
-      ansible.builtin.debug: var=distribution
-    - name: ansible_facts['distribution_release']
-      ansible.builtin.debug: var=ansible_facts['distribution_release']
-    - name: ansible_facts['distribution_version']
-      ansible.builtin.debug: var=ansible_facts['distribution_version']
-    - name: ansible_facts['lsb']
-      ansible.builtin.debug: var=ansible_facts['lsb']
+  - name: ansible_facts['architecture']
+    ansible.builtin.debug: var=ansible_facts['architecture']
+  - name: ansible_facts['machine']
+    ansible.builtin.debug: var=ansible_facts['machine']
+  - name: ansible_facts['system']
+    ansible.builtin.debug: var=ansible_facts['system']
+  - name: ansible_facts['os_family']
+    ansible.builtin.debug: var=ansible_facts['os_family']
+  - name: ansible_facts['distribution'] + ansible_facts['distribution_major_version']
+    ansible.builtin.debug: var=distribution
+  - name: ansible_facts['distribution_release']
+    ansible.builtin.debug: var=ansible_facts['distribution_release']
+  - name: ansible_facts['distribution_version']
+    ansible.builtin.debug: var=ansible_facts['distribution_version']
+  - name: ansible_facts['lsb']
+    ansible.builtin.debug: var=ansible_facts['lsb']
 
-    - name: group_names
-      ansible.builtin.debug: var=group_names
-    #- name: groups
-    #  ansible.builtin.debug: var=groups
+  - name: group_names
+    ansible.builtin.debug: var=group_names
+  #- name: groups
+  #  ansible.builtin.debug: var=groups
 
-    - name: firewall_allowed_tcp_ports
-      ansible.builtin.debug: var=firewall_allowed_tcp_ports
-    - name: firewall_allowed_udp_ports
-      ansible.builtin.debug: var=firewall_allowed_udp_ports
+  - name: firewall_allowed_tcp_ports
+    ansible.builtin.debug: var=firewall_allowed_tcp_ports
+  - name: firewall_allowed_udp_ports
+    ansible.builtin.debug: var=firewall_allowed_udp_ports
 
-    - name: Nebula addresses
-      ansible.builtin.debug: var=nebula
-    - name: Yggdrasil address
-      ansible.builtin.debug: var=yggdrasil_address
+  - name: Nebula addresses
+    ansible.builtin.debug: var=nebula
+  - name: Yggdrasil address
+    ansible.builtin.debug: var=yggdrasil_address
 
-    - name: ansible_facts (when 'ansible_facts' and inventory host names in tags)
-      ansible.builtin.debug: var=ansible_facts
-      when: "inventory_hostname_short in ansible_run_tags and 'packages' not in ansible_run_tags"
-      tags: [ never, ansible_facts ]
+  - name: ansible_facts (when 'ansible_facts' and inventory host names in tags)
+    ansible.builtin.debug: var=ansible_facts
+    when: "inventory_hostname_short in ansible_run_tags and 'packages' not in ansible_run_tags"
+    tags: [ never, ansible_facts ]
 
-    - name: ansible_facts['packages'] (when 'ansible_facts', 'packages', and inventory host names in tags)
-      ansible.builtin.debug: var=ansible_facts['packages']
-      when: "inventory_hostname_short in ansible_run_tags and 'packages' in ansible_run_tags"
-      tags: [ never, ansible_facts, packages ]
+  - name: ansible_facts['packages'] (when 'ansible_facts', 'packages', and inventory host names in tags)
+    ansible.builtin.debug: var=ansible_facts['packages']
+    when: "inventory_hostname_short in ansible_run_tags and 'packages' in ansible_run_tags"
+    tags: [ never, ansible_facts, packages ]
 
-    - name: Save 'vars' variable to ~/Downloads/vars.yml when 'vars' in tags
-      local_action:
-        module: ansible.builtin.copy
-        dest: "~/Downloads/vars.yml"
-        content: "{{ vars | to_nice_yaml }}"
-      run_once: true
-      when: "'vars' in ansible_run_tags"
-      tags: [ never, vars ]
+  - name: Save 'vars' variable to ~/Downloads/vars.yml when 'vars' in tags
+    local_action:
+      module: ansible.builtin.copy
+      dest: "~/Downloads/vars.yml"
+      content: "{{ vars | to_nice_yaml }}"
+    run_once: true
+    when: "'vars' in ansible_run_tags"
+    tags: [ never, vars ]
 
-    - name: ansible_run_tags
-      ansible.builtin.debug: var=ansible_run_tags
-      run_once: true
+  - name: ansible_run_tags
+    ansible.builtin.debug: var=ansible_run_tags
+    run_once: true
 
   pre_tasks:
-    - name: Initialize Ansible environment.
-      ansible.builtin.import_tasks: tasks/meta/init.yml
+  - name: Initialize Ansible environment.
+    ansible.builtin.import_tasks: tasks/meta/init.yml
 
-    - name: Load Nebula configuration variables.
-      ansible.builtin.include_vars: vars/nebula.yml
-      vars:
-        group_name: dedicated
-      when: "group_name in group_names or group_name in ansible_run_tags"
-      tags:
-        - configuration
+  - name: Load Nebula configuration variables.
+    ansible.builtin.include_vars: vars/nebula.yml
+    vars:
+      group_name: dedicated
+    when: "group_name in group_names or group_name in ansible_run_tags"
+    tags: [ configuration ]
 
-    - name: Initialize Yggdrasil environment.
-      vars:
-        group_name: yggdrasil
-      when: "group_name in group_names or group_name in ansible_run_tags"
-      block:
+  - name: Initialize Yggdrasil environment.
+    vars:
+      group_name: yggdrasil
+    when: "group_name in group_names or group_name in ansible_run_tags"
+    block:
 
-      - name: Load Yggdrasil configuration variables.
-        ansible.builtin.include_vars: vars/yggdrasil.yml
+    - name: Load Yggdrasil configuration variables.
+      ansible.builtin.include_vars: vars/yggdrasil.yml
 
-      - name: Get Yggdrasil address.
-        ansible.builtin.import_tasks: tasks/yggdrasil/get-address.yml
+    - name: Get Yggdrasil address.
+      ansible.builtin.import_tasks: tasks/yggdrasil/get-address.yml
 
-      tags:
-        - configuration
+    tags: [ configuration ]
 
-    - name: Load Caddy configuration variables.
-      ansible.builtin.include_vars: vars/caddy.yml
-      vars:
-        group_name: caddy_server
-      when: "group_name in group_names or group_name in ansible_run_tags"
-      tags:
-        - configuration
+  - name: Load Caddy configuration variables.
+    ansible.builtin.include_vars: vars/caddy.yml
+    vars:
+      group_name: caddy_server
+    when: "group_name in group_names or group_name in ansible_run_tags"
+    tags: [ configuration ]
 
-    - name: Load Cockpit configuration variables.
-      ansible.builtin.include_vars: vars/cockpit.yml
-      vars:
-        group_name: dedicated
-      when: "group_name in group_names or group_name in ansible_run_tags"
-      tags:
-        - configuration
+  - name: Load Cockpit configuration variables.
+    ansible.builtin.include_vars: vars/cockpit.yml
+    vars:
+      group_name: dedicated
+    when: "group_name in group_names or group_name in ansible_run_tags"
+    tags: [ configuration ]
 
-    - name: Load Adminer configuration variables.
-      ansible.builtin.include_vars: vars/db/adminer.yml
-      vars:
-        group_name: META__adminer
-      when: "group_name in group_names or group_name in ansible_run_tags"
-      tags:
-        - configuration
+  - name: Load Adminer configuration variables.
+    ansible.builtin.include_vars: vars/db/adminer.yml
+    vars:
+      group_name: META__adminer
+    when: "group_name in group_names or group_name in ansible_run_tags"
+    tags: [ configuration ]
 
-    - name: Load Gitea configuration variables.
-      ansible.builtin.include_vars: vars/gitea.yml
-      vars:
-        group_name: META__gitea
-      when: "group_name in group_names or group_name in ansible_run_tags"
-      tags:
-        - configuration
+  - name: Load Gitea configuration variables.
+    ansible.builtin.include_vars: vars/gitea.yml
+    vars:
+      group_name: META__gitea
+    when: "group_name in group_names or group_name in ansible_run_tags"
+    tags: [ configuration ]
 
-    - name: Load Minecraft Bedrock Server configuration variables.
-      ansible.builtin.include_vars: families/paakaa.family/vars/minecraft-bedrock-server.yml
-      vars:
-        group_name: META__minecraft_bedrock_server
-      when: "group_name in group_names or group_name in ansible_run_tags"
-      tags:
-        - configuration
+  - name: Load Minecraft Bedrock Server configuration variables.
+    ansible.builtin.include_vars: families/paakaa.family/vars/minecraft-bedrock-server.yml
+    vars:
+      group_name: META__minecraft_bedrock_server
+    when: "group_name in group_names or group_name in ansible_run_tags"
+    tags: [ configuration ]

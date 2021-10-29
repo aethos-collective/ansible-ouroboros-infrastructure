@@ -8,7 +8,7 @@
       name: geerlingguy.pip
     vars:
       pip_install_packages:
-        - name: docker
+      - name: docker
     tags: [ sudo, pip, packages ]
 
   - name: Install Docker.

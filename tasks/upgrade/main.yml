@@ -2,23 +2,14 @@
 - name: Upgrade Chromebrew packages.
   ansible.builtin.include_tasks: crew.yml
   when: "'PKG__crew' in group_names"
-  tags:
-    #- never
-    - chromebrew
-    - crew
+  tags: [ chromebrew, crew ]
 
 - name: Upgrade Chocolatey packages.
   ansible.builtin.include_tasks: choco.yml
   when: "'PKG__choco' in group_names"
-  tags:
-    #- never
-    - chocolatey
-    - choco
+  tags: [ chocolatey, choco ]
 
 - name: Upgrade Aptitude packages.
   ansible.builtin.include_tasks: apt.yml
   when: "'PKG__apt' in group_names"
-  tags:
-    #- never
-    - aptitude
-    - apt
+  tags: [ aptitude, apt ]

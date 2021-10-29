@@ -4,5 +4,4 @@
   chocolatey.chocolatey.win_chocolatey:
     name: all
     state: latest
-  tags:
-    - sudo
+  tags: [ sudo ]

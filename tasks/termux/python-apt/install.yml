@@ -20,7 +20,7 @@
     register: git_is_installed
     changed_when: git_is_installed.rc != 0
     failed_when: false
-  
+
   - name: Install Git.
     when: git_is_installed.rc != 0
     block:

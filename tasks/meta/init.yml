@@ -3,10 +3,10 @@
   ansible.builtin.gather_facts:
     parallel: true
   tags:
-    - always
-    - infra
-    - infrastructure
-    - meta
+  - always
+  - infra
+  - infrastructure
+  - meta
 
 - name: Ensure python-apt is installed on Termux hosts.
   ansible.builtin.include_tasks: tasks/termux/python-apt.yml
@@ -19,23 +19,23 @@
     strategy: all
   failed_when: false # Fails on Chromium OS and derivatives
   tags:
-    - always
-    - infra
-    - infrastructure
-    - meta
+  - always
+  - infra
+  - infrastructure
+  - meta
 
 - name: Set up Ansible groups.
   ansible.builtin.import_tasks: setup-groups.yml
   tags:
-    - always
-    - infra
-    - infrastructure
-    - meta
+  - always
+  - infra
+  - infrastructure
+  - meta
 
 - name: Compile Ansible lists.
   ansible.builtin.import_tasks: compile-lists.yml
   tags:
-    - always
-    - infra
-    - infrastructure
-    - meta
+  - always
+  - infra
+  - infrastructure
+  - meta

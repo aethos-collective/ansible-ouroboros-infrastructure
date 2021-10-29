@@ -71,9 +71,9 @@
       group: root
       mode: '0600'
     with_items:
-      - 'ca.crt'
-      - '{{ nebula.external_addr }}.crt'
-      - '{{ nebula.external_addr }}.key'
+    - 'ca.crt'
+    - '{{ nebula.external_addr }}.crt'
+    - '{{ nebula.external_addr }}.key'
     register: nebula_certificates_deploy
     tags: [ sudo, configuration ]
 

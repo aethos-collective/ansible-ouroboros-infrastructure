@@ -4,21 +4,21 @@
   hosts: dedicated
 
   vars_files:
-    - vars/family.yml
+  - vars/family.yml
 
   tasks:
-    ### TODO: fix for Raspbian hosts
-    - name: Configure dedicated hosts to notify Slack on startup/shutdown.
-      ansible.builtin.include_tasks: tasks/notify-slack.yml
-      when: "'dedicated' in group_names"
-      tags:
-        - notifications
-        - slack
+  ### TODO: fix for Raspbian hosts
+  - name: Configure dedicated hosts to notify Slack on startup/shutdown.
+    ansible.builtin.include_tasks: tasks/notify-slack.yml
+    when: "'dedicated' in group_names"
+    tags:
+    - notifications
+    - slack
 
-    - name: Install Minecraft Bedrock Server.
-      ansible.builtin.include_tasks: tasks/minecraft-bedrock-server.yml
-      when: "'META__minecraft_bedrock_server' in group_names"
-      tags:
-        - games
-        - servers
-        - minecraft
+  - name: Install Minecraft Bedrock Server.
+    ansible.builtin.include_tasks: tasks/minecraft-bedrock-server.yml
+    when: "'META__minecraft_bedrock_server' in group_names"
+    tags:
+    - games
+    - servers
+    - minecraft

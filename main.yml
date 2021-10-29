@@ -4,190 +4,189 @@
   hosts: all
 
   vars_files:
-    - vars/main.yml
+  - vars/main.yml
 
   tasks:
-    - name: Make machines more secure than by default.
-      ansible.builtin.include_tasks: tasks/security.yml
-      vars:
-        group_name: dedicated
-      when: "group_name in group_names"
-      tags:
-        - infra
-        - infrastructure
-        - dedicated
-        - security
-        - firewall
+  - name: Make machines more secure than by default.
+    ansible.builtin.include_tasks: tasks/security.yml
+    vars:
+      group_name: dedicated
+    when: "group_name in group_names"
+    tags:
+    - infra
+    - infrastructure
+    - dedicated
+    - security
+    - firewall
 
-    - name: Install core utilities.
-      ansible.builtin.import_tasks: tasks/core-utils/main.yml
-      tags:
-        - infra
-        - infrastructure
-        - core_utils
-        - coreutils
-        - core
-        - utils
-        - packages
-        - installation
+  - name: Install core utilities.
+    ansible.builtin.import_tasks: tasks/core-utils/main.yml
+    tags:
+    - infra
+    - infrastructure
+    - core_utils
+    - coreutils
+    - core
+    - utils
+    - packages
+    - installation
 
-    - name: Set up dynamic DNS.
-      ansible.builtin.include_tasks: tasks/ddclient.yml
-      vars:
-        group_name: remote_dedicated
-      when: "group_name in group_names"
-      tags:
-        - infra
-        - infrastructure
-        - dedicated
-        - remote
-        - remote_dedicated
-        - networking
-        - dns
-        - dynamic_dns
-        - ddclient
+  - name: Set up dynamic DNS.
+    ansible.builtin.include_tasks: tasks/ddclient.yml
+    vars:
+      group_name: remote_dedicated
+    when: "group_name in group_names"
+    tags:
+    - infra
+    - infrastructure
+    - dedicated
+    - remote
+    - remote_dedicated
+    - networking
+    - dns
+    - dynamic_dns
+    - ddclient
 
-    - name: Set up Nebula mesh.
-      ansible.builtin.include_tasks: tasks/nebula.yml
-      vars:
-        group_name: dedicated
-      when: "group_name in group_names"
-      tags:
-        - infra
-        - infrastructure
-        - dedicated
-        - networking
-        - dns
-        - mesh
-        - vpn
-        - firewall
-        - nebula
+  - name: Set up Nebula mesh.
+    ansible.builtin.include_tasks: tasks/nebula.yml
+    vars:
+      group_name: dedicated
+    when: "group_name in group_names"
+    tags:
+    - infra
+    - infrastructure
+    - dedicated
+    - networking
+    - dns
+    - mesh
+    - vpn
+    - firewall
+    - nebula
 
-    - name: Set up Yggdrasil mesh.
-      ansible.builtin.include_tasks: tasks/yggdrasil.yml
-      vars:
-        group_name: yggdrasil
-      when: "group_name in group_names"
-      tags:
-        - infra
-        - infrastructure
-        - dedicated
-        - networking
-        - mesh
-        - firewall
-        - yggdrasil
+  - name: Set up Yggdrasil mesh.
+    ansible.builtin.include_tasks: tasks/yggdrasil.yml
+    vars:
+      group_name: yggdrasil
+    when: "group_name in group_names"
+    tags:
+    - infra
+    - infrastructure
+    - dedicated
+    - networking
+    - mesh
+    - firewall
+    - yggdrasil
 
-    - name: Set up Docker.
-      ansible.builtin.include_tasks: tasks/docker.yml
-      vars:
-        group_name: dedicated
-      when: "group_name in group_names"
-      tags:
-        - infra
-        - infrastructure
-        - dedicated
-        - containers
-        - firewall
-        - docker
+  - name: Set up Docker.
+    ansible.builtin.include_tasks: tasks/docker.yml
+    vars:
+      group_name: dedicated
+    when: "group_name in group_names"
+    tags:
+    - infra
+    - infrastructure
+    - dedicated
+    - containers
+    - firewall
+    - docker
 
-    - name: Set up Ansible ... using Ansible.
-      ansible.builtin.include_tasks: tasks/ansible.yml
-      vars:
-        group_name: dedicated
-      when: "group_name in group_names"
-      tags:
-        - infra
-        - infrastructure
-        - dedicated
-        - automation
-        - meta
-        - viral
-        - ansible
+  - name: Set up Ansible ... using Ansible.
+    ansible.builtin.include_tasks: tasks/ansible.yml
+    vars:
+      group_name: dedicated
+    when: "group_name in group_names"
+    tags:
+    - infra
+    - infrastructure
+    - dedicated
+    - automation
+    - meta
+    - viral
+    - ansible
 
-    - name: Set up Node.js.
-      ansible.builtin.include_tasks: tasks/nodejs.yml
-      when: "'dedicated' in group_names or 'shared' in group_names"
-      tags:
-        - infra
-        - infrastructure
-        - installation
-        - packages
-        - languages
-        - javascript
-        - nodejs
+  - name: Set up Node.js.
+    ansible.builtin.include_tasks: tasks/nodejs.yml
+    when: "'dedicated' in group_names or 'shared' in group_names"
+    tags:
+    - infra
+    - infrastructure
+    - installation
+    - packages
+    - languages
+    - javascript
+    - nodejs
 
-    - name: Set up Caddy server.
-      ansible.builtin.include_tasks: tasks/caddy.yml
-      vars:
-        group_name: caddy_server
-      when: "group_name in group_names"
-      tags:
-        - infra
-        - infrastructure
-        - dedicated
-        - servers
-        - reverse_proxy
-        - web
-        - tcp
-        - caddy
+  - name: Set up Caddy server.
+    ansible.builtin.include_tasks: tasks/caddy.yml
+    vars:
+      group_name: caddy_server
+    when: "group_name in group_names"
+    tags:
+    - infra
+    - infrastructure
+    - dedicated
+    - servers
+    - reverse_proxy
+    - web
+    - tcp
+    - caddy
 
-    - name: Set up Cockpit.
-      ansible.builtin.include_tasks: tasks/cockpit.yml
-      vars:
-        group_name: dedicated
-      when: "group_name in group_names"
-      tags:
-        - infra
-        - infrastructure
-        - dedicated
-        - servers
-        - admin
-        - observability
-        - reverse_proxy
-        - caddy
-        - cockpit
+  - name: Set up Cockpit.
+    ansible.builtin.include_tasks: tasks/cockpit.yml
+    vars:
+      group_name: dedicated
+    when: "group_name in group_names"
+    tags:
+    - infra
+    - infrastructure
+    - dedicated
+    - servers
+    - admin
+    - observability
+    - reverse_proxy
+    - caddy
+    - cockpit
 
-    - name: Set up databases and database management.
-      ansible.builtin.include_tasks: tasks/db/main.yml
-      vars:
-        group_name: dedicated
-      when: "group_name in group_names"
-      tags:
-        - infra
-        - infrastructure
-        - dedicated
-        - servers
-        - database
-        - db
-        - reverse_proxy
-        - caddy
+  - name: Set up databases and database management.
+    ansible.builtin.include_tasks: tasks/db/main.yml
+    vars:
+      group_name: dedicated
+    when: "group_name in group_names"
+    tags:
+    - infra
+    - infrastructure
+    - dedicated
+    - servers
+    - database
+    - db
+    - reverse_proxy
+    - caddy
 
   pre_tasks:
-    - name: Initialize Ansible environment.
-      ansible.builtin.import_tasks: tasks/meta/init.yml
+  - name: Initialize Ansible environment.
+    ansible.builtin.import_tasks: tasks/meta/init.yml
 
-    - name: Upgrade packages.
-      ansible.builtin.import_tasks: tasks/upgrade/main.yml
-      tags:
-        - infra
-        - infrastructure
-        - packages
-        - upgrade
+  - name: Upgrade packages.
+    ansible.builtin.import_tasks: tasks/upgrade/main.yml
+    tags:
+    - infra
+    - infrastructure
+    - packages
+    - upgrade
 
   post_tasks:
-    - name: Install Gitea and set up Nebula forwarding for Gitea via Caddy.
-      ansible.builtin.include_tasks: tasks/gitea.yml
-      when: "'META__gitea' in group_names"
-      tags:
-        - infra
-        - infrastructure
-        - servers
-        - reverse_proxy
-        - caddy
-        - git
-        - gitea
+  - name: Install Gitea and set up Nebula forwarding for Gitea via Caddy.
+    ansible.builtin.include_tasks: tasks/gitea.yml
+    when: "'META__gitea' in group_names"
+    tags:
+    - infra
+    - infrastructure
+    - servers
+    - reverse_proxy
+    - caddy
+    - git
+    - gitea
 
 - name: Run playbooks for all participant families.
   ansible.builtin.import_playbook: families/main.yml
-  tags:
-    - families
+  tags: [ families ]
