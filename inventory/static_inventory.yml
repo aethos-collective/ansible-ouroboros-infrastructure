@@ -59,9 +59,16 @@ all:
 ####################################
 ##### Solution-oriented groups #####
 ####################################
+    nodejs:
+      children:
+        dedicated:
+        shared:
+        termux:
+
     caddy:
       children:
         dedicated:
+        termux:
 
     postgresql:
       hosts:
@@ -103,6 +110,7 @@ all:
     yggdrasil:
       children:
         dedicated:
+        termux:
 
 ##########################################################
 ##### Machine OS/package manager/architecture groups #####

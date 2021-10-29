@@ -106,7 +106,9 @@
 
   - name: Set up Node.js.
     ansible.builtin.include_tasks: tasks/nodejs.yml
-    when: "'dedicated' in group_names or 'shared' in group_names"
+    vars:
+      group_name: nodejs
+    when: "group_name in group_names"
     tags:
     - infra
     - infrastructure

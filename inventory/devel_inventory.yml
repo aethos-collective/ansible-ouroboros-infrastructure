@@ -26,17 +26,3 @@ all:
     PKG__crew:
       children:
         chromiumos_family:
-
-####################################
-##### Solution-oriented groups #####
-####################################
-    caddy_server:
-      hosts:
-        chromebook-termux:
-
-#####
-##### Make sure these groups stay last in this section!
-#####
-    yggdrasil:
-      hosts:
-        chromebook-termux:

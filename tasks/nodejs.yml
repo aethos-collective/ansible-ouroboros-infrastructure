@@ -2,21 +2,21 @@
 - tags: [ installation, packages, languages, javascript, nodejs ]
   block:
 
-  - name: Install node.js on dedicated hosts or shared hosts with sudo.
-    ansible.builtin.include_role:
-      name: geerlingguy.nodejs
-      apply:
-        become: true
-    when: "'dedicated' in group_names or ('shared' in group_names and can_sudo)"
-    tags: [ sudo, dedicated, shared ]
-
-  - name: Install node.js on Termux hosts.
+  - name: Install Node.js on Termux hosts.
     become: false
     ansible.builtin.apt:
       name: nodejs
       state: latest
     when: "'termux' in group_names"
     tags: [ termux ]
+
+  - name: Install Node.js on dedicated hosts or shared hosts with sudo.
+    ansible.builtin.include_role:
+      name: geerlingguy.nodejs
+      apply:
+        become: true
+    when: "'dedicated' in group_names or ('shared' in group_names and can_sudo)"
+    tags: [ sudo, dedicated, shared ]
 
   # https://github.com/nvm-sh/nvm
   - name: Install Node Version Manager on shared hosts.
