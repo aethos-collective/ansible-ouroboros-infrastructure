@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document defines how current static Ansible artifacts relate to the future Ouroboros Infrastructure mesh.
+This document defines how current static Ansible artifacts relate to the future Ouroboros Infrastructure operational ledger and mesh.
 
 ## Current artifacts
 
@@ -21,7 +21,7 @@ They are not the long-term source of truth.
 
 ## Future direction
 
-The future Ouroboros Infrastructure mesh may derive or assemble operational artifacts from substrate state and operational intent.
+The future Ouroboros Infrastructure mesh may derive or assemble operational artifacts from operational ledger state and operational intent.
 
 This includes:
 
@@ -30,7 +30,11 @@ This includes:
 - service binding derivation;
 - host targeting derivation;
 - remediation sequence derivation;
-- recovery path derivation.
+- recovery path derivation;
+- execution-view derivation;
+- Ansible Runner-compatible view derivation.
+
+See `docs/OPERATIONAL_LEDGER_MODEL.md`, `docs/LEDGER_DERIVED_INVENTORY.md`, `docs/LEDGER_DERIVED_PLAYBOOKS.md`, and `docs/LEDGER_DERIVED_EXECUTION_VIEWS.md`.
 
 ## Inventory derivation
 
@@ -67,18 +71,29 @@ Operational intent may include:
 
 Handwritten playbooks remain a valid corpus, but over time they should become reusable primitives, templates, examples, or fallback paths rather than the sole expression of operational intent.
 
+## Execution-view derivation
+
+Inventory and playbooks may be materialized into scoped execution views.
+
+StorageGraft may provide the path-space materialization layer for those views.
+
+See `docs/STORAGEGRAFT_MATERIALIZATION_LAYER.md` and `docs/ANSIBLE_RUNNER_EXECUTION_VIEW.md`.
+
 ## Review and provenance
 
 Derived artifacts must preserve provenance.
 
-A derived inventory or playbook should be able to answer:
+A derived inventory, playbook, or execution view should be able to answer:
 
 - what state generated it;
 - what intent generated it;
 - what component generated it;
-- what operator or ÆI participated;
+- what operator, holon, or ÆI participated;
 - what review posture applies;
-- whether it is safe for check mode only or apply mode.
+- whether it is safe for check mode only or apply mode;
+- what materialization path was used;
+- what execution adapter consumed it;
+- what result returned to the ledger.
 
 ## Check before apply
 
@@ -91,3 +106,9 @@ Apply posture should remain reviewable and auditable.
 Ansible remains a first-class execution interface.
 
 The fact that inventory and playbooks may be derived later does not demote Ansible. It changes Ansible's role from source-of-truth repository to execution grammar and operational adapter.
+
+## StorageGraft relationship
+
+StorageGraft is not the derivation engine.
+
+StorageGraft materializes already-derived, already-authorized operational views into filesystem-shaped path-space for execution adapters.

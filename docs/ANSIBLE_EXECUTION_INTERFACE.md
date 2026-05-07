@@ -21,7 +21,7 @@ These provide:
 
 ## Long-term role
 
-In the long term, Ansible should consume operational artifacts derived from the Ouroboros Infrastructure mesh.
+In the long term, Ansible should consume operational artifacts derived from the Ouroboros Infrastructure operational ledger and mesh.
 
 These may include:
 
@@ -30,7 +30,11 @@ These may include:
 - derived host targeting;
 - derived variables;
 - derived remediation sequences;
-- derived recovery procedures.
+- derived recovery procedures;
+- ledger-derived execution views;
+- Ansible Runner-compatible execution views.
+
+See `docs/OPERATIONAL_LEDGER_MODEL.md`, `docs/LEDGER_DERIVED_EXECUTION_VIEWS.md`, and `docs/ANSIBLE_RUNNER_EXECUTION_VIEW.md`.
 
 ## Execution posture
 
@@ -44,6 +48,12 @@ Ansible execution should support:
 - remediation posture;
 - recovery posture.
 
+## Materialized views
+
+StorageGraft may eventually materialize ledger-derived inventory, playbooks, variables, and artifact paths into filesystem-shaped views that Ansible or Ansible Runner can consume.
+
+See `docs/STORAGEGRAFT_MATERIALIZATION_LAYER.md`.
+
 ## Not sole authority
 
 Ansible does not own:
@@ -55,7 +65,9 @@ Ansible does not own:
 - all telemetry;
 - all service registry state;
 - all operational intent;
-- all future control surfaces.
+- all future control surfaces;
+- the operational ledger;
+- the materialization layer.
 
 ## Still first-class
 
@@ -75,3 +87,5 @@ Ansible remains a valid and important interface for:
 Derived Ansible execution must remain inspectable, reviewable, and auditable.
 
 The mesh must not produce opaque playbooks that cannot be understood by operators.
+
+A materialized execution view must not imply authority by filesystem visibility alone. Authority comes from the execution contract, review posture, and applicable boundaries.

@@ -72,13 +72,17 @@ In mature mesh-derived mode, a holon expresses intent and receives a scoped Ansi
 ```text
 holon
 → intent
-→ mesh evaluates identity / authority / context
+→ operational ledger state
+→ execution contract
 → derived inventory
 → derived playbook
+→ StorageGraft materialized execution view
 → Ansible check/diff/review
 → apply if authorized
-→ observed result returns to mesh
+→ observed result returns to ledger
 ```
+
+See `docs/OPERATIONAL_LEDGER_MODEL.md`, `docs/STORAGEGRAFT_MATERIALIZATION_LAYER.md`, and `docs/LEDGER_DERIVED_EXECUTION_VIEWS.md`.
 
 ## Examples
 
@@ -91,6 +95,12 @@ A project holon may deploy runner capacity for a repository group.
 A chapter holon may recover local infrastructure after failure.
 
 A federation holon may propose operations that subordinate holons execute locally after their own review.
+
+## Materialized aperture
+
+StorageGraft may make a holonic aperture concrete by materializing a scoped execution view into path-space.
+
+A materialized path must not imply authority by itself. Authority comes from identity, delegation, execution contract, review posture, and applicable boundaries.
 
 ## Prohibition
 
