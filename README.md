@@ -29,6 +29,16 @@ Technologies are assigned by function, not by category, ecosystem, distribution 
 
 A component belongs to Ouroboros Infrastructure when it carries substrate responsibility: nodes, services, routing, reachability, topology, deployment, provisioning, orchestration, telemetry, registry state, secrets, IAM, execution, convergence, remediation, derived inventory, derived playbooks, or operational provenance.
 
+## Operational ledger posture
+
+Ouroboros Infrastructure is ledger-centered at the operational substrate layer.
+
+The operational ledger records substrate state, operational intent, generated artifacts, execution posture, execution results, and operational provenance.
+
+Inventory, playbooks, and execution views may eventually be derived from the operational ledger while remaining inspectable, reviewable, and auditable.
+
+StorageGraft is the path-space materialization layer that may turn ledger-derived operational state into scoped filesystem-shaped execution views consumable by Ansible Runner and other execution adapters.
+
 ## Ansible adapter posture
 
 Ansible is the current first-class execution adapter for bootstrap, provisioning, configuration management, maintenance, remediation, and recovery.
@@ -55,6 +65,12 @@ The initial transition also does not prematurely exclude candidate substrate tec
 - `docs/HOLONIC_ANSIBLE_APERTURE.md`
 - `docs/EXECUTION_CONTRACT.md`
 - `docs/HOLONIC_EXECUTION_FLOW.md`
+- `docs/OPERATIONAL_LEDGER_MODEL.md`
+- `docs/LEDGER_DERIVED_INVENTORY.md`
+- `docs/LEDGER_DERIVED_PLAYBOOKS.md`
+- `docs/STORAGEGRAFT_MATERIALIZATION_LAYER.md`
+- `docs/LEDGER_DERIVED_EXECUTION_VIEWS.md`
+- `docs/ANSIBLE_RUNNER_EXECUTION_VIEW.md`
 - `docs/SUBSTRATE_COMPONENT_MODEL.md`
 - `docs/SUBSTRATE_COMPONENT_REGISTER.md`
 - `docs/BOUNDARY_MAP.md`
@@ -72,3 +88,4 @@ The current transition queue is tracked in GitHub issues under the `AOOI` prefix
 - `AOOI-011` — Define substrate component model and layer-assignment rule
 - `AOOI-012` — Add nomadic, self-sovereign, and holonic identity/data candidates
 - `AOOI-013` — Define holonic Ansible aperture and execution contract
+- `AOOI-014` — Define operational ledger and StorageGraft materialization layer
