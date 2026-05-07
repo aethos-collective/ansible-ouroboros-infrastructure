@@ -22,17 +22,25 @@ A way for humans, ÆI, software systems, or automation tools to observe, manage,
 
 A specific implementation of an interface. This repository is the Ansible adapter.
 
+See `docs/ADAPTER_MODEL.md`.
+
 ### Control plane
 
 A coordinating surface that may observe or direct infrastructure state. Ansible can participate in control-plane behavior, but this repository is not the final or sole control plane for Ouroboros Infrastructure.
+
+See `docs/CONTROL_PLANE_BOUNDARIES.md`.
 
 ### Execution backend
 
 The mechanism that performs concrete actions. Ansible is one execution backend for provisioning and maintenance.
 
+See `docs/ANSIBLE_EXECUTION_INTERFACE.md` and `docs/ANSIBLE_SCOPE.md`.
+
 ### Inventory source
 
 A source of infrastructure target knowledge. This may be static Ansible inventory, generated inventory, private/live inventory, or a future source-of-truth system.
+
+See `docs/DERIVATION_MODEL.md`.
 
 ### State source
 
@@ -45,6 +53,12 @@ The membrane separating public repository material from private, encrypted, gene
 ### Observability surface
 
 A system or interface for observing status, health, drift, logs, metrics, traces, events, or anomalies.
+
+## Bootstrap role
+
+Before the Ouroboros Infrastructure mesh is mature enough to derive operational artifacts, static inventory and handwritten playbooks remain valid bootstrap and maintenance material.
+
+See `docs/BOOTSTRAP_MODEL.md`.
 
 ## Invariant
 
