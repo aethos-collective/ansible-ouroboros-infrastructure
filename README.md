@@ -23,15 +23,30 @@ The immediate work is documentation-first and behavior-preserving:
 - audit inherited `ilyfam` assumptions before refactoring;
 - add repository hygiene and validation only after the interpretive layer is stable.
 
+## Layer-assignment rule
+
+Technologies are assigned by function, not by category, ecosystem, distribution model, or vibe.
+
+A component belongs to Ouroboros Infrastructure when it carries substrate responsibility: nodes, services, routing, reachability, topology, deployment, provisioning, orchestration, telemetry, registry state, secrets, IAM, execution, convergence, remediation, derived inventory, derived playbooks, or operational provenance.
+
 ## Non-goals for the initial transition
 
-The initial transition does not rename the default branch, rewrite Ansible roles, change deployment behavior, add deployment automation, introduce additional infrastructure-management frameworks, or collapse Ouroboros Infrastructure into Ansible.
+The initial transition does not rename the default branch, rewrite Ansible roles, change deployment behavior, add deployment automation, or collapse Ouroboros Infrastructure into Ansible.
+
+The initial transition also does not prematurely exclude candidate substrate technologies.
 
 ## Related documents
 
 - `docs/PROVENANCE.md`
 - `docs/PROJECT_CHARTER.md`
 - `docs/INTERFACE_MODEL.md`
+- `docs/SUBSTRATE_COMPONENT_MODEL.md`
+- `docs/SUBSTRATE_COMPONENT_REGISTER.md`
+- `docs/BOUNDARY_MAP.md`
+- `docs/OUROBOROS_INFRASTRUCTURE_MESH.md`
+- `docs/DERIVATION_MODEL.md`
+- `docs/ANSIBLE_EXECUTION_INTERFACE.md`
+- `docs/OUROBOROS_AEONMESH_RELATIONSHIP.md`
 
 ## Issue queue
 
@@ -39,3 +54,4 @@ The current transition queue is tracked in GitHub issues under the `AOOI` prefix
 
 - `AOOI-000` — Transition action queue for Ansible Ouroboros Infrastructure
 - `AOOI-001` — Stabilize repository identity and provenance
+- `AOOI-011` — Define substrate component model and layer-assignment rule
