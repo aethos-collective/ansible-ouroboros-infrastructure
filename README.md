@@ -23,6 +23,14 @@ The immediate work is documentation-first and behavior-preserving:
 - audit inherited `ilyfam` assumptions before refactoring;
 - add repository hygiene and validation only after the interpretive layer is stable.
 
+## Project contract
+
+Repository changes are governed by `docs/PROJECT_CONTRACT.md`.
+
+Contributions should follow `CONTRIBUTING.md`.
+
+Notable transition changes should be recorded in `CHANGELOG.md`.
+
 ## Layer-assignment rule
 
 Technologies are assigned by function, not by category, ecosystem, distribution model, or vibe.
@@ -57,6 +65,9 @@ The initial transition also does not prematurely exclude candidate substrate tec
 
 - `docs/PROVENANCE.md`
 - `docs/PROJECT_CHARTER.md`
+- `docs/PROJECT_CONTRACT.md`
+- `CONTRIBUTING.md`
+- `CHANGELOG.md`
 - `docs/INTERFACE_MODEL.md`
 - `docs/ADAPTER_MODEL.md`
 - `docs/CONTROL_PLANE_BOUNDARIES.md`

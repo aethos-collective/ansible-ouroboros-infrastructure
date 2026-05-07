@@ -20,6 +20,16 @@ This repository is one management interface into that substrate.
 
 Ansible is currently the first operational interface. It is first-class, but it is not exclusive.
 
+## Operating contract
+
+Repository work is governed by `docs/PROJECT_CONTRACT.md`.
+
+The project contract defines change-control invariants, including no silent rewrites, provenance preservation, behavior-change authorization, secrets safety, and classification before refactoring.
+
+Contributions should follow `CONTRIBUTING.md`.
+
+Notable transition changes should be recorded in `CHANGELOG.md`.
+
 ## Near-term objectives
 
 - Stabilize repository identity and provenance.
