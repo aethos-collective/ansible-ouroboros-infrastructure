@@ -46,6 +46,12 @@ Ouroboros Infrastructure mesh
 → observed state returns to the infrastructure mesh
 ```
 
+## Holonic use
+
+Holons should interact with the Ansible adapter through scoped execution apertures rather than raw imperative access.
+
+See `docs/HOLONIC_ANSIBLE_APERTURE.md`, `docs/EXECUTION_CONTRACT.md`, and `docs/HOLONIC_EXECUTION_FLOW.md`.
+
 ## Adapter responsibilities
 
 The Ansible adapter may responsibly perform:
