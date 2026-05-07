@@ -10,6 +10,24 @@ It descends from `ansible-ilyfam-cloud-infra`, a prior Ansible infrastructure re
 
 It is not the totality of Ouroboros Infrastructure. It is one operational interface into the broader infrastructure substrate.
 
+## Initial README state
+
+Before the first transition PR, the repository front page still identified the project as:
+
+```markdown
+# ansible-ilyfam-cloud-infra
+```
+
+It also included an old project note about atomic commits and a historical link into the prior `ilyfam` infrastructure lineage:
+
+```markdown
+*(Note to self: [Atomic commits](https://coderwall.com/p/jmqp0a/why-and-how-i-craft-atomic-commits-in-git) are awesome. - @christopher.parker)*
+
+> Kinda like this, except even this commit isn't quite atomic; it's really two atomic commits squished together. https://git.ilyfam.family/ilyfam/ansible-ilyfam-cloud-infra/commit/c7b7faa40aff0d84791ee62af66bfb73b6a6a645 _(Does that make it molecular? 🤔)_
+```
+
+Those lines were removed from the active README during identity stabilization, not because the lineage was discarded, but because the front page now needs to describe the repository's current role. The prior front-matter is preserved here as historical documentation residue.
+
 ## Inherited material
 
 Inherited material may include old names, hostnames, domains, inventory structures, paths, comments, vault references, service assumptions, family-specific assumptions, personal infrastructure assumptions, and deployment patterns.
