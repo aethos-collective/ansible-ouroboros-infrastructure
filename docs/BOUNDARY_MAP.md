@@ -26,6 +26,9 @@ This includes:
 - topology state;
 - infrastructure telemetry;
 - secrets and IAM substrate;
+- identity-bearing service hosting;
+- nomadic identity service deployment, backup, monitoring, ingress, and recovery;
+- self-sovereign data service hosting;
 - execution interfaces;
 - derived inventory;
 - derived playbooks;
@@ -44,7 +47,9 @@ This includes:
 - agent-centric application state;
 - distributed relational coordination;
 - post-platform application ecology;
-- application-level event history.
+- application-level event history;
+- clone-aware relational continuity;
+- nomadic social/application state where it carries coordination function.
 
 ### TrustSphere
 
@@ -55,6 +60,8 @@ This includes:
 - typed claims;
 - bounded attestation;
 - consent;
+- identity proofs;
+- authority boundaries;
 - provenance;
 - contestation;
 - amendment;
@@ -62,6 +69,7 @@ This includes:
 - fulfillment;
 - qualification;
 - reliability;
+- trust transfer;
 - bounded trust.
 
 ### æthOS
@@ -74,6 +82,7 @@ This includes:
 - interface discipline;
 - continuity discipline;
 - evidence discipline;
+- canonical naming discipline;
 - semantic and noetic operating law;
 - safety boundaries;
 - canon promotion and drift prevention.
@@ -113,6 +122,9 @@ Examples:
 - Holochain carrying agent-centric application state may belong to Æonmesh.
 - Forgejo as sovereign forge and change-control substrate belongs to Ouroboros Infrastructure.
 - Forgejo collaboration/event traces may later become Æonmesh-relevant.
+- Hubzilla hub deployment, storage, backup, ingress, monitoring, and recovery belong to Ouroboros Infrastructure.
+- Zot6 / Nomad channel continuity and clone-aware social/application state become Æonmesh-relevant when they carry relational coordination function.
+- Zot6 / Nomad, OpenWebAuth / MagicAuth, DIDs, and Verifiable Credentials become TrustSphere-relevant when they carry attestation, consent, authority, provenance, contestation, or trust-transfer function.
 - IAM enforcement belongs to Ouroboros Infrastructure when it governs substrate access.
 - IAM becomes Æonmesh-relevant when it requires distributed relational coordination.
 - IAM becomes TrustSphere-relevant when it requires attestation, consent, provenance, contestation, or bounded authority.
@@ -126,3 +138,5 @@ Do not assign technologies by vibe.
 Do not infer that distributed systems belong to Æonmesh merely because they are distributed.
 
 Do not infer that orchestration or provisioning technologies are outside Ouroboros Infrastructure because they are not Ansible.
+
+Do not omit nomadic, self-sovereign, or holonic systems merely because they straddle infrastructure, relation, and trust boundaries.

@@ -52,6 +52,21 @@ Examples:
 - Holochain used for agent-centric application state may belong to Æonmesh.
 - Forgejo as sovereign forge and operational provenance substrate belongs to Ouroboros Infrastructure.
 - Forgejo collaboration history may become Æonmesh-relevant if treated as distributed relational state.
+- Hubzilla hub deployment, storage, backup, ingress, monitoring, and recovery belong to Ouroboros Infrastructure.
+- Zot6 / Nomad channel continuity and clone-aware social/application state become Æonmesh-relevant when they carry relational coordination function.
+- Zot6 / Nomad, OpenWebAuth / MagicAuth, DIDs, and Verifiable Credentials become TrustSphere-relevant when they carry attestation, consent, authority, provenance, contestation, or trust-transfer function.
+
+## Nomadic identity seam
+
+Nomadic, self-sovereign, and holonic systems deserve explicit handling because they can span infrastructure, relation, and trust boundaries.
+
+The infrastructure substrate may host, expose, back up, monitor, and recover identity-bearing services.
+
+Æonmesh becomes relevant when nomadic identities carry distributed relational/application coordination, clone-aware continuity, shared histories, or social/application state.
+
+TrustSphere becomes relevant when nomadic or self-sovereign systems carry attestation, consent, authority, provenance, contestation, amendment, qualification, or trust transfer.
+
+Compatibility between Hubzilla Zot6/Nomad and Streams/Nomad-family systems must be verified before assuming clone or interoperability behavior.
 
 ## IAM seam
 

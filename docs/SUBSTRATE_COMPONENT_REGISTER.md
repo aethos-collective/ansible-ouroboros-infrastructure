@@ -65,6 +65,43 @@ Potential substrate roles:
 - operational event streams;
 - append-only infrastructure history, where appropriate.
 
+## Nomadic, self-sovereign, and holonic identity/data systems
+
+Candidate components:
+
+- Zot6 / Nomad
+- Hubzilla
+- Streams / Nomad-family systems, with compatibility caveats
+- OpenWebAuth / MagicAuth
+- Solid / WebID
+- DIDs
+- Verifiable Credentials
+- Holochain, when used for self-sovereign or agent-centric identity/data
+- Secure Scuttlebutt-style append-only identities
+- ActivityPub actors, with portability limitations noted
+- AT Protocol personal data repositories
+- Matrix identities/spaces, with homeserver-coupling limitations noted
+
+Potential substrate roles:
+
+- identity-bearing service hosting;
+- nomadic identity continuity;
+- cloneable channel infrastructure;
+- self-sovereign data custody;
+- personal or communal data spaces;
+- access-control substrate;
+- cross-domain authentication support;
+- backup and recovery for identity/data services;
+- federation bridge hosting;
+- portability and exit-path support.
+
+Functional classification notes:
+
+- Hubzilla hubs, Streams-family services, Solid servers, Matrix homeservers, and related identity-bearing services belong to Ouroboros Infrastructure when the concern is hosting, deployment, storage, backup, ingress, monitoring, secrets, IAM, or recovery.
+- Zot6 / Nomad, OpenWebAuth / MagicAuth, DIDs, Verifiable Credentials, and related identity systems become TrustSphere-relevant when the concern is attestation, consent, authority, provenance, qualification, contestation, amendment, or trust transfer.
+- Nomadic identity, clone-aware continuity, social/application state, shared histories, and distributed relational coordination become Æonmesh-relevant when they carry relational or application coordination functions.
+- Compatibility between Hubzilla Zot6/Nomad and Streams/Nomad-family systems must be verified before assuming clone or interoperability behavior.
+
 ## Provisioning, configuration, and execution
 
 Candidate components:
@@ -130,6 +167,8 @@ Potential substrate roles:
 Candidate components:
 
 - OpenBao
+- Bitwarden / Vaultwarden, for human/operator credential custody and shared operational credentials
+- Bitwarden Secrets Manager, as a candidate developer/infrastructure secrets system
 - GnuPG
 - SOPS / age-style secret encryption candidates
 - Keycloak
@@ -143,6 +182,9 @@ Potential substrate roles:
 - operator identity;
 - service identity;
 - workload identity;
+- human/operator credential custody;
+- shared operational secret custody;
+- developer/infrastructure secrets management;
 - secret storage;
 - encryption;
 - certificate issuance;
@@ -196,6 +238,6 @@ Potential substrate roles:
 
 This register should remain open during early architecture formation.
 
-Do not remove a candidate merely because it belongs to a distributed, peer-to-peer, orchestration, provisioning, forge, IAM, or observability ecosystem.
+Do not remove a candidate merely because it belongs to a distributed, peer-to-peer, orchestration, provisioning, forge, IAM, observability, nomadic identity, self-sovereign identity, or holonic data ecosystem.
 
 Classify by function first.
