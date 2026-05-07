@@ -36,6 +36,12 @@ Future valid responsibilities may include:
 - applying derived recovery plans;
 - reporting execution results back to the infrastructure mesh.
 
+## Holonic scope
+
+When a holon uses Ansible, its scope must be bounded by an execution contract.
+
+See `docs/EXECUTION_CONTRACT.md` and `docs/HOLONIC_EXECUTION_FLOW.md`.
+
 ## Non-owned responsibilities
 
 Ansible does not own:
