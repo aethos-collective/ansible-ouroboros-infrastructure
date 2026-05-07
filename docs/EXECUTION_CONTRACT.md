@@ -4,7 +4,7 @@
 
 This document defines the minimum contract for any Ansible-mediated operation requested, reviewed, approved, or executed through a holonic aperture.
 
-The execution contract is the unit of accountability between a holon, the Ouroboros Infrastructure mesh, and the Ansible execution adapter.
+The execution contract is the unit of accountability between a holon, the Ouroboros Infrastructure operational ledger, the StorageGraft materialization layer, and the Ansible execution adapter.
 
 ## Required fields
 
@@ -34,6 +34,15 @@ An execution contract should be able to answer the following questions before ap
 - What does the holon want to accomplish?
 - Is the intent bootstrap, maintenance, remediation, recovery, deployment, migration, credential rotation, convergence, or teardown?
 - Is the intent generated, selected, requested manually, or proposed by ÆI?
+- What operational ledger record or provisional record captures the intent?
+
+### Ledger posture
+
+- Which substrate-state records are relevant?
+- Which intent records are relevant?
+- Which artifact records are generated or consumed?
+- Which result records should be produced after execution?
+- What current view or ledger snapshot is this contract based on?
 
 ### Artifact provenance
 
@@ -41,6 +50,15 @@ An execution contract should be able to answer the following questions before ap
 - What state or intent generated the playbook?
 - What component derived, selected, or assembled the artifacts?
 - What version of the repository, role, collection, or generated artifact applies?
+- Which execution view materializes those artifacts?
+
+### Materialization posture
+
+- Is StorageGraft used to materialize an execution view?
+- What materialization path or view ID applies?
+- Is the view read-only, partially writable, or writable only for artifacts?
+- Is a mount namespace, unit-level bind path, temporary filesystem, or ordinary directory involved?
+- When does the materialized view expire?
 
 ### Secrets posture
 
@@ -68,7 +86,7 @@ An execution contract should be able to answer the following questions before ap
 ### Result return path
 
 - Where do execution results go?
-- How are logs, facts, changed state, errors, and drift signals returned to the mesh?
+- How are logs, facts, changed state, errors, and drift signals returned to the operational ledger?
 - What audit trail is preserved?
 - What follow-up action is required?
 
@@ -80,6 +98,7 @@ An execution contract may move through these states:
 proposed
 → scoped
 → derived
+→ materialized
 → check-ready
 → checked
 → review-ready
@@ -117,8 +136,10 @@ In early bootstrap mode, a minimal contract may be documented manually:
 
 In mature mesh-derived mode, the contract should be machine-readable and provenance-bearing.
 
-It should bind holon identity, authority, scope, generated inventory, generated playbook, review posture, execution result, and mesh return path.
+It should bind holon identity, authority, scope, generated inventory, generated playbook, materialized execution view, review posture, execution result, and ledger return path.
+
+See `docs/OPERATIONAL_LEDGER_MODEL.md`, `docs/STORAGEGRAFT_MATERIALIZATION_LAYER.md`, and `docs/LEDGER_DERIVED_EXECUTION_VIEWS.md`.
 
 ## Prohibition
 
-Do not apply Ansible operations when the acting holon, target scope, secrets posture, review posture, and return path are unknown.
+Do not apply Ansible operations when the acting holon, target scope, secrets posture, review posture, materialization posture, and return path are unknown.
