@@ -46,7 +46,7 @@ The initial transition also does not prematurely exclude candidate substrate tec
 - `docs/OUROBOROS_INFRASTRUCTURE_MESH.md`
 - `docs/DERIVATION_MODEL.md`
 - `docs/ANSIBLE_EXECUTION_INTERFACE.md`
-- `docs/OUROBOROS_AEONMESH_RELATIONSHIP.md`
+- `docs/OUROBOROS_ÆONMESH_RELATIONSHIP.md`
 
 ## Issue queue
 
